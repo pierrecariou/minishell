@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/06 13:10:48 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/06 16:01:59 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -65,29 +65,26 @@ void	split_input(char *buf, char **words)
 	}
 }
 
-void	malloc_words(char *buf, char **words)
+void	malloc_words(char *buf, char **words, int n)
 {
 	int i;
 	int c;
 	int l;
 
-	i = 0;
+	i = -1;
 	c = 0;
 	l = 0;
-	while (buf[i])
+	while (++i < n)
 	{
-		if (buf[i] != ' ')
+		while (buf[c] && buf[c] == ' ')
+			c++;
+		while (buf[c] && buf[c] != ' ')
 		{
-		while (buf[i] && buf[i] != ' ')
-		{
-			i++;
+			c++;
 			l++;
 		}
-		words[c] = malloc(sizeof(char) * l + 1);
-		c++;
-		}
-		else
-			i++;
+		words[i] = malloc(sizeof(char) * (l + 1));
+		//printf("length word %d : %d\n",  i + 1, l);
 		l = 0;
 	}
 }
@@ -135,9 +132,9 @@ void	read_input(void)
 	get_next_line(0, &buf);
 	better_input(buf);
 	n = count_words(buf);
-	words = malloc(sizeof(char *) * n + 1);
-	words[n + 1] = 0;
-	malloc_words(buf, words);
+	words = malloc(sizeof(char *) * (n + 1));
+	words[n] = 0;
+	malloc_words(buf, words, n);
 	split_input(buf, words);
 	int i = -1;
 	while (words[++i])
