@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/06 16:01:59 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/07 07:56:05 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -19,6 +19,7 @@ void	handler(int num)
 	write(1, "handling!\n", 10);
 }
 */
+/*
 
 void	check_echo(char *buf)
 {
@@ -36,6 +37,7 @@ void	check_input(char *buf)
 	}
 	ft_putstr_fd("\n", 1);
 }
+*/
 
 void	split_input(char *buf, char **words)
 {
@@ -84,7 +86,6 @@ void	malloc_words(char *buf, char **words, int n)
 			l++;
 		}
 		words[i] = malloc(sizeof(char) * (l + 1));
-		//printf("length word %d : %d\n",  i + 1, l);
 		l = 0;
 	}
 }
@@ -136,9 +137,11 @@ void	read_input(void)
 	words[n] = 0;
 	malloc_words(buf, words, n);
 	split_input(buf, words);
+	/*
 	int i = -1;
 	while (words[++i])
 		printf("%s\n", words[i]);
+	*/
 	//check_input(buf);
 }
 
@@ -147,15 +150,15 @@ void	loop(void)
 	while (42)
 	{
 		ft_putstr_fd("\033[1;31m", 1);
-		ft_putstr_fd("minishell> ", 1);
+		ft_putstr_fd(">> minishell ", 1);
 		ft_putstr_fd("\033[0m", 1);
 		read_input();
 		/*
 		if (fork() == 0)
-			execlp("ls", "ls", "-lp", NULL);
+			execve("/bin.sh", "ls", "-lp", NULL);
 		else
 			wait(NULL);
-		*/
+			*/
 	}
 }
 
@@ -223,9 +226,11 @@ int		main(int argc, char **argv, char **envp)
 	//printf("T>EST --- %s\n", path);
 	//printf("%d\n", ft_strlen(path));
 	paths = split_path(path);
+	/*
 	int i = -1;
 	while (paths[++i])
 		printf("%s\n", paths[i]);
+	*/
 	loop();
 	return (0);
 }
