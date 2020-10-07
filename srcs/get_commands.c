@@ -6,37 +6,11 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/07 12:09:04 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/07 17:46:16 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
-
-char	**read_input(void)
-{
-	//char buf[300];
-	int n;
-	char *buf;
-	char **words;
-
-	//read(0, buf, 300);
-	(void)n;
-	get_next_line(0, &buf);
-	better_input(buf);
-	n = count_words(buf);
-	if (!(words = malloc(sizeof(char *) * (n + 2))))
-		return (0);
-	words[n] = 0;
-	malloc_words(buf, words, n);
-	split_input(buf, words);
-	/*
-	   int i = -1;
-	   while (words[++i])
-	   printf("%s\n", words[i]);
-	 */
-	//check_input(buf);
-	return (words);
-}
 
 void    split_input(char *buf, char **words)
 {
@@ -49,9 +23,9 @@ void    split_input(char *buf, char **words)
 	l = 0;
 	while (buf[i])
 	{
-		if (buf[i] != ' ')
+		if (!(ft_isspace(buf[i])))
 		{
-			while (buf[i] && buf[i] != ' ')
+			while (buf[i] && !(ft_isspace(buf[i])))
 			{
 				words[c][l] = buf[i];
 				i++;
@@ -77,9 +51,9 @@ void    malloc_words(char *buf, char **words, int n)
 	l = 0;
 	while (++i < n)
 	{
-		while (buf[c] && buf[c] == ' ')
+		while (buf[c] && ft_isspace(buf[c]))
 			c++;
-		while (buf[c] && buf[c] != ' ')
+		while (buf[c] && !(ft_isspace(buf[c])))
 		{
 			c++;
 			l++;
@@ -99,10 +73,10 @@ int             count_words(char *buf)
 	c = 0;
 	while (buf[i])
 	{
-		if (buf[i] != ' ')
+		if (!(ft_isspace(buf[i])))
 		{
 			c++;
-			while (buf[i] && buf[i] != ' ')
+			while (buf[i] && !(ft_isspace(buf[i])))
 				i++;
 		}
 		else
@@ -111,12 +85,40 @@ int             count_words(char *buf)
 	return (c);
 }
 
+/*
 void    better_input(char *buf)
 {
 	int i;
 
 	i = 0;
-	while (buf[i] > 31 && buf[i] < 127)
+	while (buf[i] >= 31 && buf[i] < 127)
 		i++;
 	buf[i] = 0;
+}
+*/
+
+char	**read_input(void)
+{
+	//char buf[300];
+	int n;
+	char *buf;
+	char **words;
+
+	//read(0, buf, 300);
+	(void)n;
+	get_next_line(0, &buf);
+	//better_input(buf);
+	n = count_words(buf);
+	if (!(words = malloc(sizeof(char *) * (n + 2))))
+		return (0);
+	words[n] = 0;
+	malloc_words(buf, words, n);
+	split_input(buf, words);
+	/*
+	   int i = -1;
+	   while (words[++i])
+	   printf("%s\n", words[i]);
+	   */
+	//check_input(buf);
+	return (words);
 }

@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/07 12:06:28 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/07 17:48:39 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@
 #include <signal.h>
 #include <wait.h>
 
+typedef struct		s_args
+{
+	char **argv;
+}					t_args;
+
 void	ft_putstr_fd(char *s, int fd);
 int		ft_strcmp(char *s1, char *s2);
 int		get_next_line(int fd, char **line);
@@ -34,5 +39,6 @@ char	**read_input(void);
 int		not_a_path(char *word);
 char    *exec_path(char **paths,  char *exec);
 char    *file_stat(char *file);
+int		ft_isspace(int c);
 
 #endif
