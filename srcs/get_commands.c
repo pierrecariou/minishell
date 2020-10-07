@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/07 10:05:29 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/07 12:09:04 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ char	**read_input(void)
 	get_next_line(0, &buf);
 	better_input(buf);
 	n = count_words(buf);
-	words = malloc(sizeof(char *) * (n + 1));
+	if (!(words = malloc(sizeof(char *) * (n + 2))))
+		return (0);
 	words[n] = 0;
 	malloc_words(buf, words, n);
 	split_input(buf, words);
@@ -83,7 +84,8 @@ void    malloc_words(char *buf, char **words, int n)
 			c++;
 			l++;
 		}
-		words[i] = malloc(sizeof(char) * (l + 1));
+		if (!(words[i] = malloc(sizeof(char) * (l + 1))))
+			return ;
 		l = 0;
 	}
 }

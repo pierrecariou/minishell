@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/07 11:41:48 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/07 12:10:11 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -35,68 +35,6 @@ void	check_input(char *buf)
 		ft_putstr_fd(buf, 1);
 	}
 	ft_putstr_fd("\n", 1);
-}
-
-int		not_a_path(char *word)
-{
-	int i;
-
-	i = ft_strlen(word);
-	while (--i >= 0)
-	{
-		if (word[i] == '/')
-			return (0);
-	}
-	return (1);
-}
-
-char	*file_stat(char *file)
-{
-	struct stat buf;
-	
-	if (stat(file, &buf) == 0)
-		return (file);
-	return (NULL);
-}
-
-char	*concat_path_exec(char *path, char *exec)
-{
-	char *ret;
-	int i;
-	int k;
-	
-	i = -1;
-	k = 0;
-	ret = malloc(sizeof(char) *( ft_strlen(path) + ft_strlen(exec) + 2));
-	while (path[++i])
-		ret[k++] = path[i];
-	ret[k++] = '/';
-	i = -1;
-	while (exec[++i])
-		ret[k++] = exec[i];
-	ret[k] = 0;
-	return (ret);
-}
-
-char	*exec_path(char **paths,  char *exec)
-{
-	int i;
-	struct stat buf;
-	char *file;
-	
-	i = -1;
-	(void)buf;
-	(void)file;
-	while (paths[++i])
-	{
-		file = concat_path_exec(paths[i], exec);
-		if (stat(file, &buf) == 0)
-			return (file);
-		//printf("%s\n", file);
-		//printf("%d\n", stat(file, &buf));
-	}
-	return (NULL);
-	
 }
 
 void	loop(char **paths)
@@ -153,7 +91,8 @@ char **split_path(char *path)
 	m = 0;
 	while (path[++i])
 		k = (path[i] == ':') ? k + 1 : k;
-	paths = malloc(sizeof(char *) * (k + 2));
+	if (!(paths = malloc(sizeof(char *) * (k + 2))))
+		return (0);
 	paths[k + 2] = 0;
 	//printf("%d\n", k + 2);
 	m = -1;
@@ -163,7 +102,8 @@ char **split_path(char *path)
 		while (path[++c] && path[c] != ':')
 			c = c;
 		//printf("%d\n", c - i);
-		paths[m] = malloc(sizeof(char) * (c - i));
+		if (!(paths[m] = malloc(sizeof(char) * (c - i))))
+			return (0);
 		while (path[++i] && path[i] != ':')
 			paths[m][l++] = path[i];
 		paths[m][l] = 0;

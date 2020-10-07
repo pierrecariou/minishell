@@ -6,7 +6,7 @@
 #    By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/01 10:17:20 by pcariou           #+#    #+#              #
-#    Updated: 2020/10/07 09:45:53 by pcariou          ###   ########.fr        #
+#    Updated: 2020/10/07 12:04:33 by pcariou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ HEADER		= ./
 
 SRCS		=	srcs/main.c \
 				srcs/get_commands.c \
+				srcs/find_path.c \
 				utils/gnl/get_next_line.c \
 				utils/gnl/get_next_line_utils.c
 

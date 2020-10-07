@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/07 11:11:27 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/07 12:06:28 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,8 @@ void	malloc_words(char *buf, char **words, int n);
 int		count_words(char *buf);
 void	better_input(char *buf);
 char	**read_input(void);
+int		not_a_path(char *word);
+char    *exec_path(char **paths,  char *exec);
+char    *file_stat(char *file);
 
 #endif
