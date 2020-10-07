@@ -6,7 +6,7 @@
 #    By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/01 10:17:20 by pcariou           #+#    #+#              #
-#    Updated: 2020/10/01 12:06:37 by pcariou          ###   ########.fr        #
+#    Updated: 2020/10/07 09:28:45 by pcariou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,10 +34,11 @@ all:		$(NAME)
 			$(CC) $(CFLAGS) $(ATTRIBUT) $< -o $(<:.c=.o) -I$(HEADER)
 
 $(NAME):	$(OBJS)
-			$(AR) minishell.o $(OBJS) && cd libft && make
-			$(CC) $(CFLAGS) -o $(NAME) minishell.o
-			$(RM) minishell.o
-
+			#$(AR) minishell.o $(OBJS) && cd libft && make
+			#$(CC) $(CFLAGS) -o $(NAME) minishell.o
+			#$(RM) minishell.o
+			cd libft && make
+			$(CC) -o $(NAME) $(OBJS) libft/libft
 clean:
 			$(RM) $(OBJS) && cd libft && make clean
 

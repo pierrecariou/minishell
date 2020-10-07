@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/07 07:56:05 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/07 09:30:07 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -155,7 +155,7 @@ void	loop(void)
 		read_input();
 		/*
 		if (fork() == 0)
-			execve("/bin.sh", "ls", "-lp", NULL);
+			execve("/bin.sh", , NULL);
 		else
 			wait(NULL);
 			*/
