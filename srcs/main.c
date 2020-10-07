@@ -6,11 +6,11 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/07 09:30:07 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/07 11:41:48 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
-#include "minishell.h"
+#include "includes/minishell.h"
 
 /*
 void	handler(int num) 
@@ -19,7 +19,6 @@ void	handler(int num)
 	write(1, "handling!\n", 10);
 }
 */
-/*
 
 void	check_echo(char *buf)
 {
@@ -37,128 +36,104 @@ void	check_input(char *buf)
 	}
 	ft_putstr_fd("\n", 1);
 }
-*/
 
-void	split_input(char *buf, char **words)
+int		not_a_path(char *word)
 {
 	int i;
-	int c;
-	int l;
 
-	i = 0;
-	c = 0;
-	l = 0;
-	while (buf[i])
+	i = ft_strlen(word);
+	while (--i >= 0)
 	{
-		if (buf[i] != ' ')
-		{
-		while (buf[i] && buf[i] != ' ')
-		{
-			words[c][l] = buf[i];
-			i++;
-			l++;
-		}
-		words[c][l] = 0;
-		c++;
-		}
-		else
-			i++;
-		l = 0;
+		if (word[i] == '/')
+			return (0);
 	}
+	return (1);
 }
 
-void	malloc_words(char *buf, char **words, int n)
+char	*file_stat(char *file)
 {
-	int i;
-	int c;
-	int l;
+	struct stat buf;
+	
+	if (stat(file, &buf) == 0)
+		return (file);
+	return (NULL);
+}
 
+char	*concat_path_exec(char *path, char *exec)
+{
+	char *ret;
+	int i;
+	int k;
+	
 	i = -1;
-	c = 0;
-	l = 0;
-	while (++i < n)
-	{
-		while (buf[c] && buf[c] == ' ')
-			c++;
-		while (buf[c] && buf[c] != ' ')
-		{
-			c++;
-			l++;
-		}
-		words[i] = malloc(sizeof(char) * (l + 1));
-		l = 0;
-	}
+	k = 0;
+	ret = malloc(sizeof(char) *( ft_strlen(path) + ft_strlen(exec) + 2));
+	while (path[++i])
+		ret[k++] = path[i];
+	ret[k++] = '/';
+	i = -1;
+	while (exec[++i])
+		ret[k++] = exec[i];
+	ret[k] = 0;
+	return (ret);
 }
 
-int		count_words(char *buf)
+char	*exec_path(char **paths,  char *exec)
 {
 	int i;
-	int c;
-
-	i = 0;
-	c = 0;
-	while (buf[i])
+	struct stat buf;
+	char *file;
+	
+	i = -1;
+	(void)buf;
+	(void)file;
+	while (paths[++i])
 	{
-		if (buf[i] != ' ')
-		{
-			c++;
-		while (buf[i] && buf[i] != ' ')
-			i++;
-		}
-		else
-			i++;
+		file = concat_path_exec(paths[i], exec);
+		if (stat(file, &buf) == 0)
+			return (file);
+		//printf("%s\n", file);
+		//printf("%d\n", stat(file, &buf));
 	}
-	return (c);
+	return (NULL);
+	
 }
 
-void	better_input(char *buf)
+void	loop(char **paths)
 {
-	int i;
-
-	i = 0;
-	while (buf[i] > 31 && buf[i] < 127)
-		i++;
-	buf[i] = 0;
-}
-
-void	read_input(void)
-{
-	//char buf[300];
-	int n;
-	char *buf;
 	char **words;
+	char *file;
 
-	//read(0, buf, 300);
-	(void)n;
-	get_next_line(0, &buf);
-	better_input(buf);
-	n = count_words(buf);
-	words = malloc(sizeof(char *) * (n + 1));
-	words[n] = 0;
-	malloc_words(buf, words, n);
-	split_input(buf, words);
-	/*
-	int i = -1;
-	while (words[++i])
-		printf("%s\n", words[i]);
-	*/
-	//check_input(buf);
-}
-
-void	loop(void)
-{
+	(void)words;
 	while (42)
 	{
 		ft_putstr_fd("\033[1;31m", 1);
 		ft_putstr_fd(">> minishell ", 1);
 		ft_putstr_fd("\033[0m", 1);
-		read_input();
+		words = read_input();
 		/*
-		if (fork() == 0)
-			execve("/bin.sh", , NULL);
+		int i = -1;
+		while (words[++i])
+			printf("%s\n", words[i]);
+		*/
+		if (not_a_path(words[0]))
+			file = exec_path(paths, words[0]);
 		else
-			wait(NULL);
-			*/
+			file = file_stat(words[0]);
+		//printf("%s\n", path);
+		if (file)
+		{
+			if (fork() == 0)
+			{
+				//printf("%s  %s\n", path, words[0]);
+				execve(file, words, NULL);
+			}
+			else
+				wait(NULL);
+		}
+		else
+			check_input(words[0]);
+			
 	}
 }
 
@@ -197,7 +172,6 @@ char **split_path(char *path)
 	return (paths);
 }
 
-
 char	*get_path(char **envp)
 {
 	int i;
@@ -230,7 +204,7 @@ int		main(int argc, char **argv, char **envp)
 	int i = -1;
 	while (paths[++i])
 		printf("%s\n", paths[i]);
-	*/
-	loop();
+		*/
+	loop(paths);
 	return (0);
 }

@@ -6,7 +6,7 @@
 #    By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/01 10:17:20 by pcariou           #+#    #+#              #
-#    Updated: 2020/10/07 09:28:45 by pcariou          ###   ########.fr        #
+#    Updated: 2020/10/07 09:45:53 by pcariou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,10 @@ NAME		= minishell
 
 HEADER		= ./
 
-SRCS		= main.c gnl/get_next_line.c gnl/get_next_line_utils.c
+SRCS		=	srcs/main.c \
+				srcs/get_commands.c \
+				utils/gnl/get_next_line.c \
+				utils/gnl/get_next_line_utils.c
 
 OBJS		= $(SRCS:.c=.o)
 
@@ -37,13 +40,13 @@ $(NAME):	$(OBJS)
 			#$(AR) minishell.o $(OBJS) && cd libft && make
 			#$(CC) $(CFLAGS) -o $(NAME) minishell.o
 			#$(RM) minishell.o
-			cd libft && make
-			$(CC) -o $(NAME) $(OBJS) libft/libft
+			cd utils/libft && make
+			$(CC) -o $(NAME) $(OBJS) utils/libft/libft
 clean:
-			$(RM) $(OBJS) && cd libft && make clean
+			$(RM) $(OBJS) && cd utils/libft && make clean
 
 fclean:		clean
-			$(RM) $(NAME) && cd libft && make fclean
+			$(RM) $(NAME) && cd utils/libft && make fclean
 
 re:			fclean all
 
