@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/09 16:25:03 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/09 18:31:02 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,11 @@ typedef struct		s_cmd
 	char			**argv;
 	int				sep;
 	int				sepl;
+	int				fdin;
+	int				fdout;
+	int				fdoutp;
+	int				nforks;
+	int				*pid;
 	struct	s_cmd	*next;
 }					t_cmd;
 

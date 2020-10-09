@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/09 16:48:12 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/09 18:56:53 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -27,12 +27,64 @@ void	error(char *buf)
 	ft_putstr_fd("\n", 1);
 }
 
+
 void	pipeline(t_cmd *cmd, char *file)
 {
 	(void)cmd;
 	(void)file;
-	
+	int pid;
+	int i;
+// faire les pipe avec un tableau en ayant tout compte au prealable
+
+	i = 0;
+	pid = fork();
+	if (pid == 0)
+	{
+	if (cmd->sepl == '|')
+	{
+		dup2(cmd->fdin, 0);
+		close(cmd->fdoutp);
+		close(cmd->fdin);
+		execve(file, cmd->argv, NULL);		
+	}
+	if (cmd->sep == '|')
+	{
+		dup2(cmd->fdout, 1);
+		close(cmd->next->fdin);
+		close(cmd->fdout);
+		execve(file, cmd->argv, NULL);
+		cmd->next->nforks = cmd->nforks + 1;
+		cmd->next->pid = malloc(sizeof(int) * cmd->next->nforks);
+		while (i < cmd->nforks)
+		{
+			cmd->next->pid[i] = cmd->pid[i];
+			i++;
+		}
+		cmd->next->pid[i] = pid;
+	}
+	}
+	else if (cmd->sep != '|')
+	{
+		i = 0;
+		while (i < cmd->nforks)
+		{
+			waitpid(cmd->pid[i], NULL, 0);
+			i++;			
+		}
+		waitpid(pid, NULL, 0);	
+		close(3);
+		close(4);
+	}
 }
+
+/*
+void	pipeline(t_cmd *cmd, char *file)
+{
+	(void)cmd;
+	(void)file;
+
+}
+*/
 
 void	list(t_cmd *cmd, char *file)
 {

@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/09 16:39:10 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/09 18:45:00 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,26 @@ int             count_words(char *buf)
    buf[i] = 0;
    }
  */
+
+void	pipe_fd(t_cmd *cmd)
+{
+	int fd[2];
+
+	while (cmd->next)
+	{
+		if (cmd->sep == '|' && cmd->next->sepl == '|')
+		{
+			pipe(fd);	
+			cmd->fdout = fd[1];
+			cmd->next->fdoutp = fd[1];
+			cmd->next->fdin = fd[0];
+
+			printf("%d %d\n",  cmd->next->fdin, cmd->fdout);
+		}
+		cmd = cmd->next;
+	}
+}
+
 void	cmd_line(char *buf, t_cmd *cmd)
 {
 	int i;
@@ -120,6 +140,7 @@ void	cmd_line(char *buf, t_cmd *cmd)
 		l = 0;
 		k = 0;
 		cmd->sep = 0;
+		cmd->nforks = 0;
 		while (buf[i] && !find_sep(buf[i], cmd))
 		{
 			l++;
@@ -138,6 +159,7 @@ void	cmd_line(char *buf, t_cmd *cmd)
 		//cmd->next = 0;
 		//printf("%s\n", cmd->line);
 		i++;	
+		//pipe_fd(cmd);
 		if (buf[i])
 		{
 			//printf("sep : %d\n", sep);
@@ -160,6 +182,7 @@ void	read_input(t_cmd *cmd)
 	//read(0, buf, 300);
 	get_next_line(0, &buf);
 	cmd_line(buf, cmd);
+	pipe_fd(cmd);
 	while (cmd)
 	{
 		//read(0, buf, 300);
