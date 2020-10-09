@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/07 17:44:28 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/09 13:09:25 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -39,39 +39,47 @@ void	check_input(char *buf)
 
 void	loop(char **paths)
 {
-	char **words;
+	t_cmd	*cmd;
+	//char **words;
 	char *file;
 
-	(void)words;
+	//(void)words;
+	(void)paths;
+	//cmd = NULL;
 	while (42)
 	{
 		ft_putstr_fd("\033[1;31m", 1);
 		ft_putstr_fd(">> minishell ", 1);
 		ft_putstr_fd("\033[0m", 1);
-		words = read_input();
+		if (!(cmd = malloc(sizeof(t_cmd))))
+			return ;
+		read_input(cmd);
 		/*
 		int i = -1;
 		while (words[++i])
 			printf("%s\n", words[i]);
 		*/
-		if (not_a_path(words[0]))
-			file = exec_path(paths, words[0]);
+		while (cmd)
+		{
+		if (not_a_path(cmd->argv[0]))
+			file = exec_path(paths, cmd->argv[0]);
 		else
-			file = file_stat(words[0]);
+			file = file_stat(cmd->argv[0]);
 		//printf("%s\n", path);
 		if (file)
 		{
 			if (fork() == 0)
 			{
 				//printf("%s  %s\n", path, words[0]);
-				execve(file, words, NULL);
+				execve(file, cmd->argv, NULL);
 			}
 			else
 				wait(NULL);
 		}
 		else
-			check_input(words[0]);
-			
+			check_input(cmd->argv[0]);
+		cmd = cmd->next;	
+		}
 	}
 }
 

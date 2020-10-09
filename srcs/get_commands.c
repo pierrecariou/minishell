@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/07 17:46:16 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/09 13:06:39 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,39 +86,97 @@ int             count_words(char *buf)
 }
 
 /*
-void    better_input(char *buf)
+   void    better_input(char *buf)
+   {
+   int i;
+
+   i = 0;
+   while (buf[i] >= 31 && buf[i] < 127)
+   i++;
+   buf[i] = 0;
+   }
+ */
+void	cmd_line(char *buf, t_cmd *cmd)
 {
 	int i;
+	int l;
+	int k;
 
 	i = 0;
-	while (buf[i] >= 31 && buf[i] < 127)
+	k = 0;
+	//cmd->next = NULL;
+	while (buf[i])
+	{
+		l = 0;
+		k = 0;
+		while (buf[i] && buf[i] != ';')
+		{
+			l++;
+			i++;
+		}
+		cmd->line = malloc(sizeof(char) * (l + 1));
+		i-=l;
+		while (buf[i] && buf[i] != ';')
+		{
+			//printf("%c\n", buf[i]);
+			cmd->line[k] = buf[i];
+			i++;
+			k++;
+		}
+		cmd->line[k] = 0;
+		//cmd->next = 0;
+		//printf("%s\n", cmd->line);
 		i++;
-	buf[i] = 0;
+		if (buf[i])
+		{
+			cmd->next = cmd + sizeof(t_cmd);
+			cmd = cmd->next;
+		}
+		else
+			cmd->next = 0;
+	}
 }
-*/
 
-char	**read_input(void)
+void	read_input(t_cmd *cmd)
 {
 	//char buf[300];
-	int n;
+
 	char *buf;
-	char **words;
+	int n;
 
 	//read(0, buf, 300);
-	(void)n;
 	get_next_line(0, &buf);
+	cmd_line(buf, cmd);
+	while (cmd)
+	{
+		//read(0, buf, 300);
+		//better_input(buf);
+		n = count_words(cmd->line);
+		if (!(cmd->argv = malloc(sizeof(char *) * (n + 2))))
+			return ;
+		cmd->argv[n] = 0;
+		malloc_words(cmd->line, cmd->argv, n);
+		split_input(cmd->line, cmd->argv);
+		//printf("%s\n", cmd->line);
+		cmd = cmd->next;
+	}
+	/*
+	while (cmd)
+	{
+	int k = -1;
+		while (cmd->argv[++k])
+			printf("%s\n", cmd->argv[k]);
+		printf("----\n");
+		cmd = cmd->next;
+	}
+	*/
+
 	//better_input(buf);
-	n = count_words(buf);
-	if (!(words = malloc(sizeof(char *) * (n + 2))))
-		return (0);
-	words[n] = 0;
-	malloc_words(buf, words, n);
-	split_input(buf, words);
 	/*
 	   int i = -1;
 	   while (words[++i])
 	   printf("%s\n", words[i]);
-	   */
+	 */
 	//check_input(buf);
-	return (words);
+	//return (words);
 }

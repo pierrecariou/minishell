@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/07 17:48:39 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/09 13:00:22 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,13 @@
 #include <signal.h>
 #include <wait.h>
 
-typedef struct		s_args
+typedef struct		s_cmd
 {
-	char **argv;
-}					t_args;
+	char			*line;
+	char			**argv;
+	int				sep;
+	struct	s_cmd	*next;
+}					t_cmd;
 
 void	ft_putstr_fd(char *s, int fd);
 int		ft_strcmp(char *s1, char *s2);
@@ -35,7 +38,7 @@ void	split_input(char *buf, char **words);
 void	malloc_words(char *buf, char **words, int n);
 int		count_words(char *buf);
 void	better_input(char *buf);
-char	**read_input(void);
+void	read_input(t_cmd *cmd);
 int		not_a_path(char *word);
 char    *exec_path(char **paths,  char *exec);
 char    *file_stat(char *file);
