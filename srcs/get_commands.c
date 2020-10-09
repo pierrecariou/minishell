@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/09 14:37:06 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/09 16:39:10 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,10 +137,12 @@ void	cmd_line(char *buf, t_cmd *cmd)
 		cmd->line[k] = 0;
 		//cmd->next = 0;
 		//printf("%s\n", cmd->line);
-		i++;
+		i++;	
 		if (buf[i])
 		{
+			//printf("sep : %d\n", sep);
 			cmd->next = cmd + sizeof(t_cmd);
+			cmd->next->sepl = cmd->sep;
 			cmd = cmd->next;
 		}
 		else

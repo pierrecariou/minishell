@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/09 13:00:22 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/09 16:25:03 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct		s_cmd
 	char			*line;
 	char			**argv;
 	int				sep;
+	int				sepl;
 	struct	s_cmd	*next;
 }					t_cmd;
 

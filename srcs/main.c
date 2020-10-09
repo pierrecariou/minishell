@@ -6,42 +6,72 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/09 14:35:30 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/09 16:48:12 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
 #include "includes/minishell.h"
 
 /*
-void	handler(int num) 
-{
-	(void)num;
-	write(1, "handling!\n", 10);
-}
-*/
+   void	handler(int num) 
+   {
+   (void)num;
+   write(1, "handling!\n", 10);
+   }
+ */
 
-void	check_echo(char *buf)
+void	error(char *buf)
 {
-	ft_putstr_fd(buf, 1);	
-}
-
-void	check_input(char *buf)
-{
-	if (ft_strcmp(buf, "echo") == 0)
-		check_echo(buf);
-	else
-	{
-		ft_putstr_fd("command not found: ", 1);
-		ft_putstr_fd(buf, 1);
-	}
+	ft_putstr_fd("command not found: ", 1);
+	ft_putstr_fd(buf, 1);
 	ft_putstr_fd("\n", 1);
+}
+
+void	pipeline(t_cmd *cmd, char *file)
+{
+	(void)cmd;
+	(void)file;
+	
+}
+
+void	list(t_cmd *cmd, char *file)
+{
+	if (fork() == 0)
+		{
+			//printf("%s  %s\n", path, words[0]);
+			execve(file, cmd->argv, NULL);
+		}
+		else
+			wait(NULL);
+}
+
+void	fork_ps(t_cmd *cmd, char **paths)
+{
+	char *file;
+	
+	if (not_a_path(cmd->argv[0]))
+		file = exec_path(paths, cmd->argv[0]);
+	else
+		file = file_stat(cmd->argv[0]);
+	//printf("%s\n", path);
+	if (file)
+	{
+	if (cmd->sep == '|' || cmd->sepl == '|')
+		pipeline(cmd, file);
+	else if (cmd->sep == ';' || cmd->sep == 0)
+		list(cmd, file);
+	}
+	else
+		error(cmd->argv[0]);
+	//printf("TEST sepl: %d\n", cmd->sepl);
+	//printf("TEST sep: %d\n", cmd->sep);
 }
 
 void	loop(char **paths)
 {
 	t_cmd	*cmd;
 	//char **words;
-	char *file;
+	//char *file;
 
 	//(void)words;
 	(void)paths;
@@ -56,24 +86,8 @@ void	loop(char **paths)
 		read_input(cmd);
 		while (cmd)
 		{
-		if (not_a_path(cmd->argv[0]))
-			file = exec_path(paths, cmd->argv[0]);
-		else
-			file = file_stat(cmd->argv[0]);
-		//printf("%s\n", path);
-		if (file)
-		{
-			if (fork() == 0)
-			{
-				//printf("%s  %s\n", path, words[0]);
-				execve(file, cmd->argv, NULL);
-			}
-			else
-				wait(NULL);
-		}
-		else
-			check_input(cmd->argv[0]);
-		cmd = cmd->next;	
+			fork_ps(cmd, paths);
+			cmd = cmd->next;
 		}
 	}
 }
@@ -123,8 +137,8 @@ char	*get_path(char **envp)
 	while (envp[++i])
 	{
 		if (envp[i][0] == 'P' && envp[i][1] == 'A'
-			&& envp[i][2] == 'T' && envp[i][3] == 'H'
-			&& envp[i][4] == '=')
+				&& envp[i][2] == 'T' && envp[i][3] == 'H'
+				&& envp[i][4] == '=')
 			return (&envp[i][5]);
 	}
 	return (0);
@@ -144,10 +158,10 @@ int		main(int argc, char **argv, char **envp)
 	//printf("%d\n", ft_strlen(path));
 	paths = split_path(path);
 	/*
-	int i = -1;
-	while (paths[++i])
-		printf("%s\n", paths[i]);
-		*/
+	   int i = -1;
+	   while (paths[++i])
+	   printf("%s\n", paths[i]);
+	 */
 	loop(paths);
 	return (0);
 }
