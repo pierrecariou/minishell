@@ -6,11 +6,21 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/09 13:06:39 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/09 14:37:06 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
+
+int		find_sep(char c, t_cmd *cmd)
+{
+	if (c == ';' || c == '|')
+	{
+		cmd->sep = c;
+		return (1);
+	}
+	return (0);
+}
 
 void    split_input(char *buf, char **words)
 {
@@ -109,14 +119,15 @@ void	cmd_line(char *buf, t_cmd *cmd)
 	{
 		l = 0;
 		k = 0;
-		while (buf[i] && buf[i] != ';')
+		cmd->sep = 0;
+		while (buf[i] && !find_sep(buf[i], cmd))
 		{
 			l++;
 			i++;
 		}
 		cmd->line = malloc(sizeof(char) * (l + 1));
 		i-=l;
-		while (buf[i] && buf[i] != ';')
+		while (buf[i] && !find_sep(buf[i], cmd))
 		{
 			//printf("%c\n", buf[i]);
 			cmd->line[k] = buf[i];
@@ -157,7 +168,7 @@ void	read_input(t_cmd *cmd)
 		cmd->argv[n] = 0;
 		malloc_words(cmd->line, cmd->argv, n);
 		split_input(cmd->line, cmd->argv);
-		//printf("%s\n", cmd->line);
+		//printf("%s  sep : '%d'\n", cmd->line, cmd->sep);
 		cmd = cmd->next;
 	}
 	/*

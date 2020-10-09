@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/09 13:09:25 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/09 14:35:30 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -54,11 +54,6 @@ void	loop(char **paths)
 		if (!(cmd = malloc(sizeof(t_cmd))))
 			return ;
 		read_input(cmd);
-		/*
-		int i = -1;
-		while (words[++i])
-			printf("%s\n", words[i]);
-		*/
 		while (cmd)
 		{
 		if (not_a_path(cmd->argv[0]))
