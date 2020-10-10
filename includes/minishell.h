@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/09 18:31:02 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/10 16:52:22 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,13 @@ typedef struct		s_cmd
 	int				*pid;
 	struct	s_cmd	*next;
 }					t_cmd;
+
+typedef struct		s_cmdv
+{
+	struct	s_cmd	*cp;
+	int				icmd;
+	int				ibpipe;
+}					t_cmdv;
 
 void	ft_putstr_fd(char *s, int fd);
 int		ft_strcmp(char *s1, char *s2);

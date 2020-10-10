@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/09 18:56:53 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/10 19:07:30 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -28,31 +28,54 @@ void	error(char *buf)
 }
 
 
-void	pipeline(t_cmd *cmd, char *file)
+void	pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 {
 	(void)cmd;
+	(void)cmdv;
 	(void)file;
 	int pid;
 	int i;
-// faire les pipe avec un tableau en ayant tout compte au prealable
+	t_cmd *cp;
 
 	i = 0;
+	cp = cmdv->cp;
+	if (cmdv->ibpipe == -1)
+		cmdv->ibpipe = cmdv->icmd;
 	pid = fork();
 	if (pid == 0)
 	{
-	if (cmd->sepl == '|')
-	{
-		dup2(cmd->fdin, 0);
-		close(cmd->fdoutp);
-		close(cmd->fdin);
-		execve(file, cmd->argv, NULL);		
+		if (cmd->sepl == '|')
+		{
+			dup2(cmd->fdin, 0);
+			//close(cmd->fdoutp);
+			//close(cmd->fdin);
+		}
+		if (cmd->sep == '|')
+		{
+			dup2(cmd->fdout, 1);
+			//close(cmd->next->fdin);
+			//close(cmd->fdout);
+		}
+		i = 0;
+		while (i < cmdv->icmd)
+		{
+			if (i >= cmdv->ibpipe)
+			{
+				close(cp->fdout);
+				close(cp->next->fdin);
+			}
+			cp = cp->next;
+			i++;
+		}
+	//	close(2);
+	//	close(3);
+	//	close(4);
+	//	close(5);
+		execve(file, cmd->argv, NULL);
 	}
+
 	if (cmd->sep == '|')
 	{
-		dup2(cmd->fdout, 1);
-		close(cmd->next->fdin);
-		close(cmd->fdout);
-		execve(file, cmd->argv, NULL);
 		cmd->next->nforks = cmd->nforks + 1;
 		cmd->next->pid = malloc(sizeof(int) * cmd->next->nforks);
 		while (i < cmd->nforks)
@@ -62,72 +85,66 @@ void	pipeline(t_cmd *cmd, char *file)
 		}
 		cmd->next->pid[i] = pid;
 	}
-	}
-	else if (cmd->sep != '|')
+	else
 	{
+		i = 0;
+		while (i < cmdv->icmd)
+		{
+			if (i >= cmdv->ibpipe)
+			{
+				close(cmdv->cp->fdout);
+				close(cmdv->cp->next->fdin);
+			}
+			cmdv->cp = cmdv->cp->next;
+			i++;
+		}
 		i = 0;
 		while (i < cmd->nforks)
 		{
 			waitpid(cmd->pid[i], NULL, 0);
 			i++;			
+
 		}
-		waitpid(pid, NULL, 0);	
-		close(3);
-		close(4);
+		waitpid(cmd->pid[0], NULL, 0);
 	}
 }
 
-/*
-void	pipeline(t_cmd *cmd, char *file)
+void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 {
-	(void)cmd;
-	(void)file;
-
-}
-*/
-
-void	list(t_cmd *cmd, char *file)
-{
+	cmdv->ibpipe = -1;
 	if (fork() == 0)
-		{
-			//printf("%s  %s\n", path, words[0]);
-			execve(file, cmd->argv, NULL);
-		}
-		else
-			wait(NULL);
+	{
+		execve(file, cmd->argv, NULL);
+	}
+	else
+		wait(NULL);
 }
 
-void	fork_ps(t_cmd *cmd, char **paths)
+void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 {
 	char *file;
-	
+
 	if (not_a_path(cmd->argv[0]))
 		file = exec_path(paths, cmd->argv[0]);
 	else
 		file = file_stat(cmd->argv[0]);
-	//printf("%s\n", path);
 	if (file)
 	{
-	if (cmd->sep == '|' || cmd->sepl == '|')
-		pipeline(cmd, file);
-	else if (cmd->sep == ';' || cmd->sep == 0)
-		list(cmd, file);
+		if (cmd->sep == '|' || cmd->sepl == '|')
+			pipeline(cmd, file, cmdv);
+		else if (cmd->sep == ';' || cmd->sep == 0)
+			list(cmd, file, cmdv);
 	}
 	else
 		error(cmd->argv[0]);
-	//printf("TEST sepl: %d\n", cmd->sepl);
-	//printf("TEST sep: %d\n", cmd->sep);
 }
 
 void	loop(char **paths)
 {
 	t_cmd	*cmd;
-	//char **words;
-	//char *file;
+	t_cmdv	*cmdv;
 
-	//(void)words;
 	(void)paths;
-	//cmd = NULL;
 	while (42)
 	{
 		ft_putstr_fd("\033[1;31m", 1);
@@ -135,11 +152,17 @@ void	loop(char **paths)
 		ft_putstr_fd("\033[0m", 1);
 		if (!(cmd = malloc(sizeof(t_cmd))))
 			return ;
+		if (!(cmdv = malloc(sizeof(t_cmdv))))
+			return ;
+		cmdv->cp = cmd;
 		read_input(cmd);
+		cmdv->icmd = 0;
+		cmdv->ibpipe = -1;
 		while (cmd)
 		{
-			fork_ps(cmd, paths);
+			fork_ps(cmd, paths, cmdv);
 			cmd = cmd->next;
+			cmdv->icmd++;
 		}
 	}
 }
@@ -163,14 +186,12 @@ char **split_path(char *path)
 	if (!(paths = malloc(sizeof(char *) * (k + 2))))
 		return (0);
 	paths[k + 2] = 0;
-	//printf("%d\n", k + 2);
 	m = -1;
 	i = -1;
 	while (++m < k + 1)
 	{
 		while (path[++c] && path[c] != ':')
 			c = c;
-		//printf("%d\n", c - i);
 		if (!(paths[m] = malloc(sizeof(char) * (c - i))))
 			return (0);
 		while (path[++i] && path[i] != ':')
@@ -205,15 +226,7 @@ int		main(int argc, char **argv, char **envp)
 	(void)argv;
 	(void)paths;
 	path = get_path(envp);
-	//path[ft_strlen(path) + 1] = 0;
-	//printf("T>EST --- %s\n", path);
-	//printf("%d\n", ft_strlen(path));
 	paths = split_path(path);
-	/*
-	   int i = -1;
-	   while (paths[++i])
-	   printf("%s\n", paths[i]);
-	 */
 	loop(paths);
 	return (0);
 }

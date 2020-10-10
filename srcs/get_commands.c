@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/09 18:45:00 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/10 18:58:14 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,14 +113,12 @@ void	pipe_fd(t_cmd *cmd)
 
 	while (cmd->next)
 	{
-		if (cmd->sep == '|' && cmd->next->sepl == '|')
+		if (cmd->sep == '|')
 		{
 			pipe(fd);	
 			cmd->fdout = fd[1];
 			cmd->next->fdoutp = fd[1];
 			cmd->next->fdin = fd[0];
-
-			printf("%d %d\n",  cmd->next->fdin, cmd->fdout);
 		}
 		cmd = cmd->next;
 	}
