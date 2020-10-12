@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 14:57:49 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 16:34:44 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,7 @@ char	*get_path(char **envp);
 char	**split_path(char *path);
 void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv);
 void	exec_built(char *file, char **argv);
+int		double_sep(char *buf);
+int 	bad_beginning(char *buf);
 
 #endif
