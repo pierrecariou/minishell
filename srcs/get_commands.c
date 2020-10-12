@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 10:23:03 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 10:33:44 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int             count_words(char *buf)
    }
  */
 
-void	pipe_fd1(t_cmd *cmd)
+void	pipe_fd_fill(t_cmd *cmd)
 {
 	int fd[2];
 
@@ -120,28 +120,14 @@ void	pipe_fd1(t_cmd *cmd)
 	}
 }
 
-void	pipe_fd(t_cmd *cmd)
+void	pipe_fd_reset(t_cmd *cmd)
 {
-	//int fd[2];
-
 	while (cmd)
 	{
 		cmd->fdin = -1;
 		cmd->fdout = -1;
 		cmd = cmd->next;
 	}
-	/*
-		if (cmd->sep == '|' && cmd->next)
-		{
-			//printf("%d --- %d\n", fd[0], fd[1]);
-			//pipe(fd);	
-			//cmd->fdout = fd[1];
-			//cmd->next->fdoutp = fd[1];
-			//cmd->next->fdin = fd[0];
-		}
-		cmd = cmd->next;
-	}
-	*/
 }
 
 void	cmd_line(char *buf, t_cmd *cmd)
@@ -152,7 +138,6 @@ void	cmd_line(char *buf, t_cmd *cmd)
 
 	i = 0;
 	k = 0;
-	//cmd->next = NULL;
 	while (buf[i])
 	{
 		l = 0;
@@ -168,19 +153,14 @@ void	cmd_line(char *buf, t_cmd *cmd)
 		i-=l;
 		while (buf[i] && !find_sep(buf[i], cmd))
 		{
-			//printf("%c\n", buf[i]);
 			cmd->line[k] = buf[i];
 			i++;
 			k++;
 		}
 		cmd->line[k] = 0;
-		//cmd->next = 0;
-		//printf("%s\n", cmd->line);
 		i++;	
-		//pipe_fd(cmd);
 		if (buf[i])
 		{
-			//printf("sep : %d\n", sep);
 			cmd->next = cmd + sizeof(t_cmd);
 
 			if (!(cmd->next = malloc(sizeof(t_cmd))))
@@ -203,7 +183,7 @@ void	read_input(t_cmd *cmd)
 	//read(0, buf, 300);
 	get_next_line(0, &buf);
 	cmd_line(buf, cmd);
-	pipe_fd(cmd);
+	pipe_fd_reset(cmd);
 	while (cmd)
 	{
 		//read(0, buf, 300);
@@ -214,7 +194,6 @@ void	read_input(t_cmd *cmd)
 		cmd->argv[n] = 0;
 		malloc_words(cmd->line, cmd->argv, n);
 		split_input(cmd->line, cmd->argv);
-		//printf("%s  sep : '%d'\n", cmd->line, cmd->sep);
 		cmd = cmd->next;
 	}
 }

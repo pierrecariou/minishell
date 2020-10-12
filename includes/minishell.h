@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/11 20:41:08 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 10:46:12 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ typedef struct		s_cmd
 typedef struct		s_cmdv
 {
 	struct	s_cmd	*cp;
-	int				icmd;
-	int				ibpipe;
 }					t_cmdv;
 
 void	ft_putstr_fd(char *s, int fd);
@@ -55,7 +53,7 @@ int		not_a_path(char *word);
 char    *exec_path(char **paths,  char *exec);
 char    *file_stat(char *file);
 int		ft_isspace(int c);
-void	pipe_fd(t_cmd *cmd);
-void	pipe_fd1(t_cmd *cmd);
+void	pipe_fd_reset(t_cmd *cmd);
+void	pipe_fd_fill(t_cmd *cmd);
 
 #endif
