@@ -6,11 +6,26 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 14:58:09 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 15:31:16 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
+
+int 	double_sep(char *buf)
+{
+	int i;
+
+	i = 0;
+	while (buf[i])
+	{
+		while (buf[i] != '|' && buf[i] != ';')
+			i++;
+		if (buf[i + 1] && (buf[i+1] == '|' || buf[i+1] == ';'))
+			return (1);
+	}
+	return (0);
+}
 
 int		bad_beginning(char *buf)
 {
@@ -178,7 +193,7 @@ int		read_input(t_cmd *cmd)
 
 	//read(0, buf, 300);
 	get_next_line(0, &buf);
-	if (!buf[0] || bad_beginning(buf))
+	if (!buf[0] || bad_beginning(buf) || double_sep(buf))
 		return (0);
 	cmd_line(buf, cmd);
 	pipe_fd_reset(cmd);
@@ -195,6 +210,5 @@ int		read_input(t_cmd *cmd)
 			return (0);
 		cmd = cmd->next;
 	}
-	//printf("%c\n", cmdv->cp->argv[0][0]);
 	return (1);
 }
