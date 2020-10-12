@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 10:33:44 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 11:50:54 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,6 @@ void	cmd_line(char *buf, t_cmd *cmd)
 	int k;
 
 	i = 0;
-	k = 0;
 	while (buf[i])
 	{
 		l = 0;
@@ -162,7 +161,6 @@ void	cmd_line(char *buf, t_cmd *cmd)
 		if (buf[i])
 		{
 			cmd->next = cmd + sizeof(t_cmd);
-
 			if (!(cmd->next = malloc(sizeof(t_cmd))))
 				return ;
 			cmd->next->sepl = cmd->sep;

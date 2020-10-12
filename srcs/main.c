@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 11:33:11 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 11:44:32 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -18,7 +18,7 @@
    (void)num;
    write(1, "handling!\n", 10);
    }
- */
+*/
 
 void	error(char *buf)
 {
@@ -161,11 +161,10 @@ char **split_path(char *path)
 {
 	char **paths;
 	int i[5];
-	
+
 	i[0] = -1;
 	i[1] = -1;
 	i[2] = 0;
-	i[3] = 0;
 	i[4] = -1;
 	while (path[++i[0]])
 		i[2] = (path[i[0]] == ':') ? i[2] + 1 : i[2];
@@ -176,7 +175,7 @@ char **split_path(char *path)
 	while (++i[4] < i[2] + 1)
 	{
 		while (path[++i[1]] && path[i[1]] != ':')
-			i[1] = i[1];
+			i[3] = 0;
 		if (!(paths[i[4]] = malloc(sizeof(char) * (i[1] - i[0]))))
 			return (0);
 		while (path[++i[0]] && path[i[0]] != ':')
