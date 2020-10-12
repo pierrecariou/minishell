@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 11:50:54 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 12:34:55 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,21 @@ void	pipe_fd_reset(t_cmd *cmd)
 	}
 }
 
+void	add_next(int c, t_cmd *cmd)
+{
+	t_cmd *next;
+
+	if (c)
+	{
+			if (!(next = malloc(sizeof(t_cmd))))
+				return ;
+			next->sepl = cmd->sep;
+			cmd->next = next;
+		}
+	else
+		cmd->next = 0;	
+}
+
 void	cmd_line(char *buf, t_cmd *cmd)
 {
 	int i;
@@ -158,16 +173,8 @@ void	cmd_line(char *buf, t_cmd *cmd)
 		}
 		cmd->line[k] = 0;
 		i++;	
-		if (buf[i])
-		{
-			cmd->next = cmd + sizeof(t_cmd);
-			if (!(cmd->next = malloc(sizeof(t_cmd))))
-				return ;
-			cmd->next->sepl = cmd->sep;
-			cmd = cmd->next;
-		}
-		else
-			cmd->next = 0;
+		add_next(buf[i], cmd);
+		cmd = (buf[i]) ? cmd->next : cmd;
 	}
 }
 
