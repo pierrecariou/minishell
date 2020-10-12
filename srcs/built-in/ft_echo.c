@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 12:11:51 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/12 12:30:20 by grezette         ###   ########.fr       */
+/*   Updated: 2020/10/12 18:15:21 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ int		ft_echo(t_cmd cmd)
 	i = 0;
 	if (cmd.argv[1] == "-n")
 		i = 1;
-	while (cmd.argv[++i]);
+	while (cmd.argv[++i])
 	{
 		ft_putstr_fd(cmd.argv[i], 1);
 		if (cmd.argv[i + 1])
+			ft_putchar_fd(' ', 1);
 	}
-	if (cmd.argv[1] == "-n")
+	if (cmd.argv[1] != "-n")
 		ft_putchar_fd('\n', 1);
-
 	return (0);
 }
