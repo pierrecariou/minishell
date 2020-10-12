@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 15:31:16 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 15:35:43 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@ int 	double_sep(char *buf)
 {
 	int i;
 
-	i = 0;
-	while (buf[i])
+	i = -1;
+	while (buf[++i])
 	{
-		while (buf[i] != '|' && buf[i] != ';')
-			i++;
-		if (buf[i + 1] && (buf[i+1] == '|' || buf[i+1] == ';'))
+		if ((buf[i] == '|' || buf[i] == ';') &&
+			(buf[i + 1] && (buf[i+1] == '|' ||
+			buf[i+1] == ';')))
 			return (1);
 	}
 	return (0);
