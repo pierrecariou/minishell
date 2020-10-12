@@ -6,7 +6,7 @@
 #    By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/01 10:17:20 by pcariou           #+#    #+#              #
-#    Updated: 2020/10/07 17:47:27 by pcariou          ###   ########.fr        #
+#    Updated: 2020/10/12 13:59:49 by pcariou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,10 @@ NAME		= minishell
 HEADER		= ./
 
 SRCS		=	srcs/main.c \
+				srcs/init_path.c \
 				srcs/get_commands.c \
 				srcs/find_path.c \
+				srcs/pipeline.c \
 				utils/gnl/get_next_line.c \
 				utils/gnl/get_next_line_utils.c
 

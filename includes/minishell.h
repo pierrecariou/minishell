@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 10:46:12 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 14:02:50 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,9 @@ char    *file_stat(char *file);
 int		ft_isspace(int c);
 void	pipe_fd_reset(t_cmd *cmd);
 void	pipe_fd_fill(t_cmd *cmd);
+char	*get_path(char **envp);
+char	**split_path(char *path);
+void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv);
+void	exec_built(char *file, char **argv);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 11:44:32 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 13:59:19 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -33,62 +33,6 @@ void		exec_built(char *file, char **argv)
 		// built_in();
 	//else
 		execve(file, argv, NULL);
-}
-
-void		store_pid(t_cmd *cmd, int pid)
-{
-	int i;
-
-	i = -1;
-	cmd->next->nforks = cmd->nforks + 1;
-	if (!(cmd->next->pid = malloc(sizeof(int) * cmd->next->nforks)))
-		return ;
-	while (++i < cmd->nforks)
-		cmd->next->pid[i] = cmd->pid[i];
-	i++;
-	cmd->next->pid[i] = pid;
-}
-
-void		close_fd(t_cmdv *cmdv)
-{
-	t_cmd *cp;
-
-	cp = cmdv->cp;
-	while (cp->next)
-	{
-		if (cp->fdout != -1)
-			close(cp->fdout);
-		if (cp->next->fdin != -1)
-			close(cp->next->fdin);
-		cp = cp->next;
-	}
-}
-
-void	pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
-{
-	int pid;
-	int i;
-
-	i = -1;
-	pid = fork();
-	if (pid == 0)
-	{
-		if (cmd->sepl == '|')
-			dup2(cmd->fdin, 0);
-		if (cmd->sep == '|')
-			dup2(cmd->fdout, 1);
-		close_fd(cmdv);
-		exec_built(file, cmd->argv);
-	}
-	if (cmd->sep == '|')
-		store_pid(cmd, pid);
-	else
-	{
-		close_fd(cmdv);
-		while (++i < cmd->nforks)
-			waitpid(cmd->pid[i], NULL, 0);
-		waitpid(pid, NULL, 0);
-	}
 }
 
 void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
@@ -129,7 +73,6 @@ void	loop(char **paths)
 {
 	t_cmd	*cmd;
 	t_cmdv	*cmdv;
-	//t_cmd 	*cp;
 
 	(void)paths;
 	while (42)
@@ -151,56 +94,6 @@ void	loop(char **paths)
 	}
 }
 
-//i[0] = i = -1
-//i[1] = c = -1;
-//i[2] = k = 0;
-//i[3] = l = 0;
-//i[4] = m = -1;
-
-char **split_path(char *path)
-{
-	char **paths;
-	int i[5];
-
-	i[0] = -1;
-	i[1] = -1;
-	i[2] = 0;
-	i[4] = -1;
-	while (path[++i[0]])
-		i[2] = (path[i[0]] == ':') ? i[2] + 1 : i[2];
-	if (!(paths = malloc(sizeof(char *) * (i[2] + 2))))
-		return (0);
-	paths[i[2] + 2] = 0;
-	i[0] = -1;
-	while (++i[4] < i[2] + 1)
-	{
-		while (path[++i[1]] && path[i[1]] != ':')
-			i[3] = 0;
-		if (!(paths[i[4]] = malloc(sizeof(char) * (i[1] - i[0]))))
-			return (0);
-		while (path[++i[0]] && path[i[0]] != ':')
-			paths[i[4]][i[3]++] = path[i[0]];
-		paths[i[4]][i[3]] = 0;
-		i[3] = 0;
-	}
-	return (paths);
-}
-
-char	*get_path(char **envp)
-{
-	int i;
-
-	i = -1;
-	while (envp[++i])
-	{
-		if (envp[i][0] == 'P' && envp[i][1] == 'A'
-				&& envp[i][2] == 'T' && envp[i][3] == 'H'
-				&& envp[i][4] == '=')
-			return (&envp[i][5]);
-	}
-	return (0);
-}
-
 int		main(int argc, char **argv, char **envp)
 {
 	char *path;
@@ -208,7 +101,6 @@ int		main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	(void)paths;
 	path = get_path(envp);
 	paths = split_path(path);
 	loop(paths);

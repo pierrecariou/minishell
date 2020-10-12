@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 12:34:55 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 13:58:35 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,29 +107,6 @@ int             count_words(char *buf)
    }
  */
 
-void	pipe_fd_fill(t_cmd *cmd)
-{
-	int fd[2];
-
-	while (cmd->sep == '|' && cmd->next)
-	{
-		pipe(fd);
-		cmd->fdout = fd[1];
-		cmd->next->fdin = fd[0];
-		cmd = cmd->next;
-	}
-}
-
-void	pipe_fd_reset(t_cmd *cmd)
-{
-	while (cmd)
-	{
-		cmd->fdin = -1;
-		cmd->fdout = -1;
-		cmd = cmd->next;
-	}
-}
-
 void	add_next(int c, t_cmd *cmd)
 {
 	t_cmd *next;
@@ -157,7 +134,6 @@ void	cmd_line(char *buf, t_cmd *cmd)
 		l = 0;
 		k = 0;
 		cmd->sep = 0;
-		cmd->nforks = 0;
 		while (buf[i] && !find_sep(buf[i], cmd))
 		{
 			l++;
@@ -191,6 +167,7 @@ void	read_input(t_cmd *cmd)
 	pipe_fd_reset(cmd);
 	while (cmd)
 	{
+		cmd->nforks = 0;
 		//read(0, buf, 300);
 		//better_input(buf);
 		n = count_words(cmd->line);
