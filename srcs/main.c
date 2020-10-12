@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 13:59:19 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 14:57:55 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -18,7 +18,7 @@
    (void)num;
    write(1, "handling!\n", 10);
    }
-*/
+ */
 
 void	error(char *buf)
 {
@@ -30,9 +30,9 @@ void	error(char *buf)
 void		exec_built(char *file, char **argv)
 {
 	//if (strcmp(argv[0], "echo") || ...)
-		// built_in();
+	// built_in();
 	//else
-		execve(file, argv, NULL);
+	execve(file, argv, NULL);
 }
 
 void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
@@ -85,11 +85,13 @@ void	loop(char **paths)
 		if (!(cmdv = malloc(sizeof(t_cmdv))))
 			return ;
 		cmdv->cp = cmd;
-		read_input(cmd);
-		while (cmd)
+		if (read_input(cmd))
 		{
-			fork_ps(cmd, paths, cmdv);
-			cmd = cmd->next;
+			while (cmd)
+			{
+				fork_ps(cmd, paths, cmdv);
+				cmd = cmd->next;
+			}
 		}
 	}
 }

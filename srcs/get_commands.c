@@ -6,11 +6,23 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 13:58:35 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 14:58:09 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
+
+int		bad_beginning(char *buf)
+{
+	int i;
+
+	i = 0;
+	while (ft_isspace(buf[i]))
+		i++;
+	if (buf[i] == '|' || buf[i] == ';')
+		return (1);
+	return (0);
+}
 
 int		find_sep(char c, t_cmd *cmd)
 {
@@ -22,7 +34,7 @@ int		find_sep(char c, t_cmd *cmd)
 	return (0);
 }
 
-void    split_input(char *buf, char **words)
+int		split_input(char *buf, char **words, t_cmd *cmd)
 {
 	int i;
 	int c;
@@ -48,6 +60,9 @@ void    split_input(char *buf, char **words)
 			i++;
 		l = 0;
 	}
+	if (!cmd->next && cmd->sep == '|')
+		return (0);
+	return (1);
 }
 
 void    malloc_words(char *buf, char **words, int n)
@@ -113,11 +128,11 @@ void	add_next(int c, t_cmd *cmd)
 
 	if (c)
 	{
-			if (!(next = malloc(sizeof(t_cmd))))
-				return ;
-			next->sepl = cmd->sep;
-			cmd->next = next;
-		}
+		if (!(next = malloc(sizeof(t_cmd))))
+			return ;
+		next->sepl = cmd->sep;
+		cmd->next = next;
+	}
 	else
 		cmd->next = 0;	
 }
@@ -154,7 +169,7 @@ void	cmd_line(char *buf, t_cmd *cmd)
 	}
 }
 
-void	read_input(t_cmd *cmd)
+int		read_input(t_cmd *cmd)
 {
 	//char buf[300];
 
@@ -163,19 +178,23 @@ void	read_input(t_cmd *cmd)
 
 	//read(0, buf, 300);
 	get_next_line(0, &buf);
+	if (!buf[0] || bad_beginning(buf))
+		return (0);
 	cmd_line(buf, cmd);
 	pipe_fd_reset(cmd);
 	while (cmd)
 	{
 		cmd->nforks = 0;
-		//read(0, buf, 300);
 		//better_input(buf);
 		n = count_words(cmd->line);
 		if (!(cmd->argv = malloc(sizeof(char *) * (n + 2))))
-			return ;
+			return (0);
 		cmd->argv[n] = 0;
 		malloc_words(cmd->line, cmd->argv, n);
-		split_input(cmd->line, cmd->argv);
+		if (!split_input(cmd->line, cmd->argv, cmd))
+			return (0);
 		cmd = cmd->next;
 	}
+	//printf("%c\n", cmdv->cp->argv[0][0]);
+	return (1);
 }
