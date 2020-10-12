@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/10 18:58:14 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 10:23:03 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,21 +107,41 @@ int             count_words(char *buf)
    }
  */
 
-void	pipe_fd(t_cmd *cmd)
+void	pipe_fd1(t_cmd *cmd)
 {
 	int fd[2];
 
-	while (cmd->next)
+	while (cmd->sep == '|' && cmd->next)
 	{
-		if (cmd->sep == '|')
+		pipe(fd);
+		cmd->fdout = fd[1];
+		cmd->next->fdin = fd[0];
+		cmd = cmd->next;
+	}
+}
+
+void	pipe_fd(t_cmd *cmd)
+{
+	//int fd[2];
+
+	while (cmd)
+	{
+		cmd->fdin = -1;
+		cmd->fdout = -1;
+		cmd = cmd->next;
+	}
+	/*
+		if (cmd->sep == '|' && cmd->next)
 		{
-			pipe(fd);	
-			cmd->fdout = fd[1];
-			cmd->next->fdoutp = fd[1];
-			cmd->next->fdin = fd[0];
+			//printf("%d --- %d\n", fd[0], fd[1]);
+			//pipe(fd);	
+			//cmd->fdout = fd[1];
+			//cmd->next->fdoutp = fd[1];
+			//cmd->next->fdin = fd[0];
 		}
 		cmd = cmd->next;
 	}
+	*/
 }
 
 void	cmd_line(char *buf, t_cmd *cmd)
@@ -162,6 +182,9 @@ void	cmd_line(char *buf, t_cmd *cmd)
 		{
 			//printf("sep : %d\n", sep);
 			cmd->next = cmd + sizeof(t_cmd);
+
+			if (!(cmd->next = malloc(sizeof(t_cmd))))
+				return ;
 			cmd->next->sepl = cmd->sep;
 			cmd = cmd->next;
 		}
@@ -194,23 +217,4 @@ void	read_input(t_cmd *cmd)
 		//printf("%s  sep : '%d'\n", cmd->line, cmd->sep);
 		cmd = cmd->next;
 	}
-	/*
-	while (cmd)
-	{
-	int k = -1;
-		while (cmd->argv[++k])
-			printf("%s\n", cmd->argv[k]);
-		printf("----\n");
-		cmd = cmd->next;
-	}
-	*/
-
-	//better_input(buf);
-	/*
-	   int i = -1;
-	   while (words[++i])
-	   printf("%s\n", words[i]);
-	 */
-	//check_input(buf);
-	//return (words);
 }

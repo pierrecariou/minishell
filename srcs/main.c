@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/10 19:07:30 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 10:24:20 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -36,48 +36,38 @@ void	pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 	int pid;
 	int i;
 	t_cmd *cp;
+	//printf("%d --- %d\n", cmd->fd[1], cmd->fd[0]);
 
-	i = 0;
 	cp = cmdv->cp;
 	if (cmdv->ibpipe == -1)
 		cmdv->ibpipe = cmdv->icmd;
+	i = 0;
 	pid = fork();
 	if (pid == 0)
 	{
 		if (cmd->sepl == '|')
-		{
 			dup2(cmd->fdin, 0);
-			//close(cmd->fdoutp);
-			//close(cmd->fdin);
-		}
 		if (cmd->sep == '|')
-		{
 			dup2(cmd->fdout, 1);
-			//close(cmd->next->fdin);
-			//close(cmd->fdout);
-		}
-		i = 0;
-		while (i < cmdv->icmd)
+		while (cp->next)
 		{
-			if (i >= cmdv->ibpipe)
-			{
+			//printf("TEST : %s\n", cp->line);
+
+			//printf("%d %d\n", cp->fdout, cp->next->fdin);
+			if (cp->fdout != -1)
 				close(cp->fdout);
+			if (cp->next->fdin != -1)
 				close(cp->next->fdin);
-			}
 			cp = cp->next;
-			i++;
 		}
-	//	close(2);
-	//	close(3);
-	//	close(4);
-	//	close(5);
 		execve(file, cmd->argv, NULL);
 	}
-
+	cp = cmdv->cp;
 	if (cmd->sep == '|')
 	{
 		cmd->next->nforks = cmd->nforks + 1;
 		cmd->next->pid = malloc(sizeof(int) * cmd->next->nforks);
+		i = 0;
 		while (i < cmd->nforks)
 		{
 			cmd->next->pid[i] = cmd->pid[i];
@@ -87,37 +77,41 @@ void	pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 	}
 	else
 	{
-		i = 0;
-		while (i < cmdv->icmd)
+		//printf("%d\n", cmd->nforks);
+		while (cp->next)
 		{
-			if (i >= cmdv->ibpipe)
-			{
-				close(cmdv->cp->fdout);
-				close(cmdv->cp->next->fdin);
-			}
-			cmdv->cp = cmdv->cp->next;
-			i++;
+		//	printf("%d %d\n", cp->fdout, cp->next->fdin);
+			if (cp->fdout != -1)
+				close(cp->fdout);
+			if (cp->next->fdin != -1)
+				close(cp->next->fdin);
+			cp = cp->next;
 		}
 		i = 0;
 		while (i < cmd->nforks)
 		{
 			waitpid(cmd->pid[i], NULL, 0);
+			//printf("pid %d\n", cmd->pid[i]);
 			i++;			
-
 		}
-		waitpid(cmd->pid[0], NULL, 0);
+		//printf("salut\n");
+		waitpid(pid, NULL, 0);
+
 	}
 }
 
 void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 {
+	int pid;
+
 	cmdv->ibpipe = -1;
-	if (fork() == 0)
+	pipe_fd(cmdv->cp);
+	if ((pid = fork()) == 0)
 	{
+		//printf("try\n");
 		execve(file, cmd->argv, NULL);
 	}
-	else
-		wait(NULL);
+	waitpid(pid, NULL, 0);
 }
 
 void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
@@ -130,10 +124,17 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 		file = file_stat(cmd->argv[0]);
 	if (file)
 	{
+		if (cmd->sep == '|' && cmd->sepl != '|')
+			pipe_fd1(cmd);
 		if (cmd->sep == '|' || cmd->sepl == '|')
 			pipeline(cmd, file, cmdv);
 		else if (cmd->sep == ';' || cmd->sep == 0)
 			list(cmd, file, cmdv);
+		if (cmd->sep == ';')
+		{
+			pipe_fd(cmdv->cp);
+			cmdv->ibpipe = -1;
+		}
 	}
 	else
 		error(cmd->argv[0]);
@@ -143,6 +144,7 @@ void	loop(char **paths)
 {
 	t_cmd	*cmd;
 	t_cmdv	*cmdv;
+	//t_cmd 	*cp;
 
 	(void)paths;
 	while (42)
@@ -160,6 +162,16 @@ void	loop(char **paths)
 		cmdv->ibpipe = -1;
 		while (cmd)
 		{
+			/*
+			cp = cmdv->cp;
+			while (cp)
+			{
+				printf("%d --- %d\n", cp->fdin, cp->fdout );
+				cp = cp->next;
+			}
+			*/
+			//printf("%d\n", cmdv->icmd);
+			//printf("%s\n", cmd->line);
 			fork_ps(cmd, paths, cmdv);
 			cmd = cmd->next;
 			cmdv->icmd++;

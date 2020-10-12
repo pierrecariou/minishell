@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/10 16:52:22 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/11 20:41:08 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,8 @@ typedef struct		s_cmd
 	char			**argv;
 	int				sep;
 	int				sepl;
-	int				fdin;
 	int				fdout;
-	int				fdoutp;
+	int				fdin;
 	int				nforks;
 	int				*pid;
 	struct	s_cmd	*next;
@@ -56,5 +55,7 @@ int		not_a_path(char *word);
 char    *exec_path(char **paths,  char *exec);
 char    *file_stat(char *file);
 int		ft_isspace(int c);
+void	pipe_fd(t_cmd *cmd);
+void	pipe_fd1(t_cmd *cmd);
 
 #endif
