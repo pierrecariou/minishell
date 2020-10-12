@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 11:07:29 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/12 11:33:11 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -25,6 +25,14 @@ void	error(char *buf)
 	ft_putstr_fd("command not found: ", 1);
 	ft_putstr_fd(buf, 1);
 	ft_putstr_fd("\n", 1);
+}
+
+void		exec_built(char *file, char **argv)
+{
+	//if (strcmp(argv[0], "echo") || ...)
+		// built_in();
+	//else
+		execve(file, argv, NULL);
 }
 
 void		store_pid(t_cmd *cmd, int pid)
@@ -70,7 +78,7 @@ void	pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 		if (cmd->sep == '|')
 			dup2(cmd->fdout, 1);
 		close_fd(cmdv);
-		execve(file, cmd->argv, NULL);
+		exec_built(file, cmd->argv);
 	}
 	if (cmd->sep == '|')
 		store_pid(cmd, pid);
@@ -89,7 +97,7 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 
 	pipe_fd_reset(cmdv->cp);
 	if ((pid = fork()) == 0)
-		execve(file, cmd->argv, NULL);
+		exec_built(file, cmd->argv);
 	waitpid(pid, NULL, 0);
 }
 
@@ -101,6 +109,7 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 		file = exec_path(paths, cmd->argv[0]);
 	else
 		file = file_stat(cmd->argv[0]);
+	//if file or built-in
 	if (file)
 	{
 		if (cmd->sep == '|' && cmd->sepl != '|')
@@ -142,37 +151,38 @@ void	loop(char **paths)
 	}
 }
 
+//i[0] = i = -1
+//i[1] = c = -1;
+//i[2] = k = 0;
+//i[3] = l = 0;
+//i[4] = m = -1;
+
 char **split_path(char *path)
 {
 	char **paths;
-	int i;
-	int c;
-	int k;
-	int l;
-	int m;
-
-	i = -1;
-	c = -1;
-	k = 0;
-	l = 0;
-	m = 0;
-	while (path[++i])
-		k = (path[i] == ':') ? k + 1 : k;
-	if (!(paths = malloc(sizeof(char *) * (k + 2))))
+	int i[5];
+	
+	i[0] = -1;
+	i[1] = -1;
+	i[2] = 0;
+	i[3] = 0;
+	i[4] = -1;
+	while (path[++i[0]])
+		i[2] = (path[i[0]] == ':') ? i[2] + 1 : i[2];
+	if (!(paths = malloc(sizeof(char *) * (i[2] + 2))))
 		return (0);
-	paths[k + 2] = 0;
-	m = -1;
-	i = -1;
-	while (++m < k + 1)
+	paths[i[2] + 2] = 0;
+	i[0] = -1;
+	while (++i[4] < i[2] + 1)
 	{
-		while (path[++c] && path[c] != ':')
-			c = c;
-		if (!(paths[m] = malloc(sizeof(char) * (c - i))))
+		while (path[++i[1]] && path[i[1]] != ':')
+			i[1] = i[1];
+		if (!(paths[i[4]] = malloc(sizeof(char) * (i[1] - i[0]))))
 			return (0);
-		while (path[++i] && path[i] != ':')
-			paths[m][l++] = path[i];
-		paths[m][l] = 0;
-		l = 0;
+		while (path[++i[0]] && path[i[0]] != ':')
+			paths[i[4]][i[3]++] = path[i[0]];
+		paths[i[4]][i[3]] = 0;
+		i[3] = 0;
 	}
 	return (paths);
 }
