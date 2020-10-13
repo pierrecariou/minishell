@@ -6,15 +6,15 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/13 13:31:46 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/13 14:47:45 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
@@ -34,6 +34,7 @@ typedef struct		s_cmd
 	int				*pid;
 	int				redir;
 	char 			*redirf;
+	int				fdredir;
 	struct	s_cmd	*next;
 }					t_cmd;
 
@@ -61,8 +62,9 @@ void	pipe_fd_fill(t_cmd *cmd);
 char	*get_path(char **envp);
 char	**split_path(char *path);
 void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv);
-void	exec_built(char *file, char **argv);
+void	exec_built(char *file, char **argv, t_cmd *cmd);
 int		double_sep(char *buf);
 int 	bad_beginning(char *buf);
+void	open_file(t_cmd *cmd);
 
 #endif

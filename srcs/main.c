@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/13 13:53:55 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/13 15:44:47 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -27,12 +27,16 @@ void	error(char *buf)
 	ft_putstr_fd("\n", 1);
 }
 
-void		exec_built(char *file, char **argv)
+void		exec_built(char *file, char **argv, t_cmd *cmd)
 {
 	//if (strcmp(argv[0], "echo") || ...)
 	// built_in();
 	//else
+	if (cmd->redir)
+		open_file(cmd);
 	execve(file, argv, NULL);
+	if (cmd->redir)
+		close(cmd->fdredir);
 }
 
 void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
@@ -41,7 +45,7 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 
 	pipe_fd_reset(cmdv->cp);
 	if ((pid = fork()) == 0)
-		exec_built(file, cmd->argv);
+		exec_built(file, cmd->argv, cmd);
 	waitpid(pid, NULL, 0);
 }
 
@@ -69,6 +73,17 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 		error(cmd->argv[0]);
 }
 
+void	open_file(t_cmd *cmd)
+{
+	if (cmd->redir == '>')
+		cmd->fdredir = open(cmd->redirf, O_TRUNC | O_WRONLY | O_CREAT, S_IRWXU);
+	else if (cmd->redir == '}')
+		cmd->fdredir = open(cmd->redirf, O_APPEND | O_WRONLY | O_CREAT, S_IRWXU);
+	if (cmd->fdredir == -1)
+		return ;
+	dup2(cmd->fdredir, 1);
+}
+
 void	loop(char **paths)
 {
 	t_cmd	*cmd;
@@ -89,7 +104,8 @@ void	loop(char **paths)
 		{
 			while (cmd)
 			{
-				//printf("%c --- %s\n", cmd->redir, cmd->redirf);
+				//if (cmd->redir)
+				//	open_file(cmd);
 				fork_ps(cmd, paths, cmdv);
 				cmd = cmd->next;
 			}

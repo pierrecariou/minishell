@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/13 13:53:14 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/13 15:54:37 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	get_redirf(t_cmd *cmd, int i)
 	while (cmd->line[cp] && !(ft_isspace(cmd->line[cp])))
 	{
 		cmd->redirf[l] = cmd->line[cp];
-		cmd->line[cp] = 0;
+		cmd->line[cp] = ' ';
 		cp++;
 		l++;
 	}
@@ -43,9 +43,9 @@ void	get_redir(t_cmd *cmd)
 {
 	int i;
 
-	i = -1;
 	while (cmd)
 	{
+	i = -1;
 		cmd->redir = 0;
 		while (cmd->line[++i])
 		{

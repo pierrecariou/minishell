@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 13:55:56 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 13:58:14 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/13 14:47:08 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 		if (cmd->sep == '|')
 			dup2(cmd->fdout, 1);
 		close_fd(cmdv);
-		exec_built(file, cmd->argv);
+		exec_built(file, cmd->argv, cmd);
 	}
 	if (cmd->sep == '|')
 		store_pid(cmd, pid);
