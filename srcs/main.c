@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/13 15:44:47 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/13 16:31:15 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -79,9 +79,14 @@ void	open_file(t_cmd *cmd)
 		cmd->fdredir = open(cmd->redirf, O_TRUNC | O_WRONLY | O_CREAT, S_IRWXU);
 	else if (cmd->redir == '}')
 		cmd->fdredir = open(cmd->redirf, O_APPEND | O_WRONLY | O_CREAT, S_IRWXU);
+	else if (cmd->redir == '<')
+		cmd->fdredir = open(cmd->redirf, O_RDONLY);
 	if (cmd->fdredir == -1)
 		return ;
-	dup2(cmd->fdredir, 1);
+	if (cmd->redir == '>' || cmd->redir == '}')
+		dup2(cmd->fdredir, 1);
+	else
+		dup2(cmd->fdredir, 0);
 }
 
 void	loop(char **paths)
