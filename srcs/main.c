@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/13 16:31:15 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/13 18:02:50 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -22,9 +22,14 @@
 
 void	error(char *buf)
 {
-	ft_putstr_fd("command not found: ", 1);
-	ft_putstr_fd(buf, 1);
-	ft_putstr_fd("\n", 1);
+	if (buf[0])
+	{
+		ft_putstr_fd("command not found: ", 1);
+		ft_putstr_fd(buf, 1);
+		ft_putstr_fd("\n", 1);
+	}
+	else
+		ft_putstr_fd("error\n", 2);
 }
 
 void		exec_built(char *file, char **argv, t_cmd *cmd)
@@ -89,6 +94,20 @@ void	open_file(t_cmd *cmd)
 		dup2(cmd->fdredir, 0);
 }
 
+void	create_file(t_cmd *cmd)
+{
+	if (!cmd->redirf[0])
+		error(cmd->argv[0]);
+	else
+	{
+		cmd->fdredir = open(cmd->redirf, O_TRUNC | O_WRONLY | O_CREAT, S_IRWXU);
+		if (cmd->fdredir == -1)
+			return ;
+		else
+			close(cmd->fdredir);
+	}
+}
+
 void	loop(char **paths)
 {
 	t_cmd	*cmd;
@@ -109,9 +128,10 @@ void	loop(char **paths)
 		{
 			while (cmd)
 			{
-				//if (cmd->redir)
-				//	open_file(cmd);
-				fork_ps(cmd, paths, cmdv);
+				if (!cmd->argv[0] && cmd->redir == '>')
+					create_file(cmd);
+				else
+					fork_ps(cmd, paths, cmdv);
 				cmd = cmd->next;
 			}
 		}
