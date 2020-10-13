@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 16:34:17 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/13 13:26:27 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,11 +110,11 @@ int             count_words(char *buf)
    }
  */
 
-void	add_next(int c, t_cmd *cmd)
+void	add_next(int m, t_cmd *cmd, t_cmdv *cmdv)
 {
 	t_cmd *next;
 
-	if (c)
+	if (m + 1 < cmdv->nsep + 1)
 	{
 		if (!(next = malloc(sizeof(t_cmd))))
 			return ;
@@ -125,14 +125,16 @@ void	add_next(int c, t_cmd *cmd)
 		cmd->next = 0;	
 }
 
-void	cmd_line(char *buf, t_cmd *cmd)
+void	cmd_line(char *buf, t_cmd *cmd, t_cmdv *cmdv)
 {
 	int i;
 	int l;
 	int k;
+	int m;
 
 	i = 0;
-	while (buf[i])
+	m = -1;
+	while (++m < cmdv->nsep + 1)
 	{
 		l = 0;
 		k = 0;
@@ -152,12 +154,25 @@ void	cmd_line(char *buf, t_cmd *cmd)
 		}
 		cmd->line[k] = 0;
 		i++;	
-		add_next(buf[i], cmd);
+		add_next(m, cmd, cmdv);
 		cmd = (buf[i]) ? cmd->next : cmd;
 	}
 }
 
-int		read_input(t_cmd *cmd)
+void	count_sep(char *buf, t_cmdv *cmdv)
+{
+	int i;
+
+	i = -1;
+	cmdv->nsep = 0;
+	while (buf[++i])
+	{
+		if (buf[i] == '|' || buf[i] == ';')
+			cmdv->nsep++;
+	}
+}
+
+int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 {
 	//char buf[300];
 
@@ -168,7 +183,8 @@ int		read_input(t_cmd *cmd)
 	get_next_line(0, &buf);
 	if (!buf[0] || bad_beginning(buf) || double_sep(buf))
 		return (0);
-	cmd_line(buf, cmd);
+	count_sep(buf, cmdv);
+	cmd_line(buf, cmd, cmdv);
 	pipe_fd_reset(cmd);
 	while (cmd)
 	{

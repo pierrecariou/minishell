@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 14:57:55 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/13 13:14:55 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -85,7 +85,7 @@ void	loop(char **paths)
 		if (!(cmdv = malloc(sizeof(t_cmdv))))
 			return ;
 		cmdv->cp = cmd;
-		if (read_input(cmd))
+		if (read_input(cmd, cmdv))
 		{
 			while (cmd)
 			{
