@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/13 13:14:55 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/13 13:53:55 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -89,6 +89,7 @@ void	loop(char **paths)
 		{
 			while (cmd)
 			{
+				//printf("%c --- %s\n", cmd->redir, cmd->redirf);
 				fork_ps(cmd, paths, cmdv);
 				cmd = cmd->next;
 			}

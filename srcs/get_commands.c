@@ -6,11 +6,64 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/13 13:26:27 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/13 13:53:14 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
+
+void	get_redirf(t_cmd *cmd, int i)
+{
+	int cp;
+	int l;
+
+	l = 0;
+	while (ft_isspace(cmd->line[i]))
+		i++;
+	cp = i;
+	while (cmd->line[i] && !(ft_isspace(cmd->line[i])))
+	{
+		l++;
+		i++;
+	}
+	if (!(cmd->redirf = malloc(sizeof(char) * (l + 1))))
+		return ;
+	l = 0;
+	while (cmd->line[cp] && !(ft_isspace(cmd->line[cp])))
+	{
+		cmd->redirf[l] = cmd->line[cp];
+		cmd->line[cp] = 0;
+		cp++;
+		l++;
+	}
+	cmd->redirf[l] = 0;
+}
+
+void	get_redir(t_cmd *cmd)
+{
+	int i;
+
+	i = -1;
+	while (cmd)
+	{
+		cmd->redir = 0;
+		while (cmd->line[++i])
+		{
+			if (cmd->line[i] == '<' || cmd->line[i] == '>')
+			{
+				cmd->redir = cmd->line[i];
+				cmd->line[i] = ' ';
+				if (cmd->line[i + 1] && cmd->line[i + 1] == '>')
+				{
+					cmd->redir = '}';
+					cmd->line[i + 1] = ' ';
+				}
+				get_redirf(cmd, i);
+			}
+		}
+		cmd = cmd->next;
+	}
+}
 
 int		find_sep(char c, t_cmd *cmd)
 {
@@ -185,6 +238,7 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 		return (0);
 	count_sep(buf, cmdv);
 	cmd_line(buf, cmd, cmdv);
+	get_redir(cmd);
 	pipe_fd_reset(cmd);
 	while (cmd)
 	{
