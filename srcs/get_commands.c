@@ -6,15 +6,69 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/14 12:38:00 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/14 15:05:54 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
+int		get_redirfb(t_cmd *cmd, int i, int c)
+{
+	int cp;
+	int l;
+
+	l = 0;
+	while (ft_isspace(cmd->line[i]))
+		i++;
+	cp = i;
+	while (cmd->line[i] && !ft_isspace(cmd->line[i]) && cmd->line[i] != '>')
+	{
+		l++;
+		i++;
+	}
+	if (!(cmd->redirfb[c] = malloc(sizeof(char) * (l + 1))))
+		return (0);
+	l = 0;
+	while (cmd->line[cp] && !ft_isspace(cmd->line[cp]) && cmd->line[cp] != '>')
+	{
+		cmd->redirfb[c][l] = cmd->line[cp];
+		cmd->line[cp] = ' ';
+		cp++;
+		l++;
+	}
+	cmd->redirfb[c][l] = 0;
+	return (cp);
+}
+
 void	get_redirb(t_cmd *cmd)
 {
-	(void)cmd;
+	int i;
+	int c;
+
+	while (cmd)
+	{
+		i = -1;
+		c = 0;
+		if (cmd->nredir > 1)
+		{
+			if (!(cmd->redirfb = malloc(sizeof(char *) * cmd->nredir)))
+				return ;
+			cmd->redirfb[cmd->nredir - 1] = 0;
+			while (cmd->line[++i] && c < (cmd->nredir - 1))
+			{
+				if (cmd->line[i] == '>')
+				{
+					cmd->line[i] = ' ';
+					i++;
+					if (cmd->line[i] == '>')
+						cmd->line[i++] = ' ';
+					i = get_redirfb(cmd, i, c) - 1;
+					c++;
+				}
+			}
+		}
+		cmd = cmd->next;
+	}
 }
 
 void	count_redir(t_cmd *cmd)
@@ -271,8 +325,18 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 	pipe_fd_reset(cmd);
 	while (cmd)
 	{
-
-	printf("%d\n", cmd->nredir);
+		//printf("%d\n", cmd->nredir);
+		/*
+		if (cmd->nredir > 1)
+		{
+			int i = 0;
+			while (cmd->redirfb[i])
+			{
+				printf("%s\n", cmd->redirfb[i]);
+				i++;
+			}
+		}
+		*/
 		cmd->nforks = 0;
 		//better_input(buf);
 		n = count_words(cmd->line);

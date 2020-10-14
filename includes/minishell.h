@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/14 12:21:03 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/14 14:07:10 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,6 @@ void	exec_built(char *file, char **argv, t_cmd *cmd);
 int		double_sep(char *buf);
 int 	bad_beginning(char *buf);
 void	open_file(t_cmd *cmd);
+void	open_files(t_cmd *cmd);
 
 #endif

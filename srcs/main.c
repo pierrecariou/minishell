@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/13 18:02:50 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/14 15:17:43 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -37,6 +37,8 @@ void		exec_built(char *file, char **argv, t_cmd *cmd)
 	//if (strcmp(argv[0], "echo") || ...)
 	// built_in();
 	//else
+	if (cmd->nredir > 1)
+		open_files(cmd);
 	if (cmd->redir)
 		open_file(cmd);
 	execve(file, argv, NULL);
@@ -78,6 +80,28 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 		error(cmd->argv[0]);
 }
 
+void	open_files(t_cmd *cmd)
+{
+	int i;
+	int fd;
+
+	i = -1;
+	while (cmd->redirfb[++i])
+	{
+		if (!cmd->redirfb[i][0])
+			error(cmd->argv[0]);
+		else
+		{
+			fd = open(cmd->redirfb[i], O_TRUNC | O_WRONLY | O_CREAT, S_IRWXU);
+			if (fd == -1)
+				return ;
+			else
+				close(fd);
+			fd = 0;
+		}			
+	}
+}
+
 void	open_file(t_cmd *cmd)
 {
 	if (cmd->redir == '>')
@@ -96,6 +120,8 @@ void	open_file(t_cmd *cmd)
 
 void	create_file(t_cmd *cmd)
 {
+	if (cmd->nredir > 1)
+		open_files(cmd);
 	if (!cmd->redirf[0])
 		error(cmd->argv[0]);
 	else
@@ -128,7 +154,7 @@ void	loop(char **paths)
 		{
 			while (cmd)
 			{
-				if (!cmd->argv[0] && cmd->redir == '>')
+				if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
 					create_file(cmd);
 				else
 					fork_ps(cmd, paths, cmdv);
