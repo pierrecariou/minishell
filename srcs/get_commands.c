@@ -6,11 +6,38 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/13 18:03:12 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/14 12:38:00 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
+
+void	get_redirb(t_cmd *cmd)
+{
+	(void)cmd;
+}
+
+void	count_redir(t_cmd *cmd)
+{
+	int i;
+
+	while (cmd)
+	{
+		i = -1;
+		cmd->nredir = 0;
+		while (cmd->line[++i])
+		{
+			if (cmd->line[i] == '>')
+			{
+				i++;
+				if (cmd->line[i] == '>')
+					i++;
+				cmd->nredir++;
+			}
+		}
+		cmd = cmd->next;
+	}
+}
 
 void	get_redirf(t_cmd *cmd, int i)
 {
@@ -45,7 +72,7 @@ void	get_redir(t_cmd *cmd)
 
 	while (cmd)
 	{
-	i = -1;
+		i = -1;
 		cmd->redir = 0;
 		while (cmd->line[++i])
 		{
@@ -238,10 +265,14 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 		return (0);
 	count_sep(buf, cmdv);
 	cmd_line(buf, cmd, cmdv);
+	count_redir(cmd);
+	get_redirb(cmd);
 	get_redir(cmd);
 	pipe_fd_reset(cmd);
 	while (cmd)
 	{
+
+	printf("%d\n", cmd->nredir);
 		cmd->nforks = 0;
 		//better_input(buf);
 		n = count_words(cmd->line);
