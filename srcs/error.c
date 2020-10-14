@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 16:32:57 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 16:33:58 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/14 16:43:15 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,32 @@ int             bad_beginning(char *buf)
 		i++;
 	if (buf[i] == '|' || buf[i] == ';')
 		return (1);
+	return (0);
+}
+
+int			tripledouble_redir(char *buf)
+{
+	int i;
+	int cr;
+	int space;
+
+	i = -1;
+	space = 0;
+	cr = 0;
+	while (buf[++i])
+	{
+		if (buf[i] == '>')
+			cr++;
+		if (cr == 1 && ft_isspace(buf[i]))
+			space = 1;
+		
+		if (!ft_isspace(buf[i]) && buf[i] != '>')
+			cr = 0;
+	//	printf("%c -- space : %d -- cr : %d\n", buf[i], space, cr);
+		if (cr > 2 || (cr == 2 && space == 1))
+			return (1);
+		if (cr != 1)
+			space = 0;
+	}
 	return (0);
 }
