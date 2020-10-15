@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/14 16:01:59 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/15 11:19:08 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,10 @@ void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv);
 void	exec_built(char *file, char **argv, t_cmd *cmd);
 int		double_sep(char *buf);
 int 	bad_beginning(char *buf);
+int		bad_ending(char *buf);
 void	open_file(t_cmd *cmd);
 void	open_files(t_cmd *cmd);
 int		tripledouble_redir(char *buf);
+int		empty_redir(t_cmd *cmd);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/14 16:06:49 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/15 11:15:57 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,7 +315,7 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 
 	//read(0, buf, 300);
 	get_next_line(0, &buf);
-	if (!buf[0] || bad_beginning(buf) || double_sep(buf)
+	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) || double_sep(buf)
 		|| tripledouble_redir(buf))
 		return (0);
 	count_sep(buf, cmdv);
@@ -323,6 +323,8 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 	count_redir(cmd);
 	get_redirb(cmd);
 	get_redir(cmd);
+	if (empty_redir(cmd))
+		return (0);
 	pipe_fd_reset(cmd);
 	while (cmd)
 	{

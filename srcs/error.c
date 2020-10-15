@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 16:32:57 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/14 16:43:15 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/15 11:19:28 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,17 @@
 int     double_sep(char *buf)
 {
 	int i;
+	int csep;
 
 	i = -1;
+	csep = 0;
 	while (buf[++i])
 	{
-		if ((buf[i] == '|' || buf[i] == ';') &&
-				(buf[i + 1] && (buf[i+1] == '|' ||
-								buf[i+1] == ';')))
+		if (buf[i] == '|' || buf[i] == ';')
+			csep++;
+		if (!ft_isspace(buf[i]) && buf[i] != '|' && buf[i] != ';')
+			csep = 0;
+		if (csep > 1)
 			return (1);
 	}
 	return (0);
@@ -39,6 +43,20 @@ int             bad_beginning(char *buf)
 	return (0);
 }
 
+int			bad_ending(char *buf)
+{
+	int i;
+
+	i = ft_strlen(buf) - 1;
+	while (ft_isspace(buf[i]))
+		i--;
+	if (buf[i] == ';')
+		buf[i] = ' ';
+	if (buf[i] == '|')
+		return (1);
+	return (0);
+}
+
 int			tripledouble_redir(char *buf)
 {
 	int i;
@@ -50,12 +68,11 @@ int			tripledouble_redir(char *buf)
 	cr = 0;
 	while (buf[++i])
 	{
-		if (buf[i] == '>')
+		if (buf[i] == '>' || buf[i] == '<')
 			cr++;
 		if (cr == 1 && ft_isspace(buf[i]))
 			space = 1;
-		
-		if (!ft_isspace(buf[i]) && buf[i] != '>')
+		if (!ft_isspace(buf[i]) && buf[i] != '>' && buf[i] != '<')
 			cr = 0;
 	//	printf("%c -- space : %d -- cr : %d\n", buf[i], space, cr);
 		if (cr > 2 || (cr == 2 && space == 1))
@@ -64,4 +81,17 @@ int			tripledouble_redir(char *buf)
 			space = 0;
 	}
 	return (0);
+}
+
+int			empty_redir(t_cmd *cmd)
+{
+	while (cmd)
+	{
+		if ((cmd->redir == '>' || cmd->redir == '}' || cmd->redir == '<')
+			&& !cmd->redirf[0])
+			return (1);
+		cmd = cmd->next;
+	}
+	return (0);
+	
 }
