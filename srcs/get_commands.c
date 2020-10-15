@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/15 22:30:15 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/15 23:29:50 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ char	*real_env(char *envv, t_cmdv *cmdv)
 	return (space);
 }
 
-char	*buf_with_envv(char *buf, char *renvv, char *end, int length)
+char	*buf_with_envv(char *buf, char *renvv, char *end, int length, int l)
 {
 	int i;
 	int m;
@@ -205,7 +205,7 @@ char	*buf_with_envv(char *buf, char *renvv, char *end, int length)
 	k = 0;
 	if (!(ret = malloc(sizeof(char) * (ft_strlen(buf) + (ft_strlen(renvv) - (length - 1)) + 1))))
 		return (0);
-	while (buf[++i] != '$')
+	while (++i < l)
 		ret[m++] = buf[i];
 	while (renvv[k])
 		ret[m++] = renvv[k++];
@@ -217,27 +217,26 @@ char	*buf_with_envv(char *buf, char *renvv, char *end, int length)
 	return (ret);
 }
 
-char	*get_envv(char *buf, t_cmdv *cmdv)
+char	*get_envv(char *buf, t_cmdv *cmdv, int i)
 {
 	char *envv;
 	char *end;
 	char *renvv;
-	int i;
 	int cp;
 	int m;
 	int length;
 	//int r;
-	//int l;
+	int l;
 
-	i = -1;
 	while (buf[++i])
 	{
-		if (buf[i] == '$')
+		if (buf[i] == '$' && buf[i + 1] && !ft_isspace(buf[i + 1]))
 		{
 			m = 0;
-			//l = i - 1;
+			l = i;
 			cp = ++i;
-			while (buf[i] && !ft_isspace(buf[i]) && buf[i] != '/')
+			while (buf[i] && !ft_isspace(buf[i]) && buf[i] != '/'
+				&& buf[i] != '$')
 			{
 				m++;
 				i++;
@@ -246,7 +245,8 @@ char	*get_envv(char *buf, t_cmdv *cmdv)
 				return (0);
 			i = cp;
 			m = 0;
-			while (buf[i] && !ft_isspace(buf[i]) && buf[i] != '/')
+			while (buf[i] && !ft_isspace(buf[i]) && buf[i] != '/'
+				&& buf[i] != '$')
 				envv[m++] = buf[i++];
 			envv[m] = 0;
 	//		r = i;
@@ -254,10 +254,10 @@ char	*get_envv(char *buf, t_cmdv *cmdv)
 			length = ft_strlen(envv);
 			renvv = real_env(envv, cmdv);
 			//printf("%s\n", renvv);
-			buf = buf_with_envv(buf, renvv, end, length);
+			buf = buf_with_envv(buf, renvv, end, length, l);
 			//free(renvv);
 			free(envv);
-			get_envv(buf, cmdv);
+			get_envv(buf, cmdv, i - 1);
 		}
 	}
 	return (buf);
@@ -275,7 +275,7 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) || double_sep(buf)
 		|| tripledouble_redir(buf))
 		return (0);
-	buf = get_envv(buf, cmdv);
+	buf = get_envv(buf, cmdv, -1);
 	count_sep(buf, cmdv);
 	cmd_line(buf, cmd, cmdv);
 	count_redir(cmd);

@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/15 15:08:04 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/15 23:29:02 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -102,6 +102,8 @@ void	loop(char **paths, char **envp)
 			{
 				if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
 					create_file(cmd);
+				else if (!cmd->argv[0])
+					cmd = cmd;
 				else
 					fork_ps(cmd, paths, cmdv);
 				cmd = cmd->next;
