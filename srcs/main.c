@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/15 11:29:02 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/15 15:08:04 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -80,7 +80,7 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 		error(cmd->argv[0]);
 }
 
-void	loop(char **paths)
+void	loop(char **paths, char **envp)
 {
 	t_cmd	*cmd;
 	t_cmdv	*cmdv;
@@ -94,6 +94,7 @@ void	loop(char **paths)
 			return ;
 		if (!(cmdv = malloc(sizeof(t_cmdv))))
 			return ;
+		cmdv->envp = envp;
 		cmdv->cp = cmd;
 		if (read_input(cmd, cmdv))
 		{
@@ -118,6 +119,6 @@ int		main(int argc, char **argv, char **envp)
 	(void)argv;
 	path = get_path(envp);
 	paths = split_path(path);
-	loop(paths);
+	loop(paths, envp);
 	return (0);
 }
