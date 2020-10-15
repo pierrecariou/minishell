@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/15 22:04:48 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/15 22:30:15 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ char	*buf_with_envv(char *buf, char *renvv, char *end, int length)
 	while (end[++k])
 		ret[m++] = end[k];
 	ret[m] = 0;
-	//free(buf);
+//	free(buf);
 	return (ret);
 }
 
@@ -254,30 +254,14 @@ char	*get_envv(char *buf, t_cmdv *cmdv)
 			length = ft_strlen(envv);
 			renvv = real_env(envv, cmdv);
 			//printf("%s\n", renvv);
-			return (buf_with_envv(buf, renvv, end, length));
+			buf = buf_with_envv(buf, renvv, end, length);
+			//free(renvv);
+			free(envv);
+			get_envv(buf, cmdv);
 		}
 	}
 	return (buf);
 }
-
-/*
-void	clean_buf(char *buf)
-{
-	int i;
-
-	i = -1;
-	while (buf[++i])
-	{
-		if (buf[i] == '$')
-		{
-			buf[i++] = ' '; 
-		while (buf[i] && !ft_isspace(buf[i]) && buf[i] != '/')
-			buf[i++] = ' ';
-		return ;
-		}
-	}
-}
-*/
 
 int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 {
@@ -292,14 +276,6 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 		|| tripledouble_redir(buf))
 		return (0);
 	buf = get_envv(buf, cmdv);
-	//if (cp != NULL)
-	//{
-	//	free(buf);
-	//	buf = cp;
-	//}
-	//else
-	//	clean_buf(buf);
-	//printf("%s\n", buf);
 	count_sep(buf, cmdv);
 	cmd_line(buf, cmd, cmdv);
 	count_redir(cmd);
