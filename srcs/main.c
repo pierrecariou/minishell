@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/15 23:29:02 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/19 11:24:52 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -20,25 +20,33 @@
    }
  */
 
-void	error(char *buf)
+void	error(t_cmd *cmd, t_cmdv *cmdv)
 {
-	if (buf[0])
+	cmdv->error = 1;
+	if (cmd->argv[0][0])
 	{
 		ft_putstr_fd("command not found: ", 1);
-		ft_putstr_fd(buf, 1);
+		ft_putstr_fd(cmd->argv[0], 1);
 		ft_putstr_fd("\n", 1);
 	}
 	else
 		ft_putstr_fd("error\n", 2);
+	if (cmd->nredir > 1)
+		open_files(cmd, cmdv);
+	if (cmd->redir && cmd->redirf[0])
+		create_file(cmd, cmdv);
+	if (cmd->redir)
+		close(cmd->fdredir);
 }
 
-void		exec_built(char *file, char **argv, t_cmd *cmd)
+void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 {
 	//if (strcmp(argv[0], "echo") || ...)
 	// built_in();
 	//else
+	cmdv->error = 0;
 	if (cmd->nredir > 1)
-		open_files(cmd);
+		open_files(cmd, cmdv);
 	if (cmd->redir)
 		open_file(cmd);
 	execve(file, argv, NULL);
@@ -52,7 +60,7 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 
 	pipe_fd_reset(cmdv->cp);
 	if ((pid = fork()) == 0)
-		exec_built(file, cmd->argv, cmd);
+		exec_built(file, cmd->argv, cmd, cmdv);
 	waitpid(pid, NULL, 0);
 }
 
@@ -67,17 +75,20 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 	//if file or built-in
 	if (file)
 	{
-		if (cmd->sep == '|' && cmd->sepl != '|')
+		if ((cmd->sep == '|' && cmd->sepl != '|')
+			&& cmdv->error == 0)
 			pipe_fd_fill(cmd);
-		if (cmd->sep == '|' || cmd->sepl == '|')
+		if ((cmd->sep == '|' || cmd->sepl == '|')
+			&& cmdv->error == 0)
 			pipeline(cmd, file, cmdv);
-		else if (cmd->sep == ';' || cmd->sep == 0)
+		else if ((cmd->sep == ';' || cmd->sep == 0)
+			&& !(cmd->sepl == '|' && cmdv->error == 1))
 			list(cmd, file, cmdv);
 		if (cmd->sep == ';')
 			pipe_fd_reset(cmdv->cp);
 	}
 	else
-		error(cmd->argv[0]);
+		error(cmd, cmdv);
 }
 
 void	loop(char **paths, char **envp)
@@ -96,12 +107,13 @@ void	loop(char **paths, char **envp)
 			return ;
 		cmdv->envp = envp;
 		cmdv->cp = cmd;
+		cmdv->error = 0;
 		if (read_input(cmd, cmdv))
 		{
 			while (cmd)
 			{
 				if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
-					create_file(cmd);
+					create_file(cmd, cmdv);
 				else if (!cmd->argv[0])
 					cmd = cmd;
 				else

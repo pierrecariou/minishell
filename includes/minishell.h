@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/15 13:17:07 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/19 11:17:45 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct		s_cmdv
 	struct	s_cmd	*cp;
 	int				nsep;
 	char 			**envp;
+	int				error;
 }					t_cmdv;
 
 void	ft_putstr_fd(char *s, int fd);
@@ -65,18 +66,16 @@ void	pipe_fd_fill(t_cmd *cmd);
 char	*get_path(char **envp);
 char	**split_path(char *path);
 void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv);
-void	exec_built(char *file, char **argv, t_cmd *cmd);
+void	exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv);
 int		double_sep(char *buf);
 int 	bad_beginning(char *buf);
 int		bad_ending(char *buf);
 void	open_file(t_cmd *cmd);
-void	open_files(t_cmd *cmd);
+void	open_files(t_cmd *cmd, t_cmdv *cmdv);
 int		tripledouble_redir(char *buf);
 int		empty_redir(t_cmd *cmd);
-void	open_file(t_cmd *cmd);
-void	open_files(t_cmd *cmd);
-void	create_file(t_cmd *cmd);
-void	error(char *buf);
+void	create_file(t_cmd *cmd, t_cmdv *cmdv);
+void	error(t_cmd *cmd, t_cmdv *cmdv);
 void	get_redirb(t_cmd *cmd);
 void	get_redir(t_cmd *cmd);
 void	count_redir(t_cmd *cmd);
