@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 16:18:47 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/12 16:34:38 by grezette         ###   ########.fr       */
+/*   Updated: 2020/10/19 11:11:17 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,17 @@ int		ft_pwd(t_cmd cmd)
 	int		fctr;
 
 	(void)cmd;
-	fctr = 1;
-	if (!(src = (char *)malloc(sizeof(char *) * (fctr + 1))))
+	fctr = 4096;
+	if (!(src = (char *)malloc(sizeof(char *) * (fctr))))
 		return (-1);
-	while (!(getcwd(scr, fctr)))
+	while (!(getcwd(src, fctr)))
 	{
-		free(scr);
-		if (!(src = (char *)malloc(sizeof(char *) * (++fctr + 1))))
+		free(src);
+		fctr *= 2;
+		if (!(src = (char *)malloc(sizeof(char *) * (fctr))))
 			return (-1);
 	}
-	ft_putstr_fd(scr, 1);
-	free(scr);
+	ft_putstr_fd(src, 1);
+	free(src);
 	return (0);
 }
