@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/15 23:29:02 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/19 13:02:11 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -19,6 +19,24 @@
    write(1, "handling!\n", 10);
    }
  */
+
+void	cmp_built_in(char **argv, t_cmd *cmd, char **envp)
+{
+	if (ft_strncmp(argv[0], "echo", 4))
+		ft_echo(*cmd);
+	else if (ft_strncmp(argv[0], "cd", 2))
+		ft_cd(*cmd);
+	else if (ft_strncmp(argv[0], "pwd", 3))
+		ft_pwd(*cmd);
+	else if (ft_strncmp(argv[0], "env", 2))
+		ft_env(*cmd, envp);
+	else if (ft_strncmp(argv[0], "unset", 2))
+		ft_putstr_fd("A work in progress\n", 1);
+	else if (ft_strncmp(argv[0], "export", 2))
+		ft_putstr_fd("A work in progress\n", 1);
+	else if (ft_strncmp(argv[0], "exit", 2))
+		ft_putstr_fd("A work in progress\n", 1);
+}
 
 void	error(char *buf)
 {
