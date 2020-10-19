@@ -6,13 +6,13 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/15 11:24:39 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/15 11:27:30 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/19 11:23:32 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-void    open_files(t_cmd *cmd)
+void    open_files(t_cmd *cmd, t_cmdv *cmdv)
 {
 	int i;
 	int fd;
@@ -21,7 +21,7 @@ void    open_files(t_cmd *cmd)
 	while (cmd->redirfb[++i])
 	{
 		if (!cmd->redirfb[i][0])
-			error(cmd->argv[0]);
+			error(cmd, cmdv);
 		else
 		{
 			fd = open(cmd->redirfb[i], O_TRUNC | O_WRONLY | O_CREAT, S_IRWXU);
@@ -50,12 +50,12 @@ void    open_file(t_cmd *cmd)
 		dup2(cmd->fdredir, 0);
 }
 
-void    create_file(t_cmd *cmd)
+void    create_file(t_cmd *cmd, t_cmdv *cmdv)
 {
 	if (cmd->nredir > 1)
-		open_files(cmd);
+		open_files(cmd, cmdv);
 	if (!cmd->redirf[0])
-		error(cmd->argv[0]);
+		error(cmd, cmdv);
 	else
 	{
 		cmd->fdredir = open(cmd->redirf, O_TRUNC | O_WRONLY | O_CREAT, S_IRWXU);

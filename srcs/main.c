@@ -19,60 +19,71 @@
    write(1, "handling!\n", 10);
    }
  */
-
-void	cmp_built_in(char **argv, t_cmd *cmd, char **envp)
+void	error(t_cmd *cmd, t_cmdv *cmdv)
 {
-	if (ft_strncmp(argv[0], "echo", 4))
-		ft_echo(*cmd);
-	else if (ft_strncmp(argv[0], "cd", 2))
-		ft_cd(*cmd);
-	else if (ft_strncmp(argv[0], "pwd", 3))
-		ft_pwd(*cmd);
-	else if (ft_strncmp(argv[0], "env", 2))
-		ft_env(*cmd, envp);
-	else if (ft_strncmp(argv[0], "unset", 2))
-		ft_putstr_fd("A work in progress\n", 1);
-	else if (ft_strncmp(argv[0], "export", 2))
-		ft_putstr_fd("A work in progress\n", 1);
-	else if (ft_strncmp(argv[0], "exit", 2))
-		ft_putstr_fd("A work in progress\n", 1);
-}
-
-void	error(char *buf)
-{
-	if (buf[0])
+	cmdv->error = 1;
+	cmdv->error_line = 127;
+	if (cmd->argv[0][0])
 	{
 		ft_putstr_fd("command not found: ", 1);
-		ft_putstr_fd(buf, 1);
+		ft_putstr_fd(cmd->argv[0], 1);
 		ft_putstr_fd("\n", 1);
 	}
 	else
 		ft_putstr_fd("error\n", 2);
+	if (cmd->nredir > 1)
+		open_files(cmd, cmdv);
+	if (cmd->redir && cmd->redirf[0])
+		create_file(cmd, cmdv);
+	if (cmd->redir)
+		close(cmd->fdredir);
 }
 
-void		exec_built(char *file, char **argv, t_cmd *cmd)
+void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 {
 	//if (strcmp(argv[0], "echo") || ...)
 	// built_in();
 	//else
 	if (cmd->nredir > 1)
-		open_files(cmd);
+		open_files(cmd, cmdv);
 	if (cmd->redir)
 		open_file(cmd);
+	//if (!cmp_built_in)
 	execve(file, argv, NULL);
 	if (cmd->redir)
 		close(cmd->fdredir);
+	cmdv->error = 0;
 }
 
 void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 {
 	int pid;
+	int	status;
 
 	pipe_fd_reset(cmdv->cp);
 	if ((pid = fork()) == 0)
-		exec_built(file, cmd->argv, cmd);
-	waitpid(pid, NULL, 0);
+		exec_built(file, cmd->argv, cmd, cmdv);
+	waitpid(pid, &status, 0);
+	cmdv->error_line = status;
+	cmdv->error = 0;
 }
+
+/*
+int		valid_cmd(t_cmd *cmd, char **paths)
+{
+	char *file;
+
+	if (!cmd->argv[0])
+		return (1);
+	if (not_a_path(cmd->argv[0]))
+		file = exec_path(paths, cmd->argv[0]);
+	else
+		file = file_stat(cmd->argv[0]);
+	if (file)
+		return (0);
+	return (1);
+}
+*/
 
 void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 {
@@ -85,24 +96,31 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 	//if file or built-in
 	if (file)
 	{
-		if (cmd->sep == '|' && cmd->sepl != '|')
+		cmdv->error_line = 0;
+		if ((cmd->sep == '|' && cmd->sepl != '|')
+			&& cmdv->error == 0)
 			pipe_fd_fill(cmd);
-		if (cmd->sep == '|' || cmd->sepl == '|')
+		if ((cmd->sep == '|' || cmd->sepl == '|')
+			&& cmdv->error == 0)
 			pipeline(cmd, file, cmdv);
-		else if (cmd->sep == ';' || cmd->sep == 0)
+		else if ((cmd->sep == ';' || cmd->sep == 0)
+			&& !(cmd->sepl == '|' && cmdv->error == 1))
 			list(cmd, file, cmdv);
 		if (cmd->sep == ';')
 			pipe_fd_reset(cmdv->cp);
 	}
 	else
-		error(cmd->argv[0]);
+		error(cmd, cmdv);
 }
 
 void	loop(char **paths, char **envp)
 {
 	t_cmd	*cmd;
 	t_cmdv	*cmdv;
-
+	int 	error_line;
+	int		parse;
+	
+	error_line = 0;
 	while (42)
 	{
 		ft_putstr_fd("\033[1;31m", 1);
@@ -114,19 +132,25 @@ void	loop(char **paths, char **envp)
 			return ;
 		cmdv->envp = envp;
 		cmdv->cp = cmd;
-		if (read_input(cmd, cmdv))
+		cmdv->error = 0;
+		cmdv->error_line = error_line;
+		if ((parse = read_input(cmd, cmdv)))
 		{
 			while (cmd)
 			{
 				if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
-					create_file(cmd);
-				else if (!cmd->argv[0])
-					cmd = cmd;
+					create_file(cmd, cmdv);
+				if (!cmd->argv[0])
+					cmdv->error = 1;
 				else
 					fork_ps(cmd, paths, cmdv);
 				cmd = cmd->next;
 			}
 		}
+		if (!parse || (cmdv->error_line != 0 && cmdv->error_line != 127))
+			error_line = 2;
+		else if (parse)
+			error_line = cmdv->error_line;
 	}
 }
 
