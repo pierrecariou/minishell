@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/19 15:21:10 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/19 13:02:11 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -19,7 +19,6 @@
    write(1, "handling!\n", 10);
    }
  */
-
 void	error(t_cmd *cmd, t_cmdv *cmdv)
 {
 	cmdv->error = 1;
