@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/19 13:02:11 by grezette         ###   ########.fr       */
+/*   Updated: 2020/10/19 17:48:41 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -48,8 +48,8 @@ void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 		open_files(cmd, cmdv);
 	if (cmd->redir)
 		open_file(cmd);
-	//if (!cmp_built_in)
-	execve(file, argv, NULL);
+	if (!cmp_built_in(argv, cmd, cmdv))
+		execve(file, argv, NULL);
 	if (cmd->redir)
 		close(cmd->fdredir);
 	cmdv->error = 0;
@@ -94,7 +94,7 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 	else
 		file = file_stat(cmd->argv[0]);
 	//if file or built-in
-	if (file)
+	if (file || is_built_in(cmd->argv))
 	{
 		cmdv->error_line = 0;
 		if ((cmd->sep == '|' && cmd->sepl != '|')

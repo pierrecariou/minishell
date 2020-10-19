@@ -6,7 +6,7 @@
 #    By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/01 10:17:20 by pcariou           #+#    #+#              #
-#    Updated: 2020/10/15 11:36:00 by pcariou          ###   ########.fr        #
+#    Updated: 2020/10/19 17:34:03 by pcariou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,13 @@ SRCS		=	srcs/main.c \
 				srcs/redirect.c \
 				srcs/error.c \
 				utils/gnl/get_next_line.c \
-				utils/gnl/get_next_line_utils.c
+				utils/gnl/get_next_line_utils.c \
+				srcs/built_in/ft_cd.c \
+				srcs/built_in/ft_cmp_built_in.c \
+				srcs/built_in/ft_echo.c \
+				srcs/built_in/ft_env.c \
+				srcs/built_in/ft_pwd.c
+
 
 OBJS		= $(SRCS:.c=.o)
 

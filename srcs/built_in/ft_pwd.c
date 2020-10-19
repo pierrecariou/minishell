@@ -1,31 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_echo.c                                          :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/12 12:11:51 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/19 12:07:38 by grezette         ###   ########.fr       */
+/*   Created: 2020/10/12 16:18:47 by grezette          #+#    #+#             */
+/*   Updated: 2020/10/19 17:55:14 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int		ft_echo(t_cmd cmd)
+int		ft_pwd(t_cmd cmd)
 {
-	int i;
+	char	*src;
+	int		fctr;
 
-	i = 0;
-	if (!ft_strncmp(cmd.argv[1], "-n", 3))
-		i = 1;
-	while (cmd.argv[++i])
+	(void)cmd;
+	fctr = 4096;
+	if (!(src = (char *)malloc(sizeof(char *) * (fctr))))
+		return (-1);
+	while (!(getcwd(src, fctr)))
 	{
-		ft_putstr_fd(cmd.argv[i], 1);
-		if (cmd.argv[i + 1])
-			ft_putchar_fd(' ', 1);
+		free(src);
+		fctr *= 2;
+		if (!(src = (char *)malloc(sizeof(char *) * (fctr))))
+			return (-1);
 	}
-	if (ft_strncmp(cmd.argv[1], "-n", 3))
-		ft_putchar_fd('\n', 1);
+	ft_putstr_fd(src, 1);
+	free(src);
+	write(1, "\n", 1);
 	return (0);
 }
