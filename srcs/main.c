@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/19 11:24:52 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/19 12:13:24 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -44,7 +44,6 @@ void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 	//if (strcmp(argv[0], "echo") || ...)
 	// built_in();
 	//else
-	cmdv->error = 0;
 	if (cmd->nredir > 1)
 		open_files(cmd, cmdv);
 	if (cmd->redir)
@@ -52,6 +51,7 @@ void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 	execve(file, argv, NULL);
 	if (cmd->redir)
 		close(cmd->fdredir);
+	cmdv->error = 0;
 }
 
 void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
@@ -62,6 +62,7 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 	if ((pid = fork()) == 0)
 		exec_built(file, cmd->argv, cmd, cmdv);
 	waitpid(pid, NULL, 0);
+	cmdv->error = 0;
 }
 
 void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
@@ -114,8 +115,8 @@ void	loop(char **paths, char **envp)
 			{
 				if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
 					create_file(cmd, cmdv);
-				else if (!cmd->argv[0])
-					cmd = cmd;
+				if (!cmd->argv[0])
+					cmdv->error = 1;
 				else
 					fork_ps(cmd, paths, cmdv);
 				cmd = cmd->next;
