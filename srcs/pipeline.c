@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 13:55:56 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/19 10:31:44 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/19 15:11:07 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 {
 	int pid;
 	int i;
+	int status;
 
 	i = -1;
 	pid = fork();
@@ -87,7 +88,8 @@ void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 	{
 		close_fd(cmdv);
 		while (++i < cmd->nforks)
-			waitpid(cmd->pid[i], NULL, 0);
-		waitpid(pid, NULL, 0);
+			waitpid(cmd->pid[i], &status, 0);
+		waitpid(pid, &status, 0);
 	}
+	cmdv->error_line = status;
 }

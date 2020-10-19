@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/19 12:13:24 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/19 15:21:10 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -23,6 +23,7 @@
 void	error(t_cmd *cmd, t_cmdv *cmdv)
 {
 	cmdv->error = 1;
+	cmdv->error_line = 127;
 	if (cmd->argv[0][0])
 	{
 		ft_putstr_fd("command not found: ", 1);
@@ -48,6 +49,7 @@ void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 		open_files(cmd, cmdv);
 	if (cmd->redir)
 		open_file(cmd);
+	//if (!cmp_built_in)
 	execve(file, argv, NULL);
 	if (cmd->redir)
 		close(cmd->fdredir);
@@ -57,13 +59,32 @@ void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 {
 	int pid;
+	int	status;
 
 	pipe_fd_reset(cmdv->cp);
 	if ((pid = fork()) == 0)
 		exec_built(file, cmd->argv, cmd, cmdv);
-	waitpid(pid, NULL, 0);
+	waitpid(pid, &status, 0);
+	cmdv->error_line = status;
 	cmdv->error = 0;
 }
+
+/*
+int		valid_cmd(t_cmd *cmd, char **paths)
+{
+	char *file;
+
+	if (!cmd->argv[0])
+		return (1);
+	if (not_a_path(cmd->argv[0]))
+		file = exec_path(paths, cmd->argv[0]);
+	else
+		file = file_stat(cmd->argv[0]);
+	if (file)
+		return (0);
+	return (1);
+}
+*/
 
 void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 {
@@ -76,6 +97,7 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 	//if file or built-in
 	if (file)
 	{
+		cmdv->error_line = 0;
 		if ((cmd->sep == '|' && cmd->sepl != '|')
 			&& cmdv->error == 0)
 			pipe_fd_fill(cmd);
@@ -96,7 +118,10 @@ void	loop(char **paths, char **envp)
 {
 	t_cmd	*cmd;
 	t_cmdv	*cmdv;
-
+	int 	error_line;
+	int		parse;
+	
+	error_line = 0;
 	while (42)
 	{
 		ft_putstr_fd("\033[1;31m", 1);
@@ -109,7 +134,8 @@ void	loop(char **paths, char **envp)
 		cmdv->envp = envp;
 		cmdv->cp = cmd;
 		cmdv->error = 0;
-		if (read_input(cmd, cmdv))
+		cmdv->error_line = error_line;
+		if ((parse = read_input(cmd, cmdv)))
 		{
 			while (cmd)
 			{
@@ -122,6 +148,10 @@ void	loop(char **paths, char **envp)
 				cmd = cmd->next;
 			}
 		}
+		if (!parse || (cmdv->error_line != 0 && cmdv->error_line != 127))
+			error_line = 2;
+		else if (parse)
+			error_line = cmdv->error_line;
 	}
 }
 
