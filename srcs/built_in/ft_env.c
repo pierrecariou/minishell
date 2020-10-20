@@ -17,13 +17,12 @@ int		ft_env(t_cmd cmd, char **envp)
 	int i;
 
 	(void)cmd;
-	i = -1;
-	while (envp[++i + 1])
+	i = 0;
+	while (envp[i])
 	{
 		ft_putstr_fd(envp[i], 1);
 		write(1, "\n", 1);
+		i++;
 	}
-	ft_putstr_fd("_=/usr/bin/env", 1);
-	write(1, "\n", 1);
 	return (0);
 }
