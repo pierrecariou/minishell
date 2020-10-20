@@ -87,5 +87,10 @@ int             ft_echo(t_cmd cmd);
 int             ft_env(t_cmd cmd, char **envp);
 int             ft_pwd(t_cmd cmd);
 int				is_built_in(char **argv);
+int		ft_export(t_cmd cmd, t_cmdv *cmdv);
+size_t	ft_square_strlen(char **str);
+char	**ft_square_strjoin(char **tab, char *str);
+char	**ft_square_free(char **tab);
+char	*ft_strdup(char *s1);
 
 #endif

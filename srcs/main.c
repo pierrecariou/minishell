@@ -145,7 +145,7 @@ void	loop(char **paths, char **envp)
 			return ;
 		if (!(cmdv = malloc(sizeof(t_cmdv))))
 			return ;
-		cmdv->envp = envp;
+		cmdv->envp = ft_square_strjoin(envp, NULL);
 		cmdv->cp = cmd;
 		cmdv->error = 0;
 		cmdv->error_line = error_line;
