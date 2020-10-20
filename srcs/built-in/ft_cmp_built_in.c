@@ -17,20 +17,34 @@ int		cmp_built_in(char **argv, t_cmd *cmd, t_cmdv *cmdv)
 	int exe;
 
 	exe = 1;
-	if (ft_strncmp(argv[0], "echo", 4))
+	if (!ft_strcmp(argv[0], "echo"))
 		ft_echo(*cmd);
-	else if (ft_strncmp(argv[0], "cd", 2))
-		ft_cd(*cmd);
-	else if (ft_strncmp(argv[0], "pwd", 3))
+	else if (!ft_strcmp(argv[0], "cd"))
+		ft_cd(*cmd, cmdv);
+	else if (!ft_strcmp(argv[0], "pwd"))
 		ft_pwd(*cmd);
-	else if (ft_strncmp(argv[0], "env", 3))
+	else if (!ft_strcmp(argv[0], "env"))
 		ft_env(*cmd, cmdv->envp);
-	else if (ft_strncmp(argv[0], "unset", 5))
+	else if (!ft_strcmp(argv[0], "unset"))
 		ft_putstr_fd("A work in progress\n", 1);
-	else if (ft_strncmp(argv[0], "export", 6))
+	else if (!ft_strcmp(argv[0], "export"))
 		ft_putstr_fd("A work in progress\n", 1);
-	else if (ft_strncmp(argv[0], "exit", 4))
+	else if (!ft_strcmp(argv[0], "exit"))
 		ft_putstr_fd("A work in progress\n", 1);
+	else
+		exe = 0;
+	return (exe);
+}
+
+int		is_built_in(char **argv)
+{
+	int exe;
+
+	if (!ft_strcmp(argv[0], "echo") || !ft_strcmp(argv[0], "cd") ||
+		!ft_strcmp(argv[0], "pwd") || !ft_strcmp(argv[0], "env") ||
+		!ft_strcmp(argv[0], "unset") || !ft_strcmp(argv[0], "export") ||
+		!ft_strcmp(argv[1], "exit"))
+		exe = 1;
 	else
 		exe = 0;
 	return (exe);
