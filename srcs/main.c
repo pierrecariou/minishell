@@ -145,7 +145,7 @@ void	loop(char **paths, char **envp)
 			return ;
 		if (!(cmdv = malloc(sizeof(t_cmdv))))
 			return ;
-		cmdv->envp = ft_square_strjoin(envp, NULL);
+		cmdv->envp = envp;
 		cmdv->cp = cmd;
 		cmdv->error = 0;
 		cmdv->error_line = error_line;
@@ -173,11 +173,13 @@ int		main(int argc, char **argv, char **envp)
 {
 	char *path;
 	char **paths;
+	char **tmp_env;
 
 	(void)argc;
 	(void)argv;
+	tmp_env = ft_square_strjoin(envp, NULL);
 	path = get_path(envp);
 	paths = split_path(path);
-	loop(paths, envp);
+	loop(paths, tmp_env);
 	return (0);
 }
