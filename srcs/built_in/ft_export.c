@@ -36,7 +36,7 @@ static int		ft_set_one_var(char *arg, t_cmdv *cmdv)
 		i++;
 	while (cmdv->envp[j] && ft_strncmp(arg, cmdv->envp[j], i - 1))
 		j++;
-	if (j != ft_square_strlen(cmdv->envp))
+	if (j != (int)ft_square_strlen(cmdv->envp))
 	{
 		free(cmdv->envp[j]);
 		if (!(cmdv->envp[j] = ft_strdup(arg)))
@@ -49,6 +49,7 @@ static int		ft_set_one_var(char *arg, t_cmdv *cmdv)
 			return (-1);
 		ft_square_free(tmp);
 	}
+	return (0);
 }
 
 int		ft_export(t_cmd cmd, t_cmdv *cmdv)
@@ -59,4 +60,5 @@ int		ft_export(t_cmd cmd, t_cmdv *cmdv)
 	while (cmd.argv[++i])
 		if (ft_set_one_var(cmd.argv[i], cmdv))
 			return (-1);
+	return (0);
 }
