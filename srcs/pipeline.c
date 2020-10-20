@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 13:55:56 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/19 15:11:07 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/20 13:56:14 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,15 @@ void            store_pid(t_cmd *cmd, int pid)
 {
 	int i;
 
-	i = -1;
+	i = 0;
 	cmd->next->nforks = cmd->nforks + 1;
 	if (!(cmd->next->pid = malloc(sizeof(int) * cmd->next->nforks)))
 		return ;
-	while (++i < cmd->nforks)
+	while (i < cmd->nforks)
+	{
 		cmd->next->pid[i] = cmd->pid[i];
-	i++;
+		i++;
+	}
 	cmd->next->pid[i] = pid;
 }
 
@@ -81,6 +83,8 @@ void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 			dup2(cmd->fdout, 1);
 		close_fd(cmdv);
 		exec_built(file, cmd->argv, cmd, cmdv);
+		if (is_built_in(cmd->argv))
+			exit(0);
 	}
 	if (cmd->sep == '|')
 		store_pid(cmd, pid);
