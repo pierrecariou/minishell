@@ -23,7 +23,15 @@ SRCS		=	srcs/main.c \
 				srcs/redirect.c \
 				srcs/error.c \
 				utils/gnl/get_next_line.c \
-				utils/gnl/get_next_line_utils.c
+				utils/gnl/get_next_line_utils.c \
+				srcs/built_in/ft_cd.c \
+				srcs/built_in/ft_cmp_built_in.c \
+				srcs/built_in/ft_echo.c \
+				srcs/built_in/ft_env.c \
+				srcs/built_in/ft_pwd.c \
+				srcs/built_in/ft_export.c \
+				srcs/built_in/gab_le_bg.c \
+
 
 OBJS		= $(SRCS:.c=.o)
 
