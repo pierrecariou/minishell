@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
-#include <wait.h>
+#include <sys/wait.h>
 
 typedef struct		s_cmd
 {
@@ -81,5 +81,11 @@ void	get_redirb(t_cmd *cmd);
 void	get_redir(t_cmd *cmd);
 void	count_redir(t_cmd *cmd);
 char 	*ft_itoa(int nb);
+int		ft_cd(t_cmd cmd, t_cmdv *cmdv);
+int             cmp_built_in(char **argv, t_cmd *cmd, t_cmdv *cmdv);
+int             ft_echo(t_cmd cmd);
+int             ft_env(t_cmd cmd, char **envp);
+int             ft_pwd(t_cmd cmd);
+int				is_built_in(char **argv);
 
 #endif
