@@ -55,8 +55,8 @@ static int		ft_half_pwd(char **envp, char *str)
 
 int		ft_cd(t_cmd cmd, t_cmdv *cmdv)
 {
-	if (ft_half_pwd(cmdv->envp, "OLDPWD="))
-		return (-1);
+//	if (ft_half_pwd(cmdv->envp, "OLDPWD="))
+//		return (-1);
 	if (chdir(cmd.argv[1]))
 	{
 		ft_putstr_fd("cd: no such file or directory:", 1);
