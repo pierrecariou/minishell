@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/20 14:00:03 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/20 14:13:24 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -62,7 +62,11 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 
 	pipe_fd_reset(cmdv->cp);
 	if ((pid = fork()) == 0)
+	{
 		exec_built(file, cmd->argv, cmd, cmdv);
+		if (is_built_in(cmd->argv))
+			exit(0);
+	}
 	waitpid(pid, &status, 0);
 	cmdv->error_line = status;
 	cmdv->error = 0;
