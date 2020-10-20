@@ -12,8 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-#include "../../includes/minishell.h"
-
 //Attention, ca leaks si ft_cd est appelé une seconde fois ou plus.
 
 static int	ft_strncmp(char *s1, char *s2, size_t n)
@@ -55,16 +53,23 @@ static int		ft_half_pwd(char **envp, char *str)
 
 int		ft_cd(t_cmd cmd, t_cmdv *cmdv)
 {
-//	if (ft_half_pwd(cmdv->envp, "OLDPWD="))
-//		return (-1);
-	if (chdir(cmd.argv[1]))
+	//	if (ft_half_pwd(cmdv->envp, "OLDPWD="))
+	//		return (-1);
+
+	int i;
+
+	i = 0;
+	while (ft_strncmp(cmdv->envp[i], "HOME=", 4))
+		i++;
+	if (!cmd.argv[1])
+		chdir(cmdv->envp[i] + 5);
+	else if (chdir(cmd.argv[1]))
 	{
-		ft_putstr_fd("cd: no such file or directory:", 1);
+		ft_putstr_fd("cd: ", 1);
 		ft_putstr_fd(cmd.argv[1], 1);
-		write(1, "\n", 1);
+		ft_putstr_fd(": No such file or directory\n", 1);
 	}
-	else
-		if (ft_half_pwd(cmdv->envp, "PWD="))
-			return (-1);
+	if (ft_half_pwd(cmdv->envp, "PWD="))
+		return (-1);
 	return (0);
 }

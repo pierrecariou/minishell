@@ -19,7 +19,11 @@ int		ft_env(t_cmd cmd, char **envp)
 	(void)cmd;
 	i = -1;
 	while (envp[++i + 1])
+	{
 		ft_putstr_fd(envp[i], 1);
-	ft_putstr_fd("-=/usr/bin/env", 1);
+		write(1, "\n", 1);
+	}
+	ft_putstr_fd("_=/usr/bin/env", 1);
+	write(1, "\n", 1);
 	return (0);
 }

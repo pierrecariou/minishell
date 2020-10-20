@@ -30,5 +30,6 @@ int		ft_pwd(t_cmd cmd)
 	}
 	ft_putstr_fd(src, 1);
 	free(src);
+	write(1, "\n", 1);
 	return (0);
 }

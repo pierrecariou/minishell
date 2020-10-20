@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/19 13:02:11 by grezette         ###   ########.fr       */
+/*   Updated: 2020/10/20 15:11:10 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -23,7 +23,12 @@ void	error(t_cmd *cmd, t_cmdv *cmdv)
 {
 	cmdv->error = 1;
 	cmdv->error_line = 127;
-	if (cmd->argv[0][0])
+	if (cmd->redir == '<')
+	{
+		ft_putstr_fd(cmd->redirf, 1);
+		ft_putstr_fd(": No such file or directory\n", 1);
+	}
+	else if (cmd->argv[0][0])
 	{
 		ft_putstr_fd("command not found: ", 1);
 		ft_putstr_fd(cmd->argv[0], 1);
@@ -33,7 +38,7 @@ void	error(t_cmd *cmd, t_cmdv *cmdv)
 		ft_putstr_fd("error\n", 2);
 	if (cmd->nredir > 1)
 		open_files(cmd, cmdv);
-	if (cmd->redir && cmd->redirf[0])
+	if (cmd->redir && cmd->redir != '<' && cmd->redirf[0])
 		create_file(cmd, cmdv);
 	if (cmd->redir)
 		close(cmd->fdredir);
@@ -47,9 +52,15 @@ void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 	if (cmd->nredir > 1)
 		open_files(cmd, cmdv);
 	if (cmd->redir)
-		open_file(cmd);
-	//if (!cmp_built_in)
-	execve(file, argv, NULL);
+	{
+		if (!open_file(cmd))
+		{
+			error(cmd, cmdv);
+			return ;
+		}
+	}
+	if (!cmp_built_in(argv, cmd, cmdv))
+		execve(file, argv, NULL);
 	if (cmd->redir)
 		close(cmd->fdredir);
 	cmdv->error = 0;
@@ -62,7 +73,11 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 
 	pipe_fd_reset(cmdv->cp);
 	if ((pid = fork()) == 0)
+	{
 		exec_built(file, cmd->argv, cmd, cmdv);
+	//	if (is_built_in(cmd->argv))
+	//		exit(0);
+	}
 	waitpid(pid, &status, 0);
 	cmdv->error_line = status;
 	cmdv->error = 0;
@@ -94,7 +109,7 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 	else
 		file = file_stat(cmd->argv[0]);
 	//if file or built-in
-	if (file)
+	if (file || is_built_in(cmd->argv))
 	{
 		cmdv->error_line = 0;
 		if ((cmd->sep == '|' && cmd->sepl != '|')

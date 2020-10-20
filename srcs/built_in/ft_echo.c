@@ -26,6 +26,6 @@ int		ft_echo(t_cmd cmd)
 			write(1, " ", 1);
 	}
 	if (ft_strcmp(cmd.argv[1], "-n"))
-		write(1, "\n", 1);
+	  write(1, "\n", 1);
 	return (0);
 }

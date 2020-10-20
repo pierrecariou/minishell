@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/19 17:12:59 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/20 16:36:34 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,6 @@ void	count_sep(char *buf, t_cmdv *cmdv)
 			cmdv->nsep++;
 	}
 }
-/*
 
 char	*real_env(char *envv, t_cmdv *cmdv)
 {
@@ -268,7 +267,6 @@ char	*get_envv(char *buf, t_cmdv *cmdv, int i)
 	}
 	return (buf);
 }
-*/
 
 int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 {
@@ -282,7 +280,7 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) || double_sep(buf)
 		|| tripledouble_redir(buf))
 		return (0);
-	//buf = get_envv(buf, cmdv, -1);
+	buf = get_envv(buf, cmdv, -1);
 	count_sep(buf, cmdv);
 	cmd_line(buf, cmd, cmdv);
 	count_redir(cmd);
