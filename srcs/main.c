@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/20 14:13:24 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/20 14:58:21 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -23,7 +23,12 @@ void	error(t_cmd *cmd, t_cmdv *cmdv)
 {
 	cmdv->error = 1;
 	cmdv->error_line = 127;
-	if (cmd->argv[0][0])
+	if (cmd->redir == '<')
+	{
+		ft_putstr_fd(cmd->redirf, 1);
+		ft_putstr_fd(": No such file or directory\n", 1);
+	}
+	else if (cmd->argv[0][0])
 	{
 		ft_putstr_fd("command not found: ", 1);
 		ft_putstr_fd(cmd->argv[0], 1);
@@ -33,7 +38,7 @@ void	error(t_cmd *cmd, t_cmdv *cmdv)
 		ft_putstr_fd("error\n", 2);
 	if (cmd->nredir > 1)
 		open_files(cmd, cmdv);
-	if (cmd->redir && cmd->redirf[0])
+	if (cmd->redir && cmd->redir != '<' && cmd->redirf[0])
 		create_file(cmd, cmdv);
 	if (cmd->redir)
 		close(cmd->fdredir);
@@ -47,7 +52,13 @@ void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 	if (cmd->nredir > 1)
 		open_files(cmd, cmdv);
 	if (cmd->redir)
-		open_file(cmd);
+	{
+		if (!open_file(cmd))
+		{
+			error(cmd, cmdv);
+			return ;
+		}
+	}
 	if (!cmp_built_in(argv, cmd, cmdv))
 		execve(file, argv, NULL);
 	if (cmd->redir)
