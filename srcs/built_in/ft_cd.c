@@ -69,8 +69,7 @@ int		ft_cd(t_cmd cmd, t_cmdv *cmdv)
 		ft_putstr_fd(cmd.argv[1], 1);
 		ft_putstr_fd(": No such file or directory\n", 1);
 	}
-	else
-		if (ft_half_pwd(cmdv->envp, "PWD="))
-			return (-1);
+	if (ft_half_pwd(cmdv->envp, "PWD="))
+		return (-1);
 	return (0);
 }
