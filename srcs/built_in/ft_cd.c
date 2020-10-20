@@ -6,11 +6,9 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 18:19:20 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/12 18:23:44 by grezette         ###   ########.fr       */
+/*   Updated: 2020/10/20 11:25:34 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "../../includes/minishell.h"
 
 #include "../../includes/minishell.h"
 

@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/19 15:01:30 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/19 15:11:22 by grezette         ###   ########.fr       */
+/*   Updated: 2020/10/20 11:26:19 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int		cmp_built_in(char **argv, t_cmd *cmd, t_cmdv *cmdv)
 	if (!ft_strcmp(argv[0], "echo"))
 		ft_echo(*cmd);
 	else if (!ft_strcmp(argv[0], "cd"))
-		ft_cd(*cmd, cmdv);
+		ft_cd(*cmd);
 	else if (!ft_strcmp(argv[0], "pwd"))
 		ft_pwd(*cmd);
 	else if (!ft_strcmp(argv[0], "env"))
