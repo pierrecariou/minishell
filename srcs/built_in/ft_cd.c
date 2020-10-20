@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 18:19:20 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/20 11:25:34 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/20 15:16:36 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,9 @@ static int		ft_half_pwd(char **envp, char *str)
 
 int		ft_cd(t_cmd cmd, t_cmdv *cmdv)
 {
-//	if (ft_half_pwd(cmdv->envp, "OLDPWD="))
-//		return (-1);
+	//	if (ft_half_pwd(cmdv->envp, "OLDPWD="))
+	//		return (-1);
+
 	int i;
 
 	i = 0;
@@ -64,9 +65,9 @@ int		ft_cd(t_cmd cmd, t_cmdv *cmdv)
 		chdir(cmdv->envp[i] + 5);
 	else if (chdir(cmd.argv[1]))
 	{
-		ft_putstr_fd("cd: no such file or directory:", 1);
+		ft_putstr_fd("cd: ", 1);
 		ft_putstr_fd(cmd.argv[1], 1);
-		write(1, "\n", 1);
+		ft_putstr_fd(": No such file or directory\n", 1);
 	}
 	else
 		if (ft_half_pwd(cmdv->envp, "PWD="))

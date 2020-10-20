@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/20 14:58:21 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/20 15:11:10 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -75,8 +75,8 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 	if ((pid = fork()) == 0)
 	{
 		exec_built(file, cmd->argv, cmd, cmdv);
-		if (is_built_in(cmd->argv))
-			exit(0);
+	//	if (is_built_in(cmd->argv))
+	//		exit(0);
 	}
 	waitpid(pid, &status, 0);
 	cmdv->error_line = status;
