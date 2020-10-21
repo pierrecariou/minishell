@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/21 11:53:02 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/21 12:30:37 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -131,15 +131,6 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 	}
 	else
 		error(cmd, cmdv);
-}
-
-void	replace_envv(t_cmd *cmd, t_cmdv *cmdv)
-{
-	int i;
-
-	i = -1;
-	while (cmd->argv[++i])
-		cmd->argv[i] = get_envv(cmd->argv[i], cmdv, -1);
 }
 
 void	loop(char **paths, char **envp)

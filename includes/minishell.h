@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/21 11:55:10 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/21 12:32:38 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,5 +94,6 @@ char	**ft_square_strjoin(char **tab, char *str);
 char	**ft_square_free(char **tab);
 char	*ft_strdup(char *s1);
 char	*get_envv(char *buf, t_cmdv *cmdv, int i);
+void	replace_envv(t_cmd *cmd, t_cmdv *cmdv);
 
 #endif

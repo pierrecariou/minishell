@@ -6,7 +6,7 @@
 #    By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/01 10:17:20 by pcariou           #+#    #+#              #
-#    Updated: 2020/10/19 17:34:03 by pcariou          ###   ########.fr        #
+#    Updated: 2020/10/21 12:31:53 by pcariou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ SRCS		=	srcs/main.c \
 				srcs/find_path.c \
 				srcs/pipeline.c \
 				srcs/redirect.c \
+				srcs/envv.c \
 				srcs/error.c \
 				utils/gnl/get_next_line.c \
 				utils/gnl/get_next_line_utils.c \
