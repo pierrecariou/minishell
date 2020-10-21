@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/20 16:36:34 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/21 10:36:33 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ void	add_next(int m, t_cmd *cmd, t_cmdv *cmdv)
 			return ;
 		next->sepl = cmd->sep;
 		cmd->next = next;
+		cmd->next->prev = cmd;
 	}
 	else
 		cmd->next = 0;	

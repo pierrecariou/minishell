@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/20 14:49:07 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/21 10:37:46 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct		s_cmd
 	int				nredir;
 	char 			**redirfb;
 	struct	s_cmd	*next;
+	struct  s_cmd	*prev;
 }					t_cmd;
 
 typedef struct		s_cmdv

@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/19 15:01:30 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/19 15:11:22 by grezette         ###   ########.fr       */
+/*   Updated: 2020/10/21 09:46:27 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int		is_built_in(char **argv)
 	if (!ft_strcmp(argv[0], "echo") || !ft_strcmp(argv[0], "cd") ||
 		!ft_strcmp(argv[0], "pwd") || !ft_strcmp(argv[0], "env") ||
 		!ft_strcmp(argv[0], "unset") || !ft_strcmp(argv[0], "export") ||
-		!ft_strcmp(argv[1], "exit"))
+		!ft_strcmp(argv[0], "exit"))
 		exe = 1;
 	else
 		exe = 0;
