@@ -32,8 +32,10 @@ static int		ft_set_one_var(char *arg, t_cmdv *cmdv)
 
 	i = 0;
 	j = 0;
-	while (arg[i] != '=')
+	while (arg[i] && arg[i] != '=')
 		i++;
+	if (i == ft_strlen(arg))
+		return (0);
 	while (cmdv->envp[j] && ft_strncmp(arg, cmdv->envp[j], i))
 		j++;
 	if (j != (int)ft_square_strlen(cmdv->envp))
