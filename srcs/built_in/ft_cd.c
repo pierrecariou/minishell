@@ -26,9 +26,10 @@ static int	ft_strncmp(char *s1, char *s2, size_t n)
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
-static int		ft_half_pwd(char **envp, char *str)
+static int		ft_half_pwd(t_cmdv *cmdv, char *str)
 {
 	char	*src;
+	char	**tmp_envp;
 	int		fctr;
 
 	fctr = 4096 - ft_strlen(str);
@@ -45,9 +46,24 @@ static int		ft_half_pwd(char **envp, char *str)
 	while (str[++fctr])
 		src[fctr] = str[fctr];
 	fctr = 0;
-	while (ft_strncmp(envp[fctr], str, ft_strlen(str) - 1))
+	while (cmdv->envp[fctr] && ft_strncmp(cmdv->envp[fctr], str, ft_strlen(str) - 1))
 		fctr++;
-	envp[fctr] = src;
+	if (fctr == (int)ft_square_strlen(cmdv->envp))
+	{
+		tmp_envp = cmdv->envp;
+		if (!(cmdv->envp = ft_square_strjoin(cmdv->envp, src)))
+		{
+			free(src);
+			return (-1);
+		}
+		ft_square_free(tmp_envp);
+		free(src);
+	}
+	else
+	{
+		free(cmdv->envp[fctr]);
+		cmdv->envp[fctr] = src;
+	}
 	return (0);
 }
 
@@ -69,7 +85,7 @@ int		ft_cd(t_cmd cmd, t_cmdv *cmdv)
 		ft_putstr_fd(cmd.argv[1], 1);
 		ft_putstr_fd(": No such file or directory\n", 1);
 	}
-	if (ft_half_pwd(cmdv->envp, "PWD="))
+	if (ft_half_pwd(cmdv, "PWD="))
 		return (-1);
 	return (0);
 }

@@ -27,7 +27,7 @@ int		ft_echo(t_cmd cmd)
 		if (cmd.argv[i + 1])
 			write(1, " ", 1);
 	}
-	if (!cmd.argv[1] || ft_strcmp(cmd.argv[1], "-n"))
+	if (cmd.argv[1] && ft_strcmp(cmd.argv[1], "-n"))
 	  write(1, "\n", 1);
 	return (0);
 }

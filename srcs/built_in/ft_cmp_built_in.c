@@ -26,7 +26,7 @@ int		cmp_built_in(char **argv, t_cmd *cmd, t_cmdv *cmdv)
 	else if (!ft_strcmp(argv[0], "env"))
 		ft_env(*cmd, cmdv->envp);
 	else if (!ft_strcmp(argv[0], "unset"))
-		ft_putstr_fd("A work in progress\n", 1);
+		ft_unset(*cmd, cmdv);
 	else if (!ft_strcmp(argv[0], "export"))
 		ft_export(*cmd, cmdv);
 	else if (!ft_strcmp(argv[0], "exit"))
