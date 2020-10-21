@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/21 10:37:46 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/21 11:55:10 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,15 +83,16 @@ void	get_redir(t_cmd *cmd);
 void	count_redir(t_cmd *cmd);
 char 	*ft_itoa(int nb);
 int		ft_cd(t_cmd cmd, t_cmdv *cmdv);
-int             cmp_built_in(char **argv, t_cmd *cmd, t_cmdv *cmdv);
-int             ft_echo(t_cmd cmd);
-int             ft_env(t_cmd cmd, char **envp);
-int             ft_pwd(t_cmd cmd);
-int				is_built_in(char **argv);
+int		cmp_built_in(char **argv, t_cmd *cmd, t_cmdv *cmdv);
+int		ft_echo(t_cmd cmd);
+int		ft_env(t_cmd cmd, char **envp);
+int		ft_pwd(t_cmd cmd);
+int		is_built_in(char **argv);
 int		ft_export(t_cmd cmd, t_cmdv *cmdv);
 size_t	ft_square_strlen(char **str);
 char	**ft_square_strjoin(char **tab, char *str);
 char	**ft_square_free(char **tab);
 char	*ft_strdup(char *s1);
+char	*get_envv(char *buf, t_cmdv *cmdv, int i);
 
 #endif

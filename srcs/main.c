@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/21 11:16:11 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/21 11:53:02 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -133,6 +133,15 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 		error(cmd, cmdv);
 }
 
+void	replace_envv(t_cmd *cmd, t_cmdv *cmdv)
+{
+	int i;
+
+	i = -1;
+	while (cmd->argv[++i])
+		cmd->argv[i] = get_envv(cmd->argv[i], cmdv, -1);
+}
+
 void	loop(char **paths, char **envp)
 {
 	t_cmd	*cmd;
@@ -158,6 +167,7 @@ void	loop(char **paths, char **envp)
 		{
 			while (cmd)
 			{
+				replace_envv(cmd, cmdv);
 				if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
 					create_file(cmd, cmdv);
 				if (!cmd->argv[0])

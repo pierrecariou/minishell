@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/21 10:36:33 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/21 12:24:21 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ char	*real_env(char *envv, t_cmdv *cmdv)
 		m = 0;
 		while (envv[m] && cmdv->envp[i][m] && envv[m] == cmdv->envp[i][m])
 			m++;
-		if (cmdv->envp[i][m] && cmdv->envp[i][m] == '=' && cmdv->envp[i][m + 1])
+		if (!envv[m] && cmdv->envp[i][m] && cmdv->envp[i][m] == '=' && cmdv->envp[i][m + 1])
 			return (&cmdv->envp[i][m + 1]);
 	}
 	space = malloc(2);
@@ -236,13 +236,12 @@ char	*get_envv(char *buf, t_cmdv *cmdv, int i)
 
 	while (buf[++i])
 	{
-		if (buf[i] == '$' && buf[i + 1] && !ft_isspace(buf[i + 1]))
+		if (buf[i] == '$' && buf[i + 1])
 		{
 			m = 0;
 			l = i;
 			cp = ++i;
-			while (buf[i] && !ft_isspace(buf[i]) && buf[i] != '/'
-				&& buf[i] != '$')
+			while (buf[i] && buf[i] != '/' && buf[i] != '$')
 			{
 				m++;
 				i++;
@@ -251,8 +250,7 @@ char	*get_envv(char *buf, t_cmdv *cmdv, int i)
 				return (0);
 			i = cp;
 			m = 0;
-			while (buf[i] && !ft_isspace(buf[i]) && buf[i] != '/'
-				&& buf[i] != '$')
+			while (buf[i] && buf[i] != '/' && buf[i] != '$')
 				envv[m++] = buf[i++];
 			envv[m] = 0;
 	//		r = i;
@@ -281,7 +279,7 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) || double_sep(buf)
 		|| tripledouble_redir(buf))
 		return (0);
-	buf = get_envv(buf, cmdv, -1);
+	//buf = get_envv(buf, cmdv, -1);
 	count_sep(buf, cmdv);
 	cmd_line(buf, cmd, cmdv);
 	count_redir(cmd);
