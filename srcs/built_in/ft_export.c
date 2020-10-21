@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 18:19:20 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/20 15:16:36 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/21 11:20:18 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int		ft_set_one_var(char *arg, t_cmdv *cmdv)
 	j = 0;
 	while (arg[i] != '=')
 		i++;
-	while (cmdv->envp[j] && ft_strncmp(arg, cmdv->envp[j], i - 1))
+	while (cmdv->envp[j] && ft_strncmp(arg, cmdv->envp[j], i))
 		j++;
 	if (j != (int)ft_square_strlen(cmdv->envp))
 	{

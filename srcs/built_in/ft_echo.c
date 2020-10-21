@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 12:11:51 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/19 12:07:38 by grezette         ###   ########.fr       */
+/*   Updated: 2020/10/21 11:34:49 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int		ft_echo(t_cmd cmd)
 	int i;
 
 	i = 0;
+	if (!cmd.argv[1])
+		write(1, "\n", 1);
 	if (!ft_strcmp(cmd.argv[1], "-n"))
 		i = 1;
 	while (cmd.argv[++i])

@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/21 10:40:58 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/21 11:16:11 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -171,6 +171,7 @@ void	loop(char **paths, char **envp)
 			error_line = 2;
 		else if (parse)
 			error_line = cmdv->error_line;
+		envp = cmdv->envp;
 	}
 }
 
