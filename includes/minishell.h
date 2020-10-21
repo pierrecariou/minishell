@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/21 12:32:38 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/21 14:47:16 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,5 +95,6 @@ char	**ft_square_free(char **tab);
 char	*ft_strdup(char *s1);
 char	*get_envv(char *buf, t_cmdv *cmdv, int i);
 void	replace_envv(t_cmd *cmd, t_cmdv *cmdv);
+int		is_in_quotes(char *buf, int b, int e);
 
 #endif

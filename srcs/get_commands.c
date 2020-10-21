@@ -6,17 +6,19 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/21 12:31:16 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/21 15:08:26 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-int		find_sep(char c, t_cmd *cmd)
+int		find_sep(char *buf, t_cmd *cmd, int i)
 {
-	if (c == ';' || c == '|')
+	if (buf[i] == ';' || buf[i] == '|')
 	{
-		cmd->sep = c;
+		if (is_in_quotes(buf, i - 1, i + 1))
+			return (0);
+		cmd->sep = buf[i];
 		return (1);
 	}
 	return (0);
@@ -140,14 +142,15 @@ void	cmd_line(char *buf, t_cmd *cmd, t_cmdv *cmdv)
 		l = 0;
 		k = 0;
 		cmd->sep = 0;
-		while (buf[i] && !find_sep(buf[i], cmd))
+		while (buf[i] && !find_sep(buf, cmd, i))
 		{
+		//	printf("%c\n", buf[i]);
 			l++;
 			i++;
 		}
 		cmd->line = malloc(sizeof(char) * (l + 1));
 		i-=l;
-		while (buf[i] && !find_sep(buf[i], cmd))
+		while (buf[i] && !find_sep(buf, cmd, i))
 		{
 			cmd->line[k] = buf[i];
 			i++;
@@ -160,6 +163,21 @@ void	cmd_line(char *buf, t_cmd *cmd, t_cmdv *cmdv)
 	}
 }
 
+
+int		is_in_quotes(char *buf, int b, int e)
+{
+
+	while (b >= 0 && ft_isspace(buf[b]))
+		b--;
+	if (b >= 0 && (buf[b] == '\'' || buf[b] == '\"'))
+		return (1);
+	while  (buf[e] && ft_isspace(buf[e]))
+		e++;
+	if (buf[e] && (buf[e] == '\'' || buf[e] == '\"'))
+		return (1);
+	return (0);	
+}
+
 void	count_sep(char *buf, t_cmdv *cmdv)
 {
 	int i;
@@ -168,7 +186,8 @@ void	count_sep(char *buf, t_cmdv *cmdv)
 	cmdv->nsep = 0;
 	while (buf[++i])
 	{
-		if (buf[i] == '|' || buf[i] == ';')
+		if ((buf[i] == '|' || buf[i] == ';')
+			&& !is_in_quotes(buf, i - 1, i + 1))
 			cmdv->nsep++;
 	}
 }
@@ -186,6 +205,7 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 		|| tripledouble_redir(buf))
 		return (0);
 	count_sep(buf, cmdv);
+	//printf("%d\n", cmdv->nsep);
 	cmd_line(buf, cmd, cmdv);
 	count_redir(cmd);
 	get_redirb(cmd);
