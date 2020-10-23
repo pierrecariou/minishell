@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/23 18:50:07 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/23 19:08:19 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,7 +324,6 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 
 	//read(0, buf, 300);
 	get_next_line(0, &buf);
-	printf("%s\n", buf);
 	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) ||
 			double_sep(buf) || tripledouble_redir(buf))
 		return (0);
