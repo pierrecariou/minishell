@@ -6,7 +6,7 @@
 #    By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/01 10:17:20 by pcariou           #+#    #+#              #
-#    Updated: 2020/10/21 12:31:53 by pcariou          ###   ########.fr        #
+#    Updated: 2020/10/21 15:14:14 by pcariou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ SRCS		=	srcs/main.c \
 				srcs/built_in/ft_pwd.c \
 				srcs/built_in/ft_export.c \
 				srcs/built_in/gab_le_bg.c \
+				srcs/built_in/ft_unset.c
 
 
 OBJS		= $(SRCS:.c=.o)

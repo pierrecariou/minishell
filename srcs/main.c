@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/21 12:30:37 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/23 18:54:24 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -158,6 +158,13 @@ void	loop(char **paths, char **envp)
 		{
 			while (cmd)
 			{
+				/*
+				int i = -1;
+				while (cmd->argv[++i])
+					printf("word : %s\n", cmd->argv[i]);
+				printf("n : %d\n", cmd->n);
+				printf("\n");
+				*/
 				replace_envv(cmd, cmdv);
 				if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
 					create_file(cmd, cmdv);
@@ -173,6 +180,8 @@ void	loop(char **paths, char **envp)
 		else if (parse)
 			error_line = cmdv->error_line;
 		envp = cmdv->envp;
+		free(cmd);
+		free(cmdv);
 	}
 }
 
