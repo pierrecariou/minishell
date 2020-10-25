@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/23 19:17:50 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/25 17:47:32 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,9 @@ typedef struct		s_cmdv
 	char 			**envp;
 	int				error;
 	int				error_line;
+	int				nenvv;
+	int				cenvv;
+	int				*envreplace;
 }					t_cmdv;
 
 void	ft_putstr_fd(char *s, int fd);

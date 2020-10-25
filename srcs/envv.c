@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:28:23 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/21 12:30:15 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/25 18:00:59 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,9 @@ char    *get_envv(char *buf, t_cmdv *cmdv, int i)
 
 	while (buf[++i])
 	{
-		if (buf[i] == '$' && buf[i + 1])
+		if (buf[i] == '$' && buf[i + 1] && cmdv->envreplace[cmdv->cenvv] == 1)
 		{
+			cmdv->cenvv++;
 			m = 0;
 			l = i;
 			cp = ++i;
@@ -102,6 +103,8 @@ char    *get_envv(char *buf, t_cmdv *cmdv, int i)
 			free(envv);
 			get_envv(buf, cmdv, i - 1);
 		}
+		else if (buf[i] == '$')
+			cmdv->cenvv++;
 	}
 	return (buf);
 }

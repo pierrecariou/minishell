@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/23 18:54:24 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/25 17:47:45 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -153,6 +153,7 @@ void	loop(char **paths, char **envp)
 		cmdv->envp = envp;
 		cmdv->cp = cmd;
 		cmdv->error = 0;
+		cmdv->cenvv = 0;
 		cmdv->error_line = error_line;
 		if ((parse = read_input(cmd, cmdv)))
 		{

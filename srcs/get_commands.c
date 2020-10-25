@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/23 19:18:56 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/25 18:02:38 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,61 +26,32 @@ int		find_sep(char *buf, t_cmd *cmd, int i, int inquotes)
 
 int		split_input(char *buf, char **words, t_cmd *cmd)
 {
-	/*
-	   while (++i < n)
-	   {
-	   while (buf[c] && ft_isspace(buf[c]))
-	   c++;
-	   while (buf[c] && !ft_isspace(buf[c]))
-	   {
-	   if (buf[c] == '\'' || buf[c] == '\"')
-	   {
-	   words[i][l] = buf[c];
-	   quote = buf[c++];
-	   l++;
-	   while (buf[c] && buf[c] != quote)
-	   {
-	   words[i][l] = buf[c];
-	   c++;
-	   l++;
-	   }
-	   }
-	   words[i][l] = buf[c];
-	   c++;
-	   l++;
-	   }
-	   words[i][l] = 0;
-	   l = 0;
-	   }
-	 */
 	int i;
 	int l;
 	int c;
-	//char quote;
 	int	inquotes;
 
-	//i = -1;
 	i = 0;
 	c = -1;
 	inquotes = 0;
 	while (buf[i] && c < cmd->n)
 	{
 		l = 0;
-		if (inquotes == 0 && buf[i] == '~')
+		if (inquotes == 0 && buf[i] == 126)
 			inquotes = 1;
-		else if (buf[i] == '~')
+		else if (buf[i] == 126)
 			inquotes = 0;
 		while (buf[i] && ft_isspace(buf[i]))
 			i++;
-		if (buf[i] && !ft_isspace(buf[i]) && buf[i] != '~')
+		if (buf[i] && !ft_isspace(buf[i]) && buf[i] != 126)
 		{
 			c++;
 			while ((buf[i] && !ft_isspace(buf[i]) && inquotes == 0) || 
 					(inquotes == 1 && buf[i]))
 			{
-				if (inquotes == 0 && buf[i] == '~')
+				if (inquotes == 0 && buf[i] == 126)
 					inquotes = 1;
-				else if (buf[i] == '~')
+				else if (buf[i] == 126)
 					inquotes = 0;
 				else
 					words[c][l++] = buf[i];
@@ -111,20 +82,20 @@ void    malloc_words(char *buf, char **words, int n)
 	while (buf[i] && k < n)
 	{
 		l = 0;
-		if (inquotes == 0 && buf[i] == '~')
+		if (inquotes == 0 && buf[i] == 126)
 			inquotes = 1;
-		else if (buf[i] == '~')
+		else if (buf[i] == 126)
 			inquotes = 0;
 		while (buf[i] && ft_isspace(buf[i]))
 			i++;
-		if (buf[i] && !ft_isspace(buf[i]) && buf[i] != '~')
+		if (buf[i] && !ft_isspace(buf[i]) && buf[i] != 126)
 		{
 			while ((buf[i] && !ft_isspace(buf[i]) && inquotes == 0) || 
 					(inquotes == 1 && buf[i]))
 			{
-				if (inquotes == 0 && buf[i] == '~')
+				if (inquotes == 0 && buf[i] == 126)
 					inquotes = 1;
-				else if (buf[i] == '~')
+				else if (buf[i] == 126)
 					inquotes = 0;
 				else
 					l++;
@@ -153,21 +124,21 @@ int             count_words(char *buf)
 	inquotes = 0;
 	while (buf[i])
 	{
-		if (inquotes == 0 && buf[i] == '~')
+		if (inquotes == 0 && buf[i] == 126)
 			inquotes = 1;
-		else if (buf[i] == '~')
+		else if (buf[i] == 126)
 			inquotes = 0;
 		while (buf[i] && ft_isspace(buf[i]))
 			i++;
-		if (buf[i] && !ft_isspace(buf[i]) && buf[i] != '~')
+		if (buf[i] && !ft_isspace(buf[i]) && buf[i] != 126)
 		{
 			c++;
 			while ((buf[i] && !ft_isspace(buf[i]) && inquotes == 0) || 
 					(inquotes == 1 && buf[i]))
 			{
-				if (inquotes == 0 && buf[i] == '~')
+				if (inquotes == 0 && buf[i] == 126)
 					inquotes = 1;
-				else if (buf[i] == '~')
+				else if (buf[i] == 126)
 					inquotes = 0;
 				i++;
 			}
@@ -224,9 +195,9 @@ void	cmd_line(char *buf, t_cmd *cmd, t_cmdv *cmdv)
 		cmd->sep = 0;
 		while (buf[i] && !find_sep(buf, cmd, i, inquotes))
 		{
-			if (inquotes == 0 && buf[i] == '~')
+			if (inquotes == 0 && buf[i] == 126)
 				inquotes = 1;
-			else if (buf[i] == '~')
+			else if (buf[i] == 126)
 				inquotes = 0;
 			l++;
 			i++;
@@ -235,9 +206,9 @@ void	cmd_line(char *buf, t_cmd *cmd, t_cmdv *cmdv)
 		i-=l;
 		while (buf[i] && !find_sep(buf, cmd, i, inquotes))
 		{
-			if (inquotes == 0 && buf[i] == '~')
+			if (inquotes == 0 && buf[i] == 126)
 				inquotes = 1;
-			else if (buf[i] == '~')
+			else if (buf[i] == 126)
 				inquotes = 0;
 			cmd->line[k] = buf[i];
 			i++;
@@ -250,21 +221,6 @@ void	cmd_line(char *buf, t_cmd *cmd, t_cmdv *cmdv)
 	}
 }
 
-/*
-int		is_in_quotes(char *buf, int b, int e)
-{
-	while (b >= 0 && ft_isspace(buf[b]))
-		b--;
-	if (b >= 0 && (buf[b] == '\'' || buf[b] == '\"'))
-		return (1);
-	while  (buf[e] && ft_isspace(buf[e]))
-		e++;
-	if (buf[e] && (buf[e] == '\'' || buf[e] == '\"'))
-		return (1);
-	return (0);	
-}
-*/
-
 void	count_sep(char *buf, t_cmdv *cmdv)
 {
 	int i;
@@ -275,9 +231,9 @@ void	count_sep(char *buf, t_cmdv *cmdv)
 	inquotes = 0;
 	while (buf[++i])
 	{
-		if (inquotes == 0 && buf[i] == '~')
+		if (inquotes == 0 && buf[i] == 126)
 			inquotes = 1;
-		else if (buf[i] == '~')
+		else if (buf[i] == 126)
 			inquotes = 0;
 		if ((buf[i] == '|' || buf[i] == ';')
 				&& inquotes == 0)
@@ -316,6 +272,44 @@ void	clean_quotes(char *buf)
 	//printf("%s\n", cmd->line);
 }
 
+void	count_envv(char *buf, t_cmdv *cmdv)
+{
+	int i;
+	int m;
+	int	inquotesd;
+	int	inquotess;
+
+	i = -1;
+	m = -1;
+	cmdv->nenvv = 0;;
+	inquotesd = 0;
+	inquotess = 0;
+	while (buf[++i])
+	{
+		if (buf[i] == '$')
+			cmdv->nenvv++;
+	}
+	if (!(cmdv->envreplace = malloc(sizeof(int) * cmdv->nenvv)))
+		return ;
+	i = -1;
+	while (buf[++i])
+	{
+		if (inquotesd == 0 && buf[i] == '\"')
+			inquotesd = 1;
+		else if (inquotess == 0 && buf[i] == '\'')
+			inquotess = 1;
+		else if (buf[i] == '\"' && inquotess == 0)
+			inquotesd = 0;
+		else if (buf[i] == '\'' && inquotesd == 0)
+			inquotess = 0;
+		if (buf[i] == '$' && inquotess)
+			cmdv->envreplace[++m] = 0;
+		else if (buf[i] == '$')
+			cmdv->envreplace[++m] = 1;
+		//printf("%d\n", cmdv->envreplace[m]);
+	}
+}
+
 int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 {
 	//char buf[300];
@@ -328,6 +322,7 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 			double_sep(buf) || tripledouble_redir(buf) ||
 			quotes_not_closed(buf))
 		return (0);
+	count_envv(buf, cmdv);
 	clean_quotes(buf);
 	count_sep(buf, cmdv);
 	//printf("%d\n", cmdv->nsep);
