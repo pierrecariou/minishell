@@ -54,15 +54,16 @@ typedef struct		s_cmdv
 	int				*envreplace;
 	int				inquotess;
 	int				inquotesd;
+	int				isaquote;
 }					t_cmdv;
 
 void	ft_putstr_fd(char *s, int fd);
 int		ft_strcmp(char *s1, char *s2);
 int		get_next_line(int fd, char **line);
 int		ft_strlen(char *s1);
-int		split_input(char *buf, char **words, t_cmd *cmd);
-void	malloc_words(char *buf, char **words, int n);
-int		count_words(char *buf);
+int		split_input(char *buf, char **words, t_cmd *cmd, t_cmdv *cmdv);
+void	malloc_words(char *buf, char **words, int n, t_cmdv *cmdv);
+int		count_words(char *buf, t_cmdv *cmdv);
 void	better_input(char *buf);
 int		read_input(t_cmd *cmd, t_cmdv *cmdv);
 int		not_a_path(char *word);
@@ -104,6 +105,6 @@ void	replace_envv(t_cmd *cmd, t_cmdv *cmdv);
 int		is_in_quotes(char *buf, int b, int e);
 void	ft_unset(t_cmd cmd, t_cmdv *cmdv);
 int		quotes_not_closed(char *buf);
-void	inquotes(char c, t_cmdv *cmdv);
+int		is_inquotes(char c, t_cmdv *cmdv);
 
 #endif
