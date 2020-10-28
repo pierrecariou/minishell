@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/25 18:02:38 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/28 14:49:14 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,24 +289,30 @@ void	count_envv(char *buf, t_cmdv *cmdv)
 		if (buf[i] == '$')
 			cmdv->nenvv++;
 	}
+//	printf("CENVV ::: %d\n", cmdv->nenvv);
 	if (!(cmdv->envreplace = malloc(sizeof(int) * cmdv->nenvv)))
 		return ;
 	i = -1;
 	while (buf[++i])
 	{
-		if (inquotesd == 0 && buf[i] == '\"')
+		//printf("%c\n", buf[i]);
+		if (inquotesd == 0 && buf[i] == '\"' && inquotess == 0)
 			inquotesd = 1;
-		else if (inquotess == 0 && buf[i] == '\'')
+		else if (inquotess == 0 && buf[i] == '\'' && inquotesd == 0)
 			inquotess = 1;
 		else if (buf[i] == '\"' && inquotess == 0)
 			inquotesd = 0;
 		else if (buf[i] == '\'' && inquotesd == 0)
 			inquotess = 0;
+		//printf("%d -- %d\n", inquotesd, inquotess);
+		//if (buf[i] == '$')
+			//printf("$$$$ %d -- %d\n", inquotesd, inquotess);
 		if (buf[i] == '$' && inquotess)
 			cmdv->envreplace[++m] = 0;
 		else if (buf[i] == '$')
 			cmdv->envreplace[++m] = 1;
-		//printf("%d\n", cmdv->envreplace[m]);
+//		if (buf[i] == '$')
+//			printf("%d\n", cmdv->envreplace[m]);
 	}
 }
 
@@ -315,14 +321,25 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 	//char buf[300];
 
 	char *buf;
+	int ret;
 
 	//read(0, buf, 300);
-	get_next_line(0, &buf);
+	ret = get_next_line(0, &buf);
+	if (!ret || ret == -1)
+		exit (0);
 	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) ||
 			double_sep(buf) || tripledouble_redir(buf) ||
 			quotes_not_closed(buf))
 		return (0);
 	count_envv(buf, cmdv);
+	/*
+	int i = 0;
+	while (i < cmdv->nenvv)
+	{
+		printf("TEST ::: %d\n", cmdv->envreplace[i]);
+		i++;
+	}
+	*/
 	clean_quotes(buf);
 	count_sep(buf, cmdv);
 	//printf("%d\n", cmdv->nsep);

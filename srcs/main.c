@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/25 17:47:45 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/28 14:48:56 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -143,9 +143,9 @@ void	loop(char **paths, char **envp)
 	error_line = 0;
 	while (42)
 	{
-		ft_putstr_fd("\033[1;31m", 1);
-		ft_putstr_fd(">> minishell ", 1);
-		ft_putstr_fd("\033[0m", 1);
+		ft_putstr_fd("\033[1;31m", 0);
+		ft_putstr_fd(">> minishell ", 0);
+		ft_putstr_fd("\033[0m", 0);
 		if (!(cmd = malloc(sizeof(t_cmd))))
 			return ;
 		if (!(cmdv = malloc(sizeof(t_cmdv))))
@@ -166,6 +166,18 @@ void	loop(char **paths, char **envp)
 				printf("n : %d\n", cmd->n);
 				printf("\n");
 				*/
+				/*
+
+				printf("NENVV :::: %d\n", cmdv->nenvv);
+				//printf("CENVV :::: %d\n", cmdv->cenvv);
+				//printf("enreplace %d\n", cmdv->envreplace[cmdv->cenvv]);
+				int i = 0;
+				while (i < cmdv->nenvv)
+				{
+					printf("TEST ::: %d\n", cmdv->envreplace[i]);
+					i++;
+				}
+				*/
 				replace_envv(cmd, cmdv);
 				if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
 					create_file(cmd, cmdv);
@@ -181,7 +193,7 @@ void	loop(char **paths, char **envp)
 		else if (parse)
 			error_line = cmdv->error_line;
 		envp = cmdv->envp;
-		free(cmd);
+		free(cmdv->cp);
 		free(cmdv);
 	}
 }

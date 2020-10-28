@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:28:23 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/25 18:00:59 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/28 11:39:49 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,11 @@ char    *get_envv(char *buf, t_cmdv *cmdv, int i)
 	//int r;
 	int l;
 
-	while (buf[++i])
-	{
-		if (buf[i] == '$' && buf[i + 1] && cmdv->envreplace[cmdv->cenvv] == 1)
+	//printf("SLUT ::: %d\n", cmdv->envreplace[cmdv->cenvv]);
+		//printf("%c\n", buf[i]);
+		//if (buf[i] == '$')
+		//	printf("%d\n", i);
+		if (buf[i] == '$' && buf[i + 1] && cmdv->envreplace[cmdv->cenvv])
 		{
 			cmdv->cenvv++;
 			m = 0;
@@ -99,21 +101,26 @@ char    *get_envv(char *buf, t_cmdv *cmdv, int i)
 			renvv = real_env(envv, cmdv);
 			//printf("%s\n", renvv);
 			buf = buf_with_envv(buf, renvv, end, length, l);
+			//printf("%s\n", buf);
 			//free(renvv);
 			free(envv);
-			get_envv(buf, cmdv, i - 1);
+		//	printf("salut\n");
 		}
-		else if (buf[i] == '$')
-			cmdv->cenvv++;
-	}
+		else if (buf[i] && buf[i] == '$')
+				cmdv->cenvv++;
 	return (buf);
 }
 
 void    replace_envv(t_cmd *cmd, t_cmdv *cmdv)
 {
 	int i;
+	int k;
 
 	i = -1;
 	while (cmd->argv[++i])
-		cmd->argv[i] = get_envv(cmd->argv[i], cmdv, -1);
+	{
+		k = -1;
+		while (cmd->argv[i][++k])
+			cmd->argv[i] = get_envv(cmd->argv[i], cmdv, k);
+	}
 }
