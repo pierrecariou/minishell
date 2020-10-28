@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/28 14:49:14 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/28 15:07:34 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,47 +272,44 @@ void	clean_quotes(char *buf)
 	//printf("%s\n", cmd->line);
 }
 
+void 	inquotes(char c, t_cmdv *cmdv)
+{
+	if (cmdv->inquotesd == 0 && c == '\"' && cmdv->inquotess == 0)
+		cmdv->inquotesd = 1;
+	else if (cmdv->inquotess == 0 && c == '\'' && cmdv->inquotesd == 0)
+		cmdv->inquotess = 1;
+	else if (c == '\"' && cmdv->inquotess == 0)
+		cmdv->inquotesd = 0;
+	else if (c == '\'' && cmdv->inquotesd == 0)
+		cmdv->inquotess = 0;
+}
+
 void	count_envv(char *buf, t_cmdv *cmdv)
 {
 	int i;
 	int m;
-	int	inquotesd;
-	int	inquotess;
 
 	i = -1;
 	m = -1;
 	cmdv->nenvv = 0;;
-	inquotesd = 0;
-	inquotess = 0;
+	cmdv->inquotesd = 0;
+	cmdv->inquotess = 0;
 	while (buf[++i])
 	{
 		if (buf[i] == '$')
 			cmdv->nenvv++;
 	}
-//	printf("CENVV ::: %d\n", cmdv->nenvv);
+	//	printf("CENVV ::: %d\n", cmdv->nenvv);
 	if (!(cmdv->envreplace = malloc(sizeof(int) * cmdv->nenvv)))
 		return ;
 	i = -1;
 	while (buf[++i])
 	{
-		//printf("%c\n", buf[i]);
-		if (inquotesd == 0 && buf[i] == '\"' && inquotess == 0)
-			inquotesd = 1;
-		else if (inquotess == 0 && buf[i] == '\'' && inquotesd == 0)
-			inquotess = 1;
-		else if (buf[i] == '\"' && inquotess == 0)
-			inquotesd = 0;
-		else if (buf[i] == '\'' && inquotesd == 0)
-			inquotess = 0;
-		//printf("%d -- %d\n", inquotesd, inquotess);
-		//if (buf[i] == '$')
-			//printf("$$$$ %d -- %d\n", inquotesd, inquotess);
-		if (buf[i] == '$' && inquotess)
+		inquotes(buf[i], cmdv);
+		if (buf[i] == '$' && cmdv->inquotess)
 			cmdv->envreplace[++m] = 0;
 		else if (buf[i] == '$')
 			cmdv->envreplace[++m] = 1;
-//		if (buf[i] == '$')
-//			printf("%d\n", cmdv->envreplace[m]);
 	}
 }
 
@@ -333,13 +330,13 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 		return (0);
 	count_envv(buf, cmdv);
 	/*
-	int i = 0;
-	while (i < cmdv->nenvv)
-	{
-		printf("TEST ::: %d\n", cmdv->envreplace[i]);
-		i++;
-	}
-	*/
+	   int i = 0;
+	   while (i < cmdv->nenvv)
+	   {
+	   printf("TEST ::: %d\n", cmdv->envreplace[i]);
+	   i++;
+	   }
+	 */
 	clean_quotes(buf);
 	count_sep(buf, cmdv);
 	//printf("%d\n", cmdv->nsep);
@@ -362,12 +359,12 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 		if (!split_input(cmd->line, cmd->argv, cmd))
 			return (0);
 		cmd->argv[cmd->n] = 0;
-			/*
-		int i = -1;
-		while (cmd->argv[++i])
-			printf("word : %s\n", cmd->argv[i]);
-		printf("\n");
-		*/
+		/*
+		   int i = -1;
+		   while (cmd->argv[++i])
+		   printf("word : %s\n", cmd->argv[i]);
+		   printf("\n");
+		 */
 		cmd = cmd->next;
 	}
 	return (1);
