@@ -12,13 +12,36 @@
 
 #include "includes/minishell.h"
 
+void	inthandler(int num) 
+{
+	(void)num;
+	ft_putstr_fd("\n", 0);
+	ft_putstr_fd("\033[1;31m", 0);
+	ft_putstr_fd(">> minishell ", 0);
+	ft_putstr_fd("\033[0m", 0);
+	return ;
+}
+
 /*
-   void	handler(int num) 
-   {
-   (void)num;
-   write(1, "handling!\n", 10);
-   }
- */
+void	huphandler(int num) 
+{
+	(void)num;
+	printf("super\n");
+	return ;
+}
+*/
+
+void	quithandler(int num) 
+{
+
+	(void)num;
+
+	ft_putstr_fd("\33[2D", 0);
+	ft_putstr_fd("  ", 0);
+	ft_putstr_fd("\33[2D", 0);
+	return ;
+}
+
 void	error(t_cmd *cmd, t_cmdv *cmdv)
 {
 	cmdv->error = 1;
@@ -75,7 +98,7 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 	if ((pid = fork()) == 0)
 	{
 		exec_built(file, cmd->argv, cmd, cmdv);
-		if (is_built_in(cmd->argv) && cmd->redir)
+		//if (is_built_in(cmd->argv) && cmd->redir)
 			exit(0);
 	}
 	waitpid(pid, &status, 0);
@@ -84,21 +107,21 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 }
 
 /*
-int		valid_cmd(t_cmd *cmd, char **paths)
-{
-	char *file;
+   int		valid_cmd(t_cmd *cmd, char **paths)
+   {
+   char *file;
 
-	if (!cmd->argv[0])
-		return (1);
-	if (not_a_path(cmd->argv[0]))
-		file = exec_path(paths, cmd->argv[0]);
-	else
-		file = file_stat(cmd->argv[0]);
-	if (file)
-		return (0);
-	return (1);
-}
-*/
+   if (!cmd->argv[0])
+   return (1);
+   if (not_a_path(cmd->argv[0]))
+   file = exec_path(paths, cmd->argv[0]);
+   else
+   file = file_stat(cmd->argv[0]);
+   if (file)
+   return (0);
+   return (1);
+   }
+ */
 
 void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 {
@@ -109,8 +132,10 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 	else
 		file = file_stat(cmd->argv[0]);
 	//if file or built-in
-	if (file || is_built_in(cmd->argv))
+	if ((file || is_built_in(cmd->argv)) && (ft_strcmp(cmd->argv[0], "exit") || cmd->sepl != '|'))
 	{	
+		if (!ft_strcmp(cmd->argv[0], "exit"))
+			ft_exit(cmd, cmdv);
 		cmdv->error_line = 0;
 		if (cmd->sepl == '|' && cmd->prev->redir)
 		{
@@ -118,13 +143,22 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 			pipe_fd_reset(cmdv->cp);
 		}
 		if ((cmd->sep == '|' && cmd->sepl != '|')
-			&& cmdv->error == 0)
+				&& cmdv->error == 0)
 			pipe_fd_fill(cmd);
+			/*
+		if (!ft_strcmp(cmd->argv[0], "echo") || !ft_strcmp(cmd->argv[0], "cd") || !ft_strcmp(cmd->argv[0], "export") || !ft_strcmp(cmd->argv[0], "unset"))
+		{
+			cmp_built_in(cmd->argv, cmd, cmdv);
+			if (cmd->sep == ';')
+				pipe_fd_reset(cmdv->cp);
+			return ;
+		}
+		*/
 		if ((cmd->sep == '|' || cmd->sepl == '|')
-			&& cmdv->error == 0)
+				&& cmdv->error == 0)
 			pipeline(cmd, file, cmdv);
 		else if ((cmd->sep == ';' || cmd->sep == 0)
-			&& !(cmd->sepl == '|' && cmdv->error == 1))
+				&& !(cmd->sepl == '|' && cmdv->error == 1))
 			list(cmd, file, cmdv);
 		if (cmd->sep == ';')
 			pipe_fd_reset(cmdv->cp);
@@ -139,7 +173,7 @@ void	loop(char **paths, char **envp)
 	t_cmdv	*cmdv;
 	int 	error_line;
 	int		parse;
-	
+
 	error_line = 0;
 	while (42)
 	{
@@ -160,24 +194,24 @@ void	loop(char **paths, char **envp)
 			while (cmd)
 			{
 				/*
-				int i = -1;
-				while (cmd->argv[++i])
-					printf("word : %s\n", cmd->argv[i]);
-				printf("n : %d\n", cmd->n);
-				printf("\n");
-				*/
+				   int i = -1;
+				   while (cmd->argv[++i])
+				   printf("word : %s\n", cmd->argv[i]);
+				   printf("n : %d\n", cmd->n);
+				   printf("\n");
+				   */
 				/*
 
-				printf("NENVV :::: %d\n", cmdv->nenvv);
+				   printf("NENVV :::: %d\n", cmdv->nenvv);
 				//printf("CENVV :::: %d\n", cmdv->cenvv);
 				//printf("enreplace %d\n", cmdv->envreplace[cmdv->cenvv]);
 				int i = 0;
 				while (i < cmdv->nenvv)
 				{
-					printf("TEST ::: %d\n", cmdv->envreplace[i]);
-					i++;
+				printf("TEST ::: %d\n", cmdv->envreplace[i]);
+				i++;
 				}
-				*/
+				 */
 				replace_envv(cmd, cmdv);
 				if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
 					create_file(cmd, cmdv);
@@ -206,6 +240,10 @@ int		main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
+
+	signal(SIGINT, inthandler);
+	//signal(SIGHUP, huphandler);
+	signal(SIGQUIT, quithandler);
 	tmp_env = ft_square_strjoin(envp, NULL);
 	path = get_path(envp);
 	paths = split_path(path);

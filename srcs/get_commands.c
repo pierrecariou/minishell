@@ -303,15 +303,20 @@ void	count_envv(char *buf, t_cmdv *cmdv)
 
 int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 {
-	//char buf[300];
+	//char bufcp[300];
 
 	char *buf;
 	int ret;
 
 	//read(0, buf, 300);
 	ret = get_next_line(0, &buf);
-	if (!ret || ret == -1)
+	//printf("%ld\n", read(0, bufcp, 300));
+	//printf("%d\n", ret);
+	if ((!ret || ret == -1))
+	{
+		ft_putstr_fd("exit\n", 1);
 		exit (0);
+	}
 	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) ||
 			double_sep(buf) || tripledouble_redir(buf) ||
 			quotes_not_closed(buf))

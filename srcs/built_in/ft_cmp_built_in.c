@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/19 15:01:30 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/21 11:30:27 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/10/30 12:36:50 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		cmp_built_in(char **argv, t_cmd *cmd, t_cmdv *cmdv)
 	else if (!ft_strcmp(argv[0], "export"))
 		ft_export(*cmd, cmdv);
 	else if (!ft_strcmp(argv[0], "exit"))
-		ft_putstr_fd("A work in progress\n", 1);
+		ft_exit(cmd, cmdv);
 	else
 		exe = 0;
 	return (exe);
