@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/28 15:11:35 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/03 17:03:34 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct		s_cmdv
 	int				inquotess;
 	int				inquotesd;
 	int				isaquote;
+	char 			*bufcp;
 }					t_cmdv;
 
 void	ft_putstr_fd(char *s, int fd);
@@ -65,7 +66,7 @@ int		split_input(char *buf, char **words, t_cmd *cmd, t_cmdv *cmdv);
 void	malloc_words(char *buf, char **words, int n, t_cmdv *cmdv);
 int		count_words(char *buf, t_cmdv *cmdv);
 void	better_input(char *buf);
-int		read_input(t_cmd *cmd, t_cmdv *cmdv);
+int		read_input(t_cmd *cmd, t_cmdv *cmdv, char *buf_cp);
 int		not_a_path(char *word);
 char    *exec_path(char **paths,  char *exec);
 char    *file_stat(char *file);

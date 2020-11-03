@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/28 15:07:34 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/03 17:40:22 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,7 +301,7 @@ void	count_envv(char *buf, t_cmdv *cmdv)
 	}
 }
 
-int		read_input(t_cmd *cmd, t_cmdv *cmdv)
+int		read_input(t_cmd *cmd, t_cmdv *cmdv, char *buf_cp)
 {
 	//char bufcp[300];
 
@@ -309,14 +309,26 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 	int ret;
 
 	//read(0, buf, 300);
+	buf = NULL;
 	ret = get_next_line(0, &buf);
 	//printf("%ld\n", read(0, bufcp, 300));
 	//printf("%d\n", ret);
-	if ((!ret || ret == -1))
+	if (!ret && buf)
+	{
+		cmdv->bufcp = buf;
+		return (0);
+	}
+	else if  (buf_cp != NULL)
+		buf = buf_cp;
+	if (!ret && !buf)
 	{
 		ft_putstr_fd("exit\n", 1);
 		exit (0);
 	}
+	//printf("%d\n", ret);
+	//if (ret && buf_cp != NULL)
+	//	ft_putstr_fd(buf_cp, 1);
+//	printf("%s\n", buf);
 	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) ||
 			double_sep(buf) || tripledouble_redir(buf) ||
 			quotes_not_closed(buf))

@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/28 15:06:24 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/03 18:38:56 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -15,27 +15,19 @@
 void	inthandler(int num) 
 {
 	(void)num;
+
 	ft_putstr_fd("\n", 0);
 	ft_putstr_fd("\033[1;31m", 0);
 	ft_putstr_fd(">> minishell ", 0);
-	ft_putstr_fd("\033[0m", 0);
+	ft_putstr_fd("\033[0m", 0);	
 	return ;
 }
-
-/*
-void	huphandler(int num) 
-{
-	(void)num;
-	printf("super\n");
-	return ;
-}
-*/
 
 void	quithandler(int num) 
 {
 
 	(void)num;
-
+	
 	ft_putstr_fd("\33[2D", 0);
 	ft_putstr_fd("  ", 0);
 	ft_putstr_fd("\33[2D", 0);
@@ -173,13 +165,20 @@ void	loop(char **paths, char **envp)
 	t_cmdv	*cmdv;
 	int 	error_line;
 	int		parse;
+	char	*buf_cp;
 
 	error_line = 0;
 	while (42)
 	{
+		//ft_putstr_fd("\33[26D", 0);
+		//ft_putstr_fd("             ", 0);
+		ft_putstr_fd("\33[2K", 0);
+		ft_putstr_fd("\r", 0);
 		ft_putstr_fd("\033[1;31m", 0);
 		ft_putstr_fd(">> minishell ", 0);
 		ft_putstr_fd("\033[0m", 0);
+		if (buf_cp != NULL)
+			ft_putstr_fd(buf_cp, 1);
 		if (!(cmd = malloc(sizeof(t_cmd))))
 			return ;
 		if (!(cmdv = malloc(sizeof(t_cmdv))))
@@ -188,8 +187,9 @@ void	loop(char **paths, char **envp)
 		cmdv->cp = cmd;
 		cmdv->error = 0;
 		cmdv->cenvv = 0;
+		cmdv->bufcp = NULL;
 		cmdv->error_line = error_line;
-		if ((parse = read_input(cmd, cmdv)))
+		if ((parse = read_input(cmd, cmdv, buf_cp)))
 		{
 			while (cmd)
 			{
@@ -227,6 +227,7 @@ void	loop(char **paths, char **envp)
 		else if (parse)
 			error_line = cmdv->error_line;
 		envp = cmdv->envp;
+		buf_cp = cmdv->bufcp;
 		free(cmdv->cp);
 		free(cmdv);
 	}
