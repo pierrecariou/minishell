@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/03 18:38:56 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/04 14:52:49 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -87,13 +87,18 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 	int	status;
 
 	pipe_fd_reset(cmdv->cp);
-	if ((pid = fork()) == 0)
+	if (!no_fork(cmd->argv))
 	{
-		exec_built(file, cmd->argv, cmd, cmdv);
-		//if (is_built_in(cmd->argv) && cmd->redir)
-			exit(0);
+		if ((pid = fork()) == 0)
+		{
+			exec_built(file, cmd->argv, cmd, cmdv);
+			if (is_built_in(cmd->argv) && cmd->redir)
+				exit(0);
+		}
+		waitpid(pid, &status, 0);
 	}
-	waitpid(pid, &status, 0);
+	else
+		exec_built(file, cmd->argv, cmd, cmdv);
 	cmdv->error_line = status;
 	cmdv->error = 0;
 }
@@ -125,7 +130,7 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 		file = file_stat(cmd->argv[0]);
 	//if file or built-in
 	if ((file || is_built_in(cmd->argv)) && (ft_strcmp(cmd->argv[0], "exit") || cmd->sepl != '|'))
-	{	
+	{
 		if (!ft_strcmp(cmd->argv[0], "exit"))
 			ft_exit(cmd, cmdv);
 		cmdv->error_line = 0;
@@ -137,15 +142,6 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 		if ((cmd->sep == '|' && cmd->sepl != '|')
 				&& cmdv->error == 0)
 			pipe_fd_fill(cmd);
-			/*
-		if (!ft_strcmp(cmd->argv[0], "echo") || !ft_strcmp(cmd->argv[0], "cd") || !ft_strcmp(cmd->argv[0], "export") || !ft_strcmp(cmd->argv[0], "unset"))
-		{
-			cmp_built_in(cmd->argv, cmd, cmdv);
-			if (cmd->sep == ';')
-				pipe_fd_reset(cmdv->cp);
-			return ;
-		}
-		*/
 		if ((cmd->sep == '|' || cmd->sepl == '|')
 				&& cmdv->error == 0)
 			pipeline(cmd, file, cmdv);
@@ -227,6 +223,9 @@ void	loop(char **paths, char **envp)
 		else if (parse)
 			error_line = cmdv->error_line;
 		envp = cmdv->envp;
+		//if (buf_cp != NULL && cmdv->bufcp != NULL)
+		//	buf_cp = ft_strjoin(buf_cp, cmdv->bufcp);
+		//else
 		buf_cp = cmdv->bufcp;
 		free(cmdv->cp);
 		free(cmdv);

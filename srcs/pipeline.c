@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 13:55:56 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/30 15:11:51 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/04 10:48:39 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,8 @@ void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 		close_fd(cmdv);
 		exec_built(file, cmd->argv, cmd, cmdv);
 		//if (is_built_in(cmd->argv))
-		//if (ft_strcmp(cmd->argv[0], "cd") && ft_strcmp(cmd->argv[0], "export") && ft_strcmp(cmd->argv[0], "unset"))
 		exit(0);
+		//if (ft_strcmp(cmd->argv[0], "cd") && ft_strcmp(cmd->argv[0], "export") && ft_strcmp(cmd->argv[0], "unset"))
 	}
 	if (cmd->sep == '|')
 		store_pid(cmd, pid);

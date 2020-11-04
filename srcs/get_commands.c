@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/03 17:40:22 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/04 10:43:47 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,11 +315,17 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv, char *buf_cp)
 	//printf("%d\n", ret);
 	if (!ret && buf)
 	{
+		//if (buf_cp && ft_strcmp(buf_cp, buf)) 
+		//	cmdv->bufcp = ft_strjoin(buf_cp, buf);
+		//else
 		cmdv->bufcp = buf;
+		//printf("%s", cmdv->bufcp);
 		return (0);
 	}
 	else if  (buf_cp != NULL)
 		buf = buf_cp;
+//	else if (buf_cp != NULL)
+//		buf = ft_strjoin(buf_cp, buf);
 	if (!ret && !buf)
 	{
 		ft_putstr_fd("exit\n", 1);

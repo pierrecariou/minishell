@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/19 15:01:30 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/30 12:36:50 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/04 14:36:20 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,13 @@ int		is_built_in(char **argv)
 	else
 		exe = 0;
 	return (exe);
+}
+
+int		no_fork(char **argv)
+{
+	if (!ft_strcmp(argv[0], "cd") || !ft_strcmp(argv[0], "unset") ||
+		!ft_strcmp(argv[0], "export") || !ft_strcmp(argv[0], "exit"))
+		return (1);
+	else
+		return (0);
 }

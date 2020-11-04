@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/03 17:03:34 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/04 14:36:41 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,5 +108,7 @@ int		is_in_quotes(char *buf, int b, int e);
 void	ft_unset(t_cmd cmd, t_cmdv *cmdv);
 int		quotes_not_closed(char *buf);
 int		is_inquotes(char c, t_cmdv *cmdv);
+char	*ft_strjoin(char *s1, char *s2);
+int		no_fork(char **argv);
 
 #endif
