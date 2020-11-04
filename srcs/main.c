@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/04 17:50:25 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/04 22:25:59 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -133,7 +133,7 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 		if (!ft_strcmp(cmd->argv[0], "exit"))
 			ft_exit(cmd, cmdv);
 		cmdv->error_line = 0;
-		if (cmd->sepl == '|' && cmd->prev->redir)
+		if (cmd->sepl == '|' && (cmd->prev->redir || !cmd->prev->active))
 		{
 			cmd->sepl = ' ';
 			pipe_fd_reset(cmdv->cp);
@@ -219,7 +219,7 @@ void	loop(char **paths, char **envp)
 				if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
 					create_file(cmd, cmdv);
 				if (!cmd->argv[0])
-					cmdv->error = 1;
+						cmdv->error = 1;
 				else
 					fork_ps(cmd, paths, cmdv);
 				}
