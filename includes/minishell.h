@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/04 14:36:41 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/04 17:08:05 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct		s_cmd
 	struct	s_cmd	*next;
 	struct  s_cmd	*prev;
 	int				n;
+	int				active;
 }					t_cmd;
 
 typedef struct		s_cmdv
@@ -110,5 +111,6 @@ int		quotes_not_closed(char *buf);
 int		is_inquotes(char c, t_cmdv *cmdv);
 char	*ft_strjoin(char *s1, char *s2);
 int		no_fork(char **argv);
+void	fork_error(t_cmdv *cmdv);
 
 #endif

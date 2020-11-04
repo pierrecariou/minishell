@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/04 10:43:47 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/04 17:54:07 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -361,6 +361,7 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv, char *buf_cp)
 	pipe_fd_reset(cmd);
 	while (cmd)
 	{
+		cmd->active = 1;
 		cmd->nforks = 0;
 		//better_input(buf);
 		cmd->n = count_words(cmd->line, cmdv);
@@ -378,5 +379,6 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv, char *buf_cp)
 		 */
 		cmd = cmd->next;
 	}
+	fork_error(cmdv);
 	return (1);
 }
