@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 18:19:20 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/12 18:23:44 by grezette         ###   ########.fr       */
+/*   Updated: 2020/11/04 22:40:47 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ int		ft_cd(t_cmd cmd, t_cmdv *cmdv)
 {
 	//	if (ft_half_pwd(cmdv->envp, "OLDPWD="))
 	//		return (-1);
-
 	int i;
 
 	i = 0;

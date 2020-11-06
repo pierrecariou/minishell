@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 13:50:19 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/12 13:51:59 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/06 15:37:17 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char **split_path(char *path)
 		i[2] = (path[i[0]] == ':') ? i[2] + 1 : i[2];
 	if (!(paths = malloc(sizeof(char *) * (i[2] + 2))))
 		return (0);
-	paths[i[2] + 2] = 0;
+	paths[i[2] + 1] = 0;
 	i[0] = -1;
 	while (++i[4] < i[2] + 1)
 	{

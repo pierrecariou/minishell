@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/04 22:03:42 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/06 17:02:21 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ int		split_input(char *buf, char **words, t_cmd *cmd, t_cmdv *cmdv)
 			if (l > 0)
 				words[c][l] = 0;
 		}
-		i++;
+		if (buf[i])
+			i++;
 	}
 	if (!cmd->next && cmd->sep == '|')
 		return (0);
@@ -100,7 +101,8 @@ void    malloc_words(char *buf, char **words, int n, t_cmdv *cmdv)
 					return ;
 			}
 		}
-		i++;
+		if (buf[i])
+			i++;
 	}
 	//printf("FINISH\n");
 }
@@ -131,7 +133,8 @@ int             count_words(char *buf, t_cmdv *cmdv)
 				i++;
 			}
 		}
-		i++;
+		if (buf[i])
+			i++;
 	}
 	//printf("nwords : %d\n", c);
 	return (c);
@@ -153,10 +156,12 @@ void	add_next(int m, t_cmd *cmd, t_cmdv *cmdv)
 {
 	t_cmd *next;
 
+	if (m == 0)
+		cmd->sepl = 0;
 	if (m + 1 < cmdv->nsep + 1)
 	{
 		if (!(next = malloc(sizeof(t_cmd))))
-			return ;
+			return ;	
 		next->sepl = cmd->sep;
 		cmd->next = next;
 		cmd->next->prev = cmd;
@@ -201,7 +206,7 @@ void	cmd_line(char *buf, t_cmd *cmd, t_cmdv *cmdv)
 		cmd->line[k] = 0;
 		i++;	
 		add_next(m, cmd, cmdv);
-		cmd = (buf[i]) ? cmd->next : cmd;
+		cmd = cmd->next;
 	}
 }
 

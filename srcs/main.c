@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/04 22:25:59 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/06 16:46:22 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -162,7 +162,8 @@ void	loop(char **paths, char **envp)
 	int		parse;
 	char	*buf_cp;
 
-	error_line = 0;
+	error_line = 0;	
+	buf_cp = NULL;
 	while (42)
 	{
 		//ft_putstr_fd("\33[26D", 0);
@@ -194,14 +195,14 @@ void	loop(char **paths, char **envp)
 					printf("%c\n", cmd->sep);
 					*/
 
-				/*
+					/*
 				   int i = -1;
 				   while (cmd->argv[++i])
 				   printf("word : %s\n", cmd->argv[i]);
 				   printf("n : %d\n", cmd->n);
 				   printf("\n");
 				   */
-				/*
+					/*
 
 				   printf("NENVV :::: %d\n", cmdv->nenvv);
 				//printf("CENVV :::: %d\n", cmdv->cenvv);
@@ -254,6 +255,7 @@ int		main(int argc, char **argv, char **envp)
 	signal(SIGQUIT, quithandler);
 	tmp_env = ft_square_strjoin(envp, NULL);
 	path = get_path(envp);
+	path = ft_strdup(path); 
 	paths = split_path(path);
 	loop(paths, tmp_env);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/04 22:03:30 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/06 15:13:30 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ void	ft_unset(t_cmd cmd, t_cmdv *cmdv);
 int		quotes_not_closed(char *buf);
 int		is_inquotes(char c, t_cmdv *cmdv);
 char	*ft_strjoin(char *s1, char *s2);
+char	*ft_strdup(char *s1);
 int		no_fork(char **argv);
 void	fork_error(t_cmdv *cmdv);
 
