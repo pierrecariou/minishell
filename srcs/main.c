@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/06 17:46:07 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/06 17:59:11 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -87,6 +87,7 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 	int	status;
 
 	pipe_fd_reset(cmdv->cp);
+	status = 0;
 	if (!no_fork(cmd->argv))
 	{
 		if ((pid = fork()) == 0)
