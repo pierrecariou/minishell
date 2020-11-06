@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/19 15:01:30 by grezette          #+#    #+#             */
-/*   Updated: 2020/11/04 18:22:54 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/06 17:48:38 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int		no_fork(char **argv)
 	if (!argv[0])
 		return (0);
 	if (!ft_strcmp(argv[0], "cd") || !ft_strcmp(argv[0], "unset") ||
-		!ft_strcmp(argv[0], "export") || !ft_strcmp(argv[0], "exit"))
+		(!ft_strcmp(argv[0], "export") && argv[1]) || !ft_strcmp(argv[0], "exit"))
 		return (1);
 	else
 		return (0);

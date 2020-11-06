@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/06 16:46:22 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/06 17:46:07 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -214,6 +214,8 @@ void	loop(char **paths, char **envp)
 				i++;
 				}
 				 */
+				if (cmdv->error_line != 0 && cmdv->error_line != 127)
+					cmdv->error_line = 2;
 				if (cmd->active)
 				{
 				replace_envv(cmd, cmdv);
