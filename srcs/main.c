@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/06 17:59:11 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/06 19:47:35 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -18,8 +18,9 @@ void	inthandler(int num)
 
 	ft_putstr_fd("\n", 0);
 	ft_putstr_fd("\033[1;31m", 0);
-	ft_putstr_fd(">> minishell ", 0);
-	ft_putstr_fd("\033[0m", 0);	
+	ft_putstr_fd("The-Minishell-Project", 0);
+	ft_putstr_fd("\033[0m", 0);
+	ft_putstr_fd("$ ", 0);
 	return ;
 }
 
@@ -172,8 +173,9 @@ void	loop(char **paths, char **envp)
 		ft_putstr_fd("\33[2K", 0);
 		ft_putstr_fd("\r", 0);
 		ft_putstr_fd("\033[1;31m", 0);
-		ft_putstr_fd(">> minishell ", 0);
+		ft_putstr_fd("The-Minishell-Project", 0);
 		ft_putstr_fd("\033[0m", 0);
+		ft_putstr_fd("$ ", 0);
 		if (buf_cp != NULL)
 			ft_putstr_fd(buf_cp, 1);
 		if (!(cmd = malloc(sizeof(t_cmd))))
