@@ -6,11 +6,13 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/06 19:47:35 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/07 17:22:10 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
 #include "includes/minishell.h"
+
+int		g_handler;
 
 void	inthandler(int num) 
 {
@@ -21,6 +23,7 @@ void	inthandler(int num)
 	ft_putstr_fd("The-Minishell-Project", 0);
 	ft_putstr_fd("\033[0m", 0);
 	ft_putstr_fd("$ ", 0);
+	g_handler = 1;
 	return ;
 }
 
@@ -42,16 +45,16 @@ void	error(t_cmd *cmd, t_cmdv *cmdv)
 	if (cmd->redir == '<')
 	{
 		ft_putstr_fd(cmd->redirf, 1);
-		ft_putstr_fd(": No such file or directory\n", 1);
+		ft_putstr_fd("minishell: No such file or directory\n", 2);
 	}
 	else if (cmd->argv[0][0])
 	{
-		ft_putstr_fd("command not found: ", 1);
-		ft_putstr_fd(cmd->argv[0], 1);
-		ft_putstr_fd("\n", 1);
+		ft_putstr_fd("minishell: command not found: ", 2);
+		ft_putstr_fd(cmd->argv[0], 2);
+		ft_putstr_fd("\n", 2);
 	}
 	else
-		ft_putstr_fd("error\n", 2);
+		ft_putstr_fd("minishell: error\n", 2);
 	if (cmd->nredir > 1)
 		open_files(cmd, cmdv);
 	if (cmd->redir && cmd->redir != '<' && cmd->redirf[0])
@@ -162,22 +165,19 @@ void	loop(char **paths, char **envp)
 	t_cmdv	*cmdv;
 	int 	error_line;
 	int		parse;
-	char	*buf_cp;
 
 	error_line = 0;	
-	buf_cp = NULL;
 	while (42)
 	{
-		//ft_putstr_fd("\33[26D", 0);
-		//ft_putstr_fd("             ", 0);
-		ft_putstr_fd("\33[2K", 0);
-		ft_putstr_fd("\r", 0);
+		if (g_handler)
+			ft_putstr_fd("\33[2K\r", 0);
+		g_handler = 0;
 		ft_putstr_fd("\033[1;31m", 0);
 		ft_putstr_fd("The-Minishell-Project", 0);
 		ft_putstr_fd("\033[0m", 0);
 		ft_putstr_fd("$ ", 0);
-		if (buf_cp != NULL)
-			ft_putstr_fd(buf_cp, 1);
+		//if (buf_cp != NULL)
+		//	ft_putstr_fd(buf_cp, 1);
 		if (!(cmd = malloc(sizeof(t_cmd))))
 			return ;
 		if (!(cmdv = malloc(sizeof(t_cmdv))))
@@ -186,9 +186,8 @@ void	loop(char **paths, char **envp)
 		cmdv->cp = cmd;
 		cmdv->error = 0;
 		cmdv->cenvv = 0;
-		cmdv->bufcp = NULL;
 		cmdv->error_line = error_line;
-		if ((parse = read_input(cmd, cmdv, buf_cp)))
+		if ((parse = read_input(cmd, cmdv)))
 		{
 			while (cmd)
 			{
@@ -232,6 +231,8 @@ void	loop(char **paths, char **envp)
 				cmd = cmd->next;
 			}
 		}
+		else
+			ft_putstr_fd("minishell: syntax error\n", 2);
 		if (!parse || (cmdv->error_line != 0 && cmdv->error_line != 127))
 			error_line = 2;
 		else if (parse)
@@ -240,10 +241,9 @@ void	loop(char **paths, char **envp)
 		//if (buf_cp != NULL && cmdv->bufcp != NULL)
 		//	buf_cp = ft_strjoin(buf_cp, cmdv->bufcp);
 		//else
-		buf_cp = cmdv->bufcp;
 		free(cmdv->cp);
 		free(cmdv);
-	}
+		}
 }
 
 int		main(int argc, char **argv, char **envp)
@@ -255,6 +255,7 @@ int		main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 
+	g_handler = 0;
 	signal(SIGINT, inthandler);
 	//signal(SIGHUP, huphandler);
 	signal(SIGQUIT, quithandler);

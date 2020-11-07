@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/06 19:43:36 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/07 17:06:15 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,40 +306,26 @@ void	count_envv(char *buf, t_cmdv *cmdv)
 	}
 }
 
-int		read_input(t_cmd *cmd, t_cmdv *cmdv, char *buf_cp)
+int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 {
 	//char bufcp[300];
 
 	char *buf;
 	int ret;
+	char *buf_cp;
 
 	//read(0, buf, 300);
 	buf = NULL;
-	ret = get_next_line(0, &buf);
-	//printf("%ld\n", read(0, bufcp, 300));
-	//printf("%d\n", ret);
-	if (!ret && buf)
-	{
-		//if (buf_cp && ft_strcmp(buf_cp, buf)) 
-		//	cmdv->bufcp = ft_strjoin(buf_cp, buf);
-		//else
-		cmdv->bufcp = buf;
-		//printf("%s", cmdv->bufcp);
-		return (0);
-	}
-	else if  (buf_cp != NULL)
+	buf_cp = NULL;
+	while ((ret = get_next_line(0, &buf)) == 0 && buf)
+		buf_cp = buf;
+	if (ret == 1 && !buf[0] && buf_cp != NULL)
 		buf = buf_cp;
-//	else if (buf_cp != NULL)
-//		buf = ft_strjoin(buf_cp, buf);
 	if (!ret && !buf)
 	{
 		ft_putstr_fd("exit\n", 1);
 		exit (0);
 	}
-	//printf("%d\n", ret);
-	//if (ret && buf_cp != NULL)
-	//	ft_putstr_fd(buf_cp, 1);
-//	printf("%s\n", buf);
 	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) ||
 			double_sep(buf) || tripledouble_redir(buf) ||
 			quotes_not_closed(buf))
