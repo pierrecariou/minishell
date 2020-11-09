@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/07 17:22:10 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/09 06:14:52 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -159,6 +159,44 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 		error(cmd, cmdv);
 }
 
+
+/*
+void	free_structs(t_cmdv *cmdv)
+{
+	int i;
+	t_cmd *cp;
+
+	while (cmdv->cp)	
+	{
+		i = -1;
+		if (cmdv->cp->line)
+			free(cmdv->cp->line);
+		if (cmdv->cp->n > 0)
+		{
+		while (cmdv->cp->argv[++i])
+			free(cmdv->cp->argv[i]);
+		if (cmdv->cp->argv)
+			free(cmdv->cp->argv);
+		}
+		if (cmdv->cp->pid)
+			free(cmdv->cp->pid);
+		if (cmdv->cp->redirf)	
+			free(cmdv->cp->redirf);
+		i = -1;
+		while (cmdv->cp->redirfb && cmdv->cp->redirfb[++i])
+				free(cmdv->cp->redirfb[i]);
+		if (cmdv->cp->redirfb)
+			free(cmdv->cp->redirfb);
+		cp = cmdv->cp;
+		cmdv->cp = cmdv->cp->next;
+		free(cp);
+	}
+	//if (cmdv->envreplace)
+	//	free(cmdv->envreplace);
+	free(cmdv);
+}
+*/
+
 void	loop(char **paths, char **envp)
 {
 	t_cmd	*cmd;
@@ -176,8 +214,6 @@ void	loop(char **paths, char **envp)
 		ft_putstr_fd("The-Minishell-Project", 0);
 		ft_putstr_fd("\033[0m", 0);
 		ft_putstr_fd("$ ", 0);
-		//if (buf_cp != NULL)
-		//	ft_putstr_fd(buf_cp, 1);
 		if (!(cmd = malloc(sizeof(t_cmd))))
 			return ;
 		if (!(cmdv = malloc(sizeof(t_cmdv))))
@@ -191,12 +227,6 @@ void	loop(char **paths, char **envp)
 		{
 			while (cmd)
 			{
-				/*
-				printf("%d\n", cmd->active);
-				if (cmd->sep)
-					printf("%c\n", cmd->sep);
-					*/
-
 					/*
 				   int i = -1;
 				   while (cmd->argv[++i])
@@ -204,18 +234,6 @@ void	loop(char **paths, char **envp)
 				   printf("n : %d\n", cmd->n);
 				   printf("\n");
 				   */
-					/*
-
-				   printf("NENVV :::: %d\n", cmdv->nenvv);
-				//printf("CENVV :::: %d\n", cmdv->cenvv);
-				//printf("enreplace %d\n", cmdv->envreplace[cmdv->cenvv]);
-				int i = 0;
-				while (i < cmdv->nenvv)
-				{
-				printf("TEST ::: %d\n", cmdv->envreplace[i]);
-				i++;
-				}
-				 */
 				if (cmdv->error_line != 0 && cmdv->error_line != 127)
 					cmdv->error_line = 2;
 				if (cmd->active)
@@ -231,18 +249,14 @@ void	loop(char **paths, char **envp)
 				cmd = cmd->next;
 			}
 		}
-		else
+		else if (!cmdv->empty)
 			ft_putstr_fd("minishell: syntax error\n", 2);
 		if (!parse || (cmdv->error_line != 0 && cmdv->error_line != 127))
 			error_line = 2;
 		else if (parse)
 			error_line = cmdv->error_line;
 		envp = cmdv->envp;
-		//if (buf_cp != NULL && cmdv->bufcp != NULL)
-		//	buf_cp = ft_strjoin(buf_cp, cmdv->bufcp);
-		//else
-		free(cmdv->cp);
-		free(cmdv);
+		//free_structs(cmdv);
 		}
 }
 

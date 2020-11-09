@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/07 17:06:15 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/09 06:17:15 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,11 +287,14 @@ void	count_envv(char *buf, t_cmdv *cmdv)
 	cmdv->nenvv = 0;;
 	cmdv->inquotesd = 0;
 	cmdv->inquotess = 0;
+	cmdv->envreplace = NULL;
 	while (buf[++i])
 	{
 		if (buf[i] == '$')
 			cmdv->nenvv++;
 	}
+	if (!cmdv->nenvv)
+		return ;
 	//	printf("CENVV ::: %d\n", cmdv->nenvv);
 	if (!(cmdv->envreplace = malloc(sizeof(int) * cmdv->nenvv)))
 		return ;
@@ -305,6 +308,23 @@ void	count_envv(char *buf, t_cmdv *cmdv)
 			cmdv->envreplace[++m] = 1;
 	}
 }
+
+/*
+void	init(t_cmd *cmd)
+{
+	t_cmd *cp;
+
+	cp = cmd;
+	while (cp)
+	{
+		cp->argv = NULL;
+		cp->pid = NULL;
+		cp->redirf = NULL;
+		cp->redirfb = NULL;
+		cp = cp->next;
+	}
+}
+*/
 
 int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 {
@@ -326,6 +346,7 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 		ft_putstr_fd("exit\n", 1);
 		exit (0);
 	}
+	cmdv->empty = (buf[0]) ? 0 : 1;
 	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) ||
 			double_sep(buf) || tripledouble_redir(buf) ||
 			quotes_not_closed(buf))
@@ -342,8 +363,10 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 	//clean_quotes(buf);
 	count_sep(buf, cmdv);
 	//printf("%d\n", cmdv->nsep);
+	//cmd->line = NULL;
 	cmd_line(buf, cmd, cmdv);
 	free(buf);
+	//init(cmd);
 	count_redir(cmd);
 	get_redirb(cmd);
 	get_redir(cmd);
