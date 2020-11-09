@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/09 11:57:22 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/09 14:24:23 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -351,7 +351,6 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
 	while ((ret = get_next_line(0, &buf)) == 0 && buf)
 	{		
 			buf_cp = buf;
-			free(buf);
 			buf = NULL;
 			
 	}
