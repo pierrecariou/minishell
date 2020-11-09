@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:02:27 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/09 07:14:38 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/09 18:12:39 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char    *file_stat(char *file)
 	struct stat buf;
 
 	if (stat(file, &buf) == 0)
-		return (file);
+		return (ft_strdup(file));
 	return (NULL);
 }
 

@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/09 14:24:23 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/09 17:39:38 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -348,13 +348,12 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
 	//read(0, buf, 300);
 	buf = NULL;
 	buf_cp = NULL;
-	while ((ret = get_next_line(0, &buf)) == 0 && buf)
+	while (!(ret = get_next_line(0, &buf)) && buf)
 	{		
 			buf_cp = buf;
 			buf = NULL;
-			
 	}
-	if (ret == 1 && !buf[0] && buf_cp != NULL)
+	if (ret == 1 && buf_cp != NULL)
 		buf = buf_cp;
 	if (!ret && !buf)
 	{
