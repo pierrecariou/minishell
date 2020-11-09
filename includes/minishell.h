@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/08 03:16:02 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/09 09:43:34 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ typedef struct		s_cmdv
 	int				inquotesd;
 	int				isaquote;
 	int				empty;
+	int				renv;
 }					t_cmdv;
 
 void	ft_putstr_fd(char *s, int fd);
@@ -67,7 +68,7 @@ int		split_input(char *buf, char **words, t_cmd *cmd, t_cmdv *cmdv);
 void	malloc_words(char *buf, char **words, int n, t_cmdv *cmdv);
 int		count_words(char *buf, t_cmdv *cmdv);
 void	better_input(char *buf);
-int		read_input(t_cmd *cmd, t_cmdv *cmdv);
+int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp);
 int		not_a_path(char *word);
 char    *exec_path(char **paths,  char *exec);
 char    *file_stat(char *file);
@@ -99,7 +100,7 @@ int		ft_pwd(t_cmd cmd);
 int		is_built_in(char **argv);
 int		ft_export(t_cmd cmd, t_cmdv *cmdv);
 size_t	ft_square_strlen(char **str);
-void	ft_exit(t_cmd *cmd, t_cmdv *cmdv);
+void	ft_exit(char **envp, t_cmdv *cmdv, char *file, char **paths);
 char	**ft_square_strjoin(char **tab, char *str);
 char	**ft_square_free(char **tab);
 char	*ft_strdup(char *s1);
@@ -113,5 +114,7 @@ char	*ft_strjoin(char *s1, char *s2);
 char	*ft_strdup(char *s1);
 int		no_fork(char **argv);
 void	fork_error(t_cmdv *cmdv);
+void	free_structs(t_cmdv *cmdv);
+void	free_paths(char **paths, char **envp);
 
 #endif

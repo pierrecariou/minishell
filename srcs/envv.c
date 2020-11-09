@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:28:23 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/30 14:58:28 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/09 08:42:16 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ char    *real_env(char *envv, t_cmdv *cmdv)
 	char *space;
 
 	i = -1;
+	cmdv->renv = 0;
 	if (envv[0] && envv[0] == '?' && !envv[1])
 	{
 		space = ft_itoa(cmdv->error_line);
@@ -30,7 +31,10 @@ char    *real_env(char *envv, t_cmdv *cmdv)
 		while (envv[m] && cmdv->envp[i][m] && envv[m] == cmdv->envp[i][m])
 			m++;
 		if (!envv[m] && cmdv->envp[i][m] && cmdv->envp[i][m] == '=' && cmdv->envp[i][m + 1])
+		{
+			cmdv->renv = 1;
 			return (&cmdv->envp[i][m + 1]);
+		}
 	}
 	space = malloc(2);
 	space[0] = ' ';
@@ -58,7 +62,7 @@ char    *buf_with_envv(char *buf, char *renvv, char *end, int length, int l)
 	while (end[++k])
 		ret[m++] = end[k];
 	ret[m] = 0;
-	//      free(buf);
+	free(buf);
 	return (ret);
 }
 
@@ -103,6 +107,8 @@ char    *get_envv(char *buf, t_cmdv *cmdv, int i)
 			buf = buf_with_envv(buf, renvv, end, length, l);
 			//printf("%s\n", buf);
 			//free(renvv);
+			if (!cmdv->renv)
+				free(renvv);
 			free(envv);
 		//	printf("salut\n");
 		}

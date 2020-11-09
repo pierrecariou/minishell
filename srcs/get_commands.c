@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/09 06:17:15 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/09 11:57:22 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,7 +287,6 @@ void	count_envv(char *buf, t_cmdv *cmdv)
 	cmdv->nenvv = 0;;
 	cmdv->inquotesd = 0;
 	cmdv->inquotess = 0;
-	cmdv->envreplace = NULL;
 	while (buf[++i])
 	{
 		if (buf[i] == '$')
@@ -309,7 +308,6 @@ void	count_envv(char *buf, t_cmdv *cmdv)
 	}
 }
 
-/*
 void	init(t_cmd *cmd)
 {
 	t_cmd *cp;
@@ -324,9 +322,22 @@ void	init(t_cmd *cmd)
 		cp = cp->next;
 	}
 }
-*/
 
-int		read_input(t_cmd *cmd, t_cmdv *cmdv)
+void	free_paths(char **paths, char **envp)
+{
+	int i;
+
+	i = -1;
+	while (paths[++i])
+		free(paths[i]);
+	free(paths);
+	i = -1;
+	while (envp[++i])
+		free(envp[i]);
+	free(envp);
+}
+
+int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
 {
 	//char bufcp[300];
 
@@ -338,11 +349,19 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 	buf = NULL;
 	buf_cp = NULL;
 	while ((ret = get_next_line(0, &buf)) == 0 && buf)
-		buf_cp = buf;
+	{		
+			buf_cp = buf;
+			free(buf);
+			buf = NULL;
+			
+	}
 	if (ret == 1 && !buf[0] && buf_cp != NULL)
 		buf = buf_cp;
 	if (!ret && !buf)
 	{
+		free(cmd);
+		free(cmdv);
+		free_paths(paths, envp);
 		ft_putstr_fd("exit\n", 1);
 		exit (0);
 	}
@@ -350,23 +369,18 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) ||
 			double_sep(buf) || tripledouble_redir(buf) ||
 			quotes_not_closed(buf))
+	{
+		free(buf);
 		return (0);
+	}
 	count_envv(buf, cmdv);
-	/*
-	   int i = 0;
-	   while (i < cmdv->nenvv)
-	   {
-	   printf("TEST ::: %d\n", cmdv->envreplace[i]);
-	   i++;
-	   }
-	 */
 	//clean_quotes(buf);
 	count_sep(buf, cmdv);
 	//printf("%d\n", cmdv->nsep);
 	//cmd->line = NULL;
 	cmd_line(buf, cmd, cmdv);
 	free(buf);
-	//init(cmd);
+	init(cmd);
 	count_redir(cmd);
 	get_redirb(cmd);
 	get_redir(cmd);
@@ -385,12 +399,6 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv)
 		if (!split_input(cmd->line, cmd->argv, cmd, cmdv))
 			return (0);
 		cmd->argv[cmd->n] = 0;
-		/*
-		   int i = -1;
-		   while (cmd->argv[++i])
-		   printf("word : %s\n", cmd->argv[i]);
-		   printf("\n");
-		 */
 		cmd = cmd->next;
 	}
 	fork_error(cmdv);

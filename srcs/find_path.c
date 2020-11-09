@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:02:27 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/07 12:09:35 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/09 07:14:38 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ char    *exec_path(char **paths,  char *exec)
 		file = concat_path_exec(paths[i], exec);
 		if (stat(file, &buf) == 0)
 			return (file);
+		else
+			free(file);
 		//printf("%s\n", file);
 		//printf("%d\n", stat(file, &buf));
 	}

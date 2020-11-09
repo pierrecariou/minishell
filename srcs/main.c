@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/09 06:14:52 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/09 10:53:59 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -124,7 +124,7 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
    }
  */
 
-void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
+void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv, char **envp)
 {
 	char *file;
 
@@ -136,7 +136,7 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 	if ((file || is_built_in(cmd->argv)) && (ft_strcmp(cmd->argv[0], "exit") || cmd->sepl != '|'))
 	{
 		if (!ft_strcmp(cmd->argv[0], "exit"))
-			ft_exit(cmd, cmdv);
+			ft_exit(envp, cmdv, file, paths);
 		cmdv->error_line = 0;
 		if (cmd->sepl == '|' && (cmd->prev->redir || !cmd->prev->active))
 		{
@@ -157,27 +157,26 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv)
 	}
 	else
 		error(cmd, cmdv);
+	if (file)
+		free(file);
 }
 
 
-/*
 void	free_structs(t_cmdv *cmdv)
 {
 	int i;
 	t_cmd *cp;
+
 
 	while (cmdv->cp)	
 	{
 		i = -1;
 		if (cmdv->cp->line)
 			free(cmdv->cp->line);
-		if (cmdv->cp->n > 0)
-		{
-		while (cmdv->cp->argv[++i])
+		while (cmdv->cp->argv && cmdv->cp->argv[++i])
 			free(cmdv->cp->argv[i]);
 		if (cmdv->cp->argv)
 			free(cmdv->cp->argv);
-		}
 		if (cmdv->cp->pid)
 			free(cmdv->cp->pid);
 		if (cmdv->cp->redirf)	
@@ -191,11 +190,10 @@ void	free_structs(t_cmdv *cmdv)
 		cmdv->cp = cmdv->cp->next;
 		free(cp);
 	}
-	//if (cmdv->envreplace)
-	//	free(cmdv->envreplace);
+	if (cmdv->envreplace)
+		free(cmdv->envreplace);
 	free(cmdv);
 }
-*/
 
 void	loop(char **paths, char **envp)
 {
@@ -218,12 +216,19 @@ void	loop(char **paths, char **envp)
 			return ;
 		if (!(cmdv = malloc(sizeof(t_cmdv))))
 			return ;
+		cmd->next = 0;
+		cmd->line = NULL;
+		cmd->argv = NULL;
+		cmd->pid = NULL;
+		cmd->redirf = NULL;
+		cmd->redirfb = NULL;
+		cmdv->envreplace = NULL;
 		cmdv->envp = envp;
 		cmdv->cp = cmd;
 		cmdv->error = 0;
 		cmdv->cenvv = 0;
 		cmdv->error_line = error_line;
-		if ((parse = read_input(cmd, cmdv)))
+		if ((parse = read_input(cmd, cmdv, paths, envp)))
 		{
 			while (cmd)
 			{
@@ -234,7 +239,7 @@ void	loop(char **paths, char **envp)
 				   printf("n : %d\n", cmd->n);
 				   printf("\n");
 				   */
-				if (cmdv->error_line != 0 && cmdv->error_line != 127)
+				if (cmdv->error_line && cmdv->error_line != 127)
 					cmdv->error_line = 2;
 				if (cmd->active)
 				{
@@ -244,7 +249,7 @@ void	loop(char **paths, char **envp)
 				if (!cmd->argv[0])
 						cmdv->error = 1;
 				else
-					fork_ps(cmd, paths, cmdv);
+					fork_ps(cmd, paths, cmdv, envp);
 				}
 				cmd = cmd->next;
 			}
@@ -256,7 +261,7 @@ void	loop(char **paths, char **envp)
 		else if (parse)
 			error_line = cmdv->error_line;
 		envp = cmdv->envp;
-		//free_structs(cmdv);
+		free_structs(cmdv);
 		}
 }
 
@@ -277,6 +282,7 @@ int		main(int argc, char **argv, char **envp)
 	path = get_path(envp);
 	path = ft_strdup(path); 
 	paths = split_path(path);
+	free(path);
 	loop(paths, tmp_env);
 	return (0);
 }

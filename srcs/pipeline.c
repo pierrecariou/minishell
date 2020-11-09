@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 13:55:56 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/06 18:00:07 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/09 10:57:11 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 	int status;
 
 	i = -1;
+	status = 0;
 	pid = fork();
 	if (pid == 0)
 	{
