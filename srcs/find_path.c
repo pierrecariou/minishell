@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:02:27 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/09 18:12:39 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/11 13:42:28 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ char    *exec_path(char **paths,  char *exec)
 	i = -1;
 	(void)buf;
 	(void)file;
+	if (!paths)
+		return (NULL);
 	while (paths[++i])
 	{
 		file = concat_path_exec(paths[i], exec);

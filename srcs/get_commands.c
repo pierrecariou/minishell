@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/09 17:39:38 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/11 13:38:51 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,18 +323,24 @@ void	init(t_cmd *cmd)
 	}
 }
 
-void	free_paths(char **paths, char **envp)
+void	free_paths(char **paths, char **envp, int loop)
 {
 	int i;
 
+	if (loop != 2 && paths)
+	{
 	i = -1;
 	while (paths[++i])
 		free(paths[i]);
 	free(paths);
+	}
+	if (!loop || loop == 2)
+	{
 	i = -1;
 	while (envp[++i])
 		free(envp[i]);
 	free(envp);
+	}
 }
 
 int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
@@ -359,7 +365,7 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
 	{
 		free(cmd);
 		free(cmdv);
-		free_paths(paths, envp);
+		free_paths(paths, envp, 2);
 		ft_putstr_fd("exit\n", 1);
 		exit (0);
 	}

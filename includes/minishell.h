@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/09 14:23:08 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/11 13:15:08 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,6 @@ char	*ft_strdup(char *s1);
 int		no_fork(char **argv);
 void	fork_error(t_cmdv *cmdv);
 void	free_structs(t_cmdv *cmdv);
-void	free_paths(char **paths, char **envp);
+void	free_paths(char **paths, char **envp, int loop);
 
 #endif

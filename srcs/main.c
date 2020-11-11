@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/09 14:22:14 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/11 13:38:25 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -195,12 +195,14 @@ void	free_structs(t_cmdv *cmdv)
 	free(cmdv);
 }
 
-void	loop(char **paths, char **envp)
+void	loop(char **envp)
 {
 	t_cmd	*cmd;
 	t_cmdv	*cmdv;
 	int 	error_line;
 	int		parse;
+	char	**paths;
+	char	*path;
 
 	error_line = 0;	
 	while (42)
@@ -232,13 +234,22 @@ void	loop(char **paths, char **envp)
 		{
 			while (cmd)
 			{
-					/*
+				/*
 				   int i = -1;
 				   while (cmd->argv[++i])
 				   printf("word : %s\n", cmd->argv[i]);
 				   printf("n : %d\n", cmd->n);
 				   printf("\n");
 				   */
+				path = get_path(cmdv->envp);
+				if (path == NULL)
+					paths = NULL;
+				else
+				{
+					path = ft_strdup(path);
+					paths = split_path(path);
+					free(path);
+				}
 				if (cmdv->error_line && cmdv->error_line != 127)
 					cmdv->error_line = 2;
 				if (cmd->active)
@@ -252,6 +263,7 @@ void	loop(char **paths, char **envp)
 					fork_ps(cmd, paths, cmdv, envp);
 				}
 				cmd = cmd->next;
+				free_paths(paths, envp, 1);
 			}
 		}
 		else if (!cmdv->empty)
@@ -267,8 +279,6 @@ void	loop(char **paths, char **envp)
 
 int		main(int argc, char **argv, char **envp)
 {
-	char *path;
-	char **paths;
 	char **tmp_env;
 
 	(void)argc;
@@ -279,10 +289,6 @@ int		main(int argc, char **argv, char **envp)
 	//signal(SIGHUP, huphandler);
 	signal(SIGQUIT, quithandler);
 	tmp_env = ft_square_strjoin(envp, NULL);
-	path = get_path(envp);
-	path = ft_strdup(path); 
-	paths = split_path(path);
-	free(path);
-	loop(paths, tmp_env);
+	loop(tmp_env);
 	return (0);
 }
