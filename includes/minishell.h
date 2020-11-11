@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/11 13:15:08 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/11 18:31:12 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,9 @@ int		tripledouble_redir(char *buf);
 int		empty_redir(t_cmd *cmd);
 void	create_file(t_cmd *cmd, t_cmdv *cmdv);
 void	error(t_cmd *cmd, t_cmdv *cmdv);
-void	get_redirb(t_cmd *cmd);
-void	get_redir(t_cmd *cmd);
-void	count_redir(t_cmd *cmd);
+void	get_redirb(t_cmd *cmd, t_cmdv *cmdv);
+void	get_redir(t_cmd *cmd, t_cmdv *cmdv);
+void	count_redir(t_cmd *cmd, t_cmdv *cmdv);
 char 	*ft_itoa(int nb);
 int		ft_cd(t_cmd cmd, t_cmdv *cmdv);
 int		cmp_built_in(char **argv, t_cmd *cmd, t_cmdv *cmdv);

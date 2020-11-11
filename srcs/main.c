@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/11 13:38:25 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/11 20:40:44 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -44,8 +44,9 @@ void	error(t_cmd *cmd, t_cmdv *cmdv)
 	cmdv->error_line = 127;
 	if (cmd->redir == '<')
 	{
-		ft_putstr_fd(cmd->redirf, 1);
-		ft_putstr_fd("minishell: No such file or directory\n", 2);
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd->redirf, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
 	}
 	else if (cmd->argv[0][0])
 	{
@@ -59,7 +60,7 @@ void	error(t_cmd *cmd, t_cmdv *cmdv)
 		open_files(cmd, cmdv);
 	if (cmd->redir && cmd->redir != '<' && cmd->redirf[0])
 		create_file(cmd, cmdv);
-	if (cmd->redir)
+	if (cmd->redir && cmd->fdredir != -1)
 		close(cmd->fdredir);
 }
 

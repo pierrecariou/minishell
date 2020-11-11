@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/11 13:38:51 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/11 20:09:31 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,6 +315,7 @@ void	init(t_cmd *cmd)
 	cp = cmd;
 	while (cp)
 	{
+		cp->fdredir = -1;
 		cp->argv = NULL;
 		cp->pid = NULL;
 		cp->redirf = NULL;
@@ -385,9 +386,9 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
 	cmd_line(buf, cmd, cmdv);
 	free(buf);
 	init(cmd);
-	count_redir(cmd);
-	get_redirb(cmd);
-	get_redir(cmd);
+	count_redir(cmd, cmdv);
+	get_redirb(cmd, cmdv);
+	get_redir(cmd, cmdv);
 	if (empty_redir(cmd))
 		return (0);
 	pipe_fd_reset(cmd);
