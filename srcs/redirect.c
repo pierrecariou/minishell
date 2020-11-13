@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/15 11:24:39 by pcariou           #+#    #+#             */
-/*   Updated: 2020/10/20 14:57:53 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/13 11:38:35 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,20 +34,24 @@ void    open_files(t_cmd *cmd, t_cmdv *cmdv)
 	}
 }
 
+int		open_file1(t_cmd *cmd)
+{
+	cmd->fdredirl = open(cmd->redirfl, O_RDONLY);
+	if (cmd->fdredirl == -1)
+		return (0);
+	dup2(cmd->fdredirl, 0);
+	return (1);
+}
+
 int    open_file(t_cmd *cmd)
 {
 	if (cmd->redir == '>')
 		cmd->fdredir = open(cmd->redirf, O_TRUNC | O_WRONLY | O_CREAT, S_IRWXU);
 	else if (cmd->redir == '}')
 		cmd->fdredir = open(cmd->redirf, O_APPEND | O_WRONLY | O_CREAT, S_IRWXU);
-	else if (cmd->redir == '<')
-		cmd->fdredir = open(cmd->redirf, O_RDONLY);
 	if (cmd->fdredir == -1)
 		return (0);
-	if (cmd->redir == '>' || cmd->redir == '}')
-		dup2(cmd->fdredir, 1);
-	else
-		dup2(cmd->fdredir, 0);
+	dup2(cmd->fdredir, 1);
 	return (1);
 }
 

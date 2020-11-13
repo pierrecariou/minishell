@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/11 20:40:44 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/13 11:47:23 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -71,6 +71,14 @@ void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 	//else
 	if (cmd->nredir > 1)
 		open_files(cmd, cmdv);
+	if (cmd->redirl)
+	{
+		if (!open_file1(cmd))
+		{
+			error(cmd, cmdv);
+			return ;
+		}
+	}
 	if (cmd->redir)
 	{
 		if (!open_file(cmd))
@@ -81,6 +89,8 @@ void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 	}
 	if (!cmp_built_in(argv, cmd, cmdv))
 		execve(file, argv, NULL);
+	if (cmd->redirl)
+		close(cmd->fdredirl);
 	if (cmd->redir)
 		close(cmd->fdredir);
 	cmdv->error = 0;
@@ -182,6 +192,8 @@ void	free_structs(t_cmdv *cmdv)
 			free(cmdv->cp->pid);
 		if (cmdv->cp->redirf)	
 			free(cmdv->cp->redirf);
+		if (cmdv->cp->redirfl)	
+			free(cmdv->cp->redirfl);
 		i = -1;
 		while (cmdv->cp->redirfb && cmdv->cp->redirfb[++i])
 				free(cmdv->cp->redirfb[i]);

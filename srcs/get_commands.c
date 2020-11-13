@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/11 20:09:31 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/13 11:48:04 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,7 +318,8 @@ void	init(t_cmd *cmd)
 		cp->fdredir = -1;
 		cp->argv = NULL;
 		cp->pid = NULL;
-		cp->redirf = NULL;
+		cp->redirf = NULL;	
+		cp->redirfl = NULL;
 		cp->redirfb = NULL;
 		cp = cp->next;
 	}

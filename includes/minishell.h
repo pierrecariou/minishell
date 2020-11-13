@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/11 18:31:12 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/13 11:40:59 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,11 @@ typedef struct		s_cmd
 	int				nforks;
 	int				*pid;
 	int				redir;
+	int				redirl;
 	char 			*redirf;
+	char			*redirfl;
 	int				fdredir;
+	int				fdredirl;
 	int				nredir;
 	char 			**redirfb;
 	struct	s_cmd	*next;
@@ -83,6 +86,7 @@ int		double_sep(char *buf);
 int 	bad_beginning(char *buf);
 int		bad_ending(char *buf);
 int		open_file(t_cmd *cmd);
+int		open_file1(t_cmd *cmd);
 void	open_files(t_cmd *cmd, t_cmdv *cmdv);
 int		tripledouble_redir(char *buf);
 int		empty_redir(t_cmd *cmd);
