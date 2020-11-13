@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/13 11:47:23 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/13 14:56:27 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* **************************************************************************/
 
@@ -14,24 +14,21 @@
 
 int		g_handler;
 
-void	inthandler(int num) 
+void	inthandler(int num)
 {
 	(void)num;
-
 	ft_putstr_fd("\n", 0);
 	ft_putstr_fd("\033[1;31m", 0);
 	ft_putstr_fd("The-Minishell-Project", 0);
 	ft_putstr_fd("\033[0m", 0);
 	ft_putstr_fd("$ ", 0);
-	g_handler = 1;
+	g_handler++;
 	return ;
 }
 
-void	quithandler(int num) 
+void	quithandler(int num)
 {
-
 	(void)num;
-	
 	ft_putstr_fd("\33[2D", 0);
 	ft_putstr_fd("  ", 0);
 	ft_putstr_fd("\33[2D", 0);
@@ -66,9 +63,6 @@ void	error(t_cmd *cmd, t_cmdv *cmdv)
 
 void		exec_built(char *file, char **argv, t_cmd *cmd, t_cmdv *cmdv)
 {
-	//if (strcmp(argv[0], "echo") || ...)
-	// built_in();
-	//else
 	if (cmd->nredir > 1)
 		open_files(cmd, cmdv);
 	if (cmd->redirl)
@@ -118,22 +112,26 @@ void	list(t_cmd *cmd, char *file, t_cmdv *cmdv)
 	cmdv->error = 0;
 }
 
-/*
-   int		valid_cmd(t_cmd *cmd, char **paths)
-   {
-   char *file;
-
-   if (!cmd->argv[0])
-   return (1);
-   if (not_a_path(cmd->argv[0]))
-   file = exec_path(paths, cmd->argv[0]);
-   else
-   file = file_stat(cmd->argv[0]);
-   if (file)
-   return (0);
-   return (1);
-   }
- */
+void	fork_ps1(t_cmd *cmd, t_cmdv *cmdv, char *file)
+{
+	cmdv->error_line = 0;
+	if (cmd->sepl == '|' && (cmd->prev->redir || !cmd->prev->active))
+	{
+		cmd->sepl = ' ';
+		pipe_fd_reset(cmdv->cp);
+	}
+	if ((cmd->sep == '|' && cmd->sepl != '|')
+			&& cmdv->error == 0)
+		pipe_fd_fill(cmd);
+	if ((cmd->sep == '|' || cmd->sepl == '|')
+			&& cmdv->error == 0)
+		pipeline(cmd, file, cmdv);
+	else if ((cmd->sep == ';' || cmd->sep == 0)
+			&& !(cmd->sepl == '|' && cmdv->error == 1))
+		list(cmd, file, cmdv);
+	if (cmd->sep == ';')
+		pipe_fd_reset(cmdv->cp);
+}
 
 void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv, char **envp)
 {
@@ -143,28 +141,12 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv, char **envp)
 		file = exec_path(paths, cmd->argv[0]);
 	else
 		file = file_stat(cmd->argv[0]);
-	//if file or built-in
-	if ((file || is_built_in(cmd->argv)) && (ft_strcmp(cmd->argv[0], "exit") || cmd->sepl != '|'))
+	if ((file || is_built_in(cmd->argv)) &&
+			(ft_strcmp(cmd->argv[0], "exit") || cmd->sepl != '|'))
 	{
 		if (!ft_strcmp(cmd->argv[0], "exit"))
 			ft_exit(envp, cmdv, file, paths);
-		cmdv->error_line = 0;
-		if (cmd->sepl == '|' && (cmd->prev->redir || !cmd->prev->active))
-		{
-			cmd->sepl = ' ';
-			pipe_fd_reset(cmdv->cp);
-		}
-		if ((cmd->sep == '|' && cmd->sepl != '|')
-				&& cmdv->error == 0)
-			pipe_fd_fill(cmd);
-		if ((cmd->sep == '|' || cmd->sepl == '|')
-				&& cmdv->error == 0)
-			pipeline(cmd, file, cmdv);
-		else if ((cmd->sep == ';' || cmd->sep == 0)
-				&& !(cmd->sepl == '|' && cmdv->error == 1))
-			list(cmd, file, cmdv);
-		if (cmd->sep == ';')
-			pipe_fd_reset(cmdv->cp);
+		fork_ps1(cmd, cmdv, file);
 	}
 	else
 		error(cmd, cmdv);
@@ -172,33 +154,37 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv, char **envp)
 		free(file);
 }
 
+void	free_structs1(t_cmdv *cmdv)
+{
+	int i;
+
+	i = -1;
+	if (cmdv->cp->line)
+		free(cmdv->cp->line);
+	while (cmdv->cp->argv && cmdv->cp->argv[++i])
+		free(cmdv->cp->argv[i]);
+	if (cmdv->cp->argv)
+		free(cmdv->cp->argv);
+	if (cmdv->cp->pid)
+		free(cmdv->cp->pid);
+	if (cmdv->cp->redirf)
+		free(cmdv->cp->redirf);
+	if (cmdv->cp->redirfl)
+		free(cmdv->cp->redirfl);
+	i = -1;
+	while (cmdv->cp->redirfb && cmdv->cp->redirfb[++i])
+		free(cmdv->cp->redirfb[i]);
+	if (cmdv->cp->redirfb)
+		free(cmdv->cp->redirfb);
+}
 
 void	free_structs(t_cmdv *cmdv)
 {
-	int i;
 	t_cmd *cp;
 
-
-	while (cmdv->cp)	
+	while (cmdv->cp)
 	{
-		i = -1;
-		if (cmdv->cp->line)
-			free(cmdv->cp->line);
-		while (cmdv->cp->argv && cmdv->cp->argv[++i])
-			free(cmdv->cp->argv[i]);
-		if (cmdv->cp->argv)
-			free(cmdv->cp->argv);
-		if (cmdv->cp->pid)
-			free(cmdv->cp->pid);
-		if (cmdv->cp->redirf)	
-			free(cmdv->cp->redirf);
-		if (cmdv->cp->redirfl)	
-			free(cmdv->cp->redirfl);
-		i = -1;
-		while (cmdv->cp->redirfb && cmdv->cp->redirfb[++i])
-				free(cmdv->cp->redirfb[i]);
-		if (cmdv->cp->redirfb)
-			free(cmdv->cp->redirfb);
+		free_structs1(cmdv);
 		cp = cmdv->cp;
 		cmdv->cp = cmdv->cp->next;
 		free(cp);
@@ -208,77 +194,90 @@ void	free_structs(t_cmdv *cmdv)
 	free(cmdv);
 }
 
+void	prompt(void)
+{
+	if (g_handler == 2)
+		ft_putstr_fd("\33[2K\r", 0);
+	g_handler = 0;
+	ft_putstr_fd("\033[1;31m", 0);
+	ft_putstr_fd("The-Minishell-Project", 0);
+	ft_putstr_fd("\033[0m", 0);
+	ft_putstr_fd("$ ", 0);
+}
+
+void	init_loop(t_cmd *cmd, t_cmdv *cmdv, char **envp, int error_line)
+{
+	cmd->next = 0;
+	cmd->line = NULL;
+	cmd->argv = NULL;
+	cmd->pid = NULL;
+	cmd->redirf = NULL;
+	cmd->redirfl = NULL;
+	cmd->redirfb = NULL;
+	cmdv->envreplace = NULL;
+	cmdv->envp = envp;
+	cmdv->cp = cmd;
+	cmdv->error = 0;
+	cmdv->cenvv = 0;
+	cmdv->error_line = error_line;
+	cmdv->path = NULL;
+	cmdv->paths = NULL;
+}
+
+void	cmds_loop1(t_cmdv *cmdv)
+{
+	cmdv->path = get_path(cmdv->envp);
+	if (cmdv->path == NULL)
+		cmdv->paths = NULL;
+	else
+	{
+		cmdv->path = ft_strdup(cmdv->path);
+		cmdv->paths = split_path(cmdv->path);
+		free(cmdv->path);
+	}
+}
+
+void	cmds_loop(t_cmd *cmd, t_cmdv *cmdv, char **envp)
+{
+	while (cmd)
+	{
+		cmds_loop1(cmdv);
+		if (cmdv->error_line && cmdv->error_line != 127)
+			cmdv->error_line = 2;
+		if (cmd->active)
+		{
+			replace_envv(cmd, cmdv);
+			if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
+				create_file(cmd, cmdv);
+			if (!cmd->argv[0])
+				cmdv->error = 1;
+			else
+				fork_ps(cmd, cmdv->paths, cmdv, envp);
+		}
+		cmd = cmd->next;
+		free_paths(cmdv->paths, envp, 1);
+	}
+	g_handler++;
+}
+
 void	loop(char **envp)
 {
 	t_cmd	*cmd;
 	t_cmdv	*cmdv;
-	int 	error_line;
+	int		error_line;
 	int		parse;
-	char	**paths;
-	char	*path;
 
-	error_line = 0;	
+	error_line = 0;
 	while (42)
 	{
-		if (g_handler)
-			ft_putstr_fd("\33[2K\r", 0);
-		g_handler = 0;
-		ft_putstr_fd("\033[1;31m", 0);
-		ft_putstr_fd("The-Minishell-Project", 0);
-		ft_putstr_fd("\033[0m", 0);
-		ft_putstr_fd("$ ", 0);
+		prompt();
 		if (!(cmd = malloc(sizeof(t_cmd))))
 			return ;
 		if (!(cmdv = malloc(sizeof(t_cmdv))))
 			return ;
-		cmd->next = 0;
-		cmd->line = NULL;
-		cmd->argv = NULL;
-		cmd->pid = NULL;
-		cmd->redirf = NULL;
-		cmd->redirfb = NULL;
-		cmdv->envreplace = NULL;
-		cmdv->envp = envp;
-		cmdv->cp = cmd;
-		cmdv->error = 0;
-		cmdv->cenvv = 0;
-		cmdv->error_line = error_line;
-		if ((parse = read_input(cmd, cmdv, paths, envp)))
-		{
-			while (cmd)
-			{
-				/*
-				   int i = -1;
-				   while (cmd->argv[++i])
-				   printf("word : %s\n", cmd->argv[i]);
-				   printf("n : %d\n", cmd->n);
-				   printf("\n");
-				   */
-				path = get_path(cmdv->envp);
-				if (path == NULL)
-					paths = NULL;
-				else
-				{
-					path = ft_strdup(path);
-					paths = split_path(path);
-					free(path);
-				}
-				if (cmdv->error_line && cmdv->error_line != 127)
-					cmdv->error_line = 2;
-				if (cmd->active)
-				{
-				replace_envv(cmd, cmdv);
-				if (!cmd->argv[0] && (cmd->redir == '>' || cmd->redir == '}'))
-					create_file(cmd, cmdv);
-				if (!cmd->argv[0])
-						cmdv->error = 1;
-				else
-					fork_ps(cmd, paths, cmdv, envp);
-				}
-				cmd = cmd->next;
-				free_paths(paths, envp, 1);
-			}
-		}
+		init_loop(cmd, cmdv, envp, error_line);
+		if ((parse = read_input(cmd, cmdv, cmdv->paths, envp)))
+			cmds_loop(cmd, cmdv, envp);
 		else if (!cmdv->empty)
 			ft_putstr_fd("minishell: syntax error\n", 2);
 		if (!parse || (cmdv->error_line != 0 && cmdv->error_line != 127))
@@ -287,7 +286,7 @@ void	loop(char **envp)
 			error_line = cmdv->error_line;
 		envp = cmdv->envp;
 		free_structs(cmdv);
-		}
+	}
 }
 
 int		main(int argc, char **argv, char **envp)
@@ -296,10 +295,8 @@ int		main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-
 	g_handler = 0;
 	signal(SIGINT, inthandler);
-	//signal(SIGHUP, huphandler);
 	signal(SIGQUIT, quithandler);
 	tmp_env = ft_square_strjoin(envp, NULL);
 	loop(tmp_env);
