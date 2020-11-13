@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/13 14:21:56 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/13 17:13:26 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,17 @@ typedef struct		s_cmdv
 	int				renv;
 	char			**paths;
 	char			*path;
+	char			*buf;
+	int				inquotes;
+	int				l;
 }					t_cmdv;
 
 void	ft_putstr_fd(char *s, int fd);
 int		ft_strcmp(char *s1, char *s2);
 int		get_next_line(int fd, char **line);
 int		ft_strlen(char *s1);
-int		split_input(char *buf, char **words, t_cmd *cmd, t_cmdv *cmdv);
-void	malloc_words(char *buf, char **words, int n, t_cmdv *cmdv);
+int		split_input(t_cmd *cmd, t_cmdv *cmdv);
+void	malloc_words(t_cmd *cmd, t_cmdv *cmdv);
 int		count_words(char *buf, t_cmdv *cmdv);
 void	better_input(char *buf);
 int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp);

@@ -6,11 +6,18 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/13 11:48:04 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/13 17:28:09 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
+
+void	init_inquotes(t_cmdv *cmdv)
+{
+	cmdv->inquotes = 0;
+	cmdv->inquotess = 0;
+	cmdv->inquotesd = 0;
+}
 
 int		find_sep(char *buf, t_cmd *cmd, int i, int inquotes)
 {
@@ -24,39 +31,42 @@ int		find_sep(char *buf, t_cmd *cmd, int i, int inquotes)
 	return (0);
 }
 
-int		split_input(char *buf, char **words, t_cmd *cmd, t_cmdv *cmdv)
+int		split_input1(t_cmd *cmd, t_cmdv *cmdv, int i, int c)
+{
+	if (cmd->line[i] && !ft_isspace(cmd->line[i]) && !cmdv->isaquote)
+	{
+		while ((cmd->line[i] && !ft_isspace(cmd->line[i]) &&
+			cmdv->inquotes == 0) || (cmdv->inquotes == 1 && cmd->line[i]))
+		{
+			cmdv->inquotes = is_inquotes(cmd->line[i], cmdv);
+			if (!cmdv->isaquote)
+				cmd->argv[c][cmdv->l++] = cmd->line[i];
+			i++;
+		}
+		if (cmdv->l > 0)
+			cmd->argv[c][cmdv->l] = 0;
+	}
+	return (i);
+}
+
+int		split_input(t_cmd *cmd, t_cmdv *cmdv)
 {
 	int i;
-	int l;
 	int c;
-	int	inquotes;
 
 	i = 0;
 	c = -1;
-	inquotes = 0;
-	cmdv->inquotess = 0;
-	cmdv->inquotesd = 0;
-	while (buf[i] && c < cmd->n)
+	init_inquotes(cmdv);
+	while (cmd->line[i] && c < cmd->n)
 	{
-		l = 0;
-		inquotes = is_inquotes(buf[i], cmdv);
-		while (buf[i] && ft_isspace(buf[i]))
+		cmdv->l = 0;
+		cmdv->inquotes = is_inquotes(cmd->line[i], cmdv);
+		while (cmd->line[i] && ft_isspace(cmd->line[i]))
 			i++;
-		if (buf[i] && !ft_isspace(buf[i]) && !cmdv->isaquote)
-		{
+		if (cmd->line[i] && !ft_isspace(cmd->line[i]) && !cmdv->isaquote)
 			c++;
-			while ((buf[i] && !ft_isspace(buf[i]) && inquotes == 0) || 
-					(inquotes == 1 && buf[i]))
-			{
-				inquotes = is_inquotes(buf[i], cmdv);
-				if (!cmdv->isaquote)
-					words[c][l++] = buf[i];
-				i++;
-			}
-			if (l > 0)
-				words[c][l] = 0;
-		}
-		if (buf[i])
+		i = split_input1(cmd, cmdv, i, c);
+		if (cmd->line[i])
 			i++;
 	}
 	if (!cmd->next && cmd->sep == '|')
@@ -64,93 +74,74 @@ int		split_input(char *buf, char **words, t_cmd *cmd, t_cmdv *cmdv)
 	return (1);
 }
 
-void    malloc_words(char *buf, char **words, int n, t_cmdv *cmdv)
+int		malloc_words1(t_cmd *cmd, t_cmdv *cmdv, int i, int k)
 {
-	int i;
-	int l;
-	int k;
-	//char quote;
-	int	inquotes;
-
-	//i = -1;
-	i = 0;
-	k = 0;
-	inquotes = 0;
-	cmdv->inquotess = 0;
-	cmdv->inquotesd = 0;
-	while (buf[i] && k < n)
+	if (cmd->line[i] && !ft_isspace(cmd->line[i]) && !cmdv->isaquote)
 	{
-		l = 0;
-		inquotes = is_inquotes(buf[i], cmdv);
-		while (buf[i] && ft_isspace(buf[i]))
-			i++;
-		if (buf[i] && !ft_isspace(buf[i]) && !cmdv->isaquote)
+		while ((cmd->line[i] && !ft_isspace(cmd->line[i]) &&
+				cmdv->inquotes == 0) || (cmdv->inquotes == 1 && cmd->line[i]))
 		{
-			while ((buf[i] && !ft_isspace(buf[i]) && inquotes == 0) || 
-					(inquotes == 1 && buf[i]))
-			{
-				inquotes = is_inquotes(buf[i], cmdv);
-				if (!cmdv->isaquote)
-					l++;
-				i++;
-			}
-			if (l > 0)
-			{
-				//printf("testlength : %d\n", l);
-				if (!(words[k++] = malloc(sizeof(char) * (l + 1))))
-					return ;
-			}
-		}
-		if (buf[i])
+			cmdv->inquotes = is_inquotes(cmd->line[i], cmdv);
+			if (!cmdv->isaquote)
+				cmdv->l++;
 			i++;
+		}
+		if (cmdv->l > 0)
+			if (!(cmd->argv[k++] = malloc(sizeof(char) * (cmdv->l + 1))))
+				return (0);
 	}
-	//printf("FINISH\n");
+	return (i);
 }
 
-int             count_words(char *buf, t_cmdv *cmdv)
+void		malloc_words(t_cmd *cmd, t_cmdv *cmdv)
+{
+	int i;
+	int k;
+
+	i = 0;
+	k = 0;
+	init_inquotes(cmdv);
+	while (cmd->line[i] && k < cmd->n)
+	{
+		cmdv->l = 0;
+		cmdv->inquotes = is_inquotes(cmd->line[i], cmdv);
+		while (cmd->line[i] && ft_isspace(cmd->line[i]))
+			i++;
+		i = malloc_words1(cmd, cmdv, i, k);
+		k = (cmdv->l > 0) ? k + 1 : k;
+		if (cmd->line[i])
+			i++;
+	}
+}
+
+int		count_words(char *buf, t_cmdv *cmdv)
 {
 	int c;
 	int i;
-	int inquotes;
 
 	c = 0;
 	i = 0;
-	inquotes = 0;
-	cmdv->inquotess = 0;
-	cmdv->inquotesd = 0;
+	init_inquotes(cmdv);
 	while (buf[i])
 	{
-		inquotes = is_inquotes(buf[i], cmdv);
+		cmdv->inquotes = is_inquotes(buf[i], cmdv);
 		while (buf[i] && ft_isspace(buf[i]))
 			i++;
 		if (buf[i] && !ft_isspace(buf[i]) && !cmdv->isaquote)
 		{
 			c++;
-			while ((buf[i] && !ft_isspace(buf[i]) && inquotes == 0) || 
-					(inquotes == 1 && buf[i]))
+			while ((buf[i] && !ft_isspace(buf[i]) && cmdv->inquotes == 0) ||
+					(cmdv->inquotes == 1 && buf[i]))
 			{
-				inquotes = is_inquotes(buf[i], cmdv);
+				cmdv->inquotes = is_inquotes(buf[i], cmdv);
 				i++;
 			}
 		}
 		if (buf[i])
 			i++;
 	}
-	//printf("nwords : %d\n", c);
 	return (c);
 }
-
-/*
-   void    better_input(char *buf)
-   {
-   int i;
-
-   i = 0;
-   while (buf[i] >= 31 && buf[i] < 127)
-   i++;
-   buf[i] = 0;
-   }
- */
 
 void	add_next(int m, t_cmd *cmd, t_cmdv *cmdv)
 {
@@ -161,50 +152,56 @@ void	add_next(int m, t_cmd *cmd, t_cmdv *cmdv)
 	if (m + 1 < cmdv->nsep + 1)
 	{
 		if (!(next = malloc(sizeof(t_cmd))))
-			return ;	
+			return ;
 		next->sepl = cmd->sep;
 		cmd->next = next;
 		cmd->next->prev = cmd;
 	}
 	else
-		cmd->next = 0;	
+		cmd->next = 0;
+}
+
+int		cmd_line1(char *buf, t_cmd *cmd, t_cmdv *cmdv, int i)
+{
+	int l;
+	int k;
+
+	l = 0;
+	k = 0;
+	cmd->sep = 0;
+	while (buf[i] && !find_sep(buf, cmd, i, cmdv->inquotes))
+	{
+		cmdv->inquotes = is_inquotes(buf[i], cmdv);
+		l++;
+		i++;
+	}
+	cmd->line = malloc(sizeof(char) * (l + 1));
+	i -= l;
+	while (buf[i] && !find_sep(buf, cmd, i, cmdv->inquotes))
+	{
+		cmdv->inquotes = is_inquotes(buf[i], cmdv);
+		cmd->line[k] = buf[i];
+		i++;
+		k++;
+	}
+	cmd->line[k] = 0;
+	i++;
+	return (i);
 }
 
 void	cmd_line(char *buf, t_cmd *cmd, t_cmdv *cmdv)
 {
 	int i;
-	int l;
-	int k;
 	int m;
-	int inquotes;
 
 	i = 0;
 	m = -1;
 	while (++m < cmdv->nsep + 1)
 	{
-		inquotes = 0;
+		cmdv->inquotes = 0;
 		cmdv->inquotess = 0;
 		cmdv->inquotesd = 0;
-		l = 0;
-		k = 0;
-		cmd->sep = 0;
-		while (buf[i] && !find_sep(buf, cmd, i, inquotes))
-		{
-			inquotes = is_inquotes(buf[i], cmdv);
-			l++;
-			i++;
-		}
-		cmd->line = malloc(sizeof(char) * (l + 1));
-		i-=l;
-		while (buf[i] && !find_sep(buf, cmd, i, inquotes))
-		{
-			inquotes = is_inquotes(buf[i], cmdv);
-			cmd->line[k] = buf[i];
-			i++;
-			k++;
-		}
-		cmd->line[k] = 0;
-		i++;	
+		i = cmd_line1(buf, cmd, cmdv, i);
 		add_next(m, cmd, cmdv);
 		cmd = cmd->next;
 	}
@@ -227,37 +224,6 @@ void	count_sep(char *buf, t_cmdv *cmdv)
 				&& inquotes == 0)
 			cmdv->nsep++;
 	}
-}
-
-void	clean_quotes(char *buf)
-{
-	int i;
-	char c;
-
-	c = 0;
-	i = 0;
-	while (buf[i])
-	{
-		while (buf[i] && c == 0)
-		{
-			if ((buf[i] == '\"' || buf[i] == '\''))
-			{
-				c = buf[i];
-				buf[i] = 126;
-			}
-			i++;
-		}
-		while (buf[i] && c != 0)
-		{
-			if (buf[i] == c)
-			{
-				c = 0;
-				buf[i] = 126;
-			}
-			i++;
-		}
-	}
-	//printf("%s\n", cmd->line);
 }
 
 int		is_inquotes(char c, t_cmdv *cmdv)
@@ -284,17 +250,13 @@ void	count_envv(char *buf, t_cmdv *cmdv)
 
 	i = -1;
 	m = -1;
-	cmdv->nenvv = 0;;
+	cmdv->nenvv = 0;
 	cmdv->inquotesd = 0;
 	cmdv->inquotess = 0;
 	while (buf[++i])
-	{
-		if (buf[i] == '$')
-			cmdv->nenvv++;
-	}
+		cmdv->nenvv = (buf[i] == '$') ? cmdv->nenvv + 1 : cmdv->nenvv;
 	if (!cmdv->nenvv)
 		return ;
-	//	printf("CENVV ::: %d\n", cmdv->nenvv);
 	if (!(cmdv->envreplace = malloc(sizeof(int) * cmdv->nenvv)))
 		return ;
 	i = -1;
@@ -318,7 +280,7 @@ void	init(t_cmd *cmd)
 		cp->fdredir = -1;
 		cp->argv = NULL;
 		cp->pid = NULL;
-		cp->redirf = NULL;	
+		cp->redirf = NULL;
 		cp->redirfl = NULL;
 		cp->redirfb = NULL;
 		cp = cp->next;
@@ -331,61 +293,76 @@ void	free_paths(char **paths, char **envp, int loop)
 
 	if (loop != 2 && paths)
 	{
-	i = -1;
-	while (paths[++i])
-		free(paths[i]);
-	free(paths);
+		i = -1;
+		while (paths[++i])
+			free(paths[i]);
+		free(paths);
 	}
 	if (!loop || loop == 2)
 	{
-	i = -1;
-	while (envp[++i])
-		free(envp[i]);
-	free(envp);
+		i = -1;
+		while (envp[++i])
+			free(envp[i]);
+		free(envp);
 	}
 }
 
-int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
+void	call_gnl(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
 {
-	//char bufcp[300];
+	int		ret;
+	char	*buf_cp;
 
-	char *buf;
-	int ret;
-	char *buf_cp;
-
-	//read(0, buf, 300);
-	buf = NULL;
+	cmdv->buf = NULL;
 	buf_cp = NULL;
-	while (!(ret = get_next_line(0, &buf)) && buf)
-	{		
-			buf_cp = buf;
-			buf = NULL;
+	while (!(ret = get_next_line(0, &cmdv->buf)) && cmdv->buf)
+	{
+		buf_cp = cmdv->buf;
+		cmdv->buf = NULL;
 	}
 	if (ret == 1 && buf_cp != NULL)
-		buf = buf_cp;
-	if (!ret && !buf)
+		cmdv->buf = buf_cp;
+	if (!ret && !cmdv->buf)
 	{
 		free(cmd);
 		free(cmdv);
 		free_paths(paths, envp, 2);
 		ft_putstr_fd("exit\n", 1);
-		exit (0);
+		exit(0);
 	}
-	cmdv->empty = (buf[0]) ? 0 : 1;
-	if (!buf[0] || bad_beginning(buf) || bad_ending(buf) ||
-			double_sep(buf) || tripledouble_redir(buf) ||
-			quotes_not_closed(buf))
+	cmdv->empty = (cmdv->buf[0]) ? 0 : 1;
+}
+
+void	fill_argv(t_cmd *cmd, t_cmdv *cmdv)
+{
+	while (cmd)
 	{
-		free(buf);
+		cmd->active = 1;
+		cmd->nforks = 0;
+		cmd->n = count_words(cmd->line, cmdv);
+		if (!(cmd->argv = malloc(sizeof(char *) * (cmd->n + 1))))
+			return ;
+		malloc_words(cmd, cmdv);
+		if (!split_input(cmd, cmdv))
+			return ;
+		cmd->argv[cmd->n] = 0;
+		cmd = cmd->next;
+	}
+}
+
+int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
+{
+	call_gnl(cmd, cmdv, paths, envp);
+	if (!cmdv->buf[0] || bad_beginning(cmdv->buf) || bad_ending(cmdv->buf) ||
+			double_sep(cmdv->buf) || tripledouble_redir(cmdv->buf) ||
+			quotes_not_closed(cmdv->buf))
+	{
+		free(cmdv->buf);
 		return (0);
 	}
-	count_envv(buf, cmdv);
-	//clean_quotes(buf);
-	count_sep(buf, cmdv);
-	//printf("%d\n", cmdv->nsep);
-	//cmd->line = NULL;
-	cmd_line(buf, cmd, cmdv);
-	free(buf);
+	count_envv(cmdv->buf, cmdv);
+	count_sep(cmdv->buf, cmdv);
+	cmd_line(cmdv->buf, cmd, cmdv);
+	free(cmdv->buf);
 	init(cmd);
 	count_redir(cmd, cmdv);
 	get_redirb(cmd, cmdv);
@@ -393,20 +370,7 @@ int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
 	if (empty_redir(cmd))
 		return (0);
 	pipe_fd_reset(cmd);
-	while (cmd)
-	{
-		cmd->active = 1;
-		cmd->nforks = 0;
-		//better_input(buf);
-		cmd->n = count_words(cmd->line, cmdv);
-		if (!(cmd->argv = malloc(sizeof(char *) * (cmd->n + 1))))
-			return (0);
-		malloc_words(cmd->line, cmd->argv, cmd->n, cmdv);
-		if (!split_input(cmd->line, cmd->argv, cmd, cmdv))
-			return (0);
-		cmd->argv[cmd->n] = 0;
-		cmd = cmd->next;
-	}
+	fill_argv(cmd, cmdv);
 	fork_error(cmdv);
 	return (1);
 }
