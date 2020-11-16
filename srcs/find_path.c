@@ -6,13 +6,13 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:02:27 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/11 13:42:28 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/16 10:26:39 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-int             not_a_path(char *word)
+int		not_a_path(char *word)
 {
 	int i;
 
@@ -25,7 +25,7 @@ int             not_a_path(char *word)
 	return (1);
 }
 
-char    *file_stat(char *file)
+char	*file_stat(char *file)
 {
 	struct stat buf;
 
@@ -34,7 +34,7 @@ char    *file_stat(char *file)
 	return (NULL);
 }
 
-char    *concat_path_exec(char *path, char *exec)
+char	*concat_path_exec(char *path, char *exec)
 {
 	char *ret;
 	int i;
@@ -54,7 +54,7 @@ char    *concat_path_exec(char *path, char *exec)
 	return (ret);
 }
 
-char    *exec_path(char **paths,  char *exec)
+char	*exec_path(char **paths,  char *exec)
 {
 	int i;
 	struct stat buf;
@@ -72,8 +72,6 @@ char    *exec_path(char **paths,  char *exec)
 			return (file);
 		else
 			free(file);
-		//printf("%s\n", file);
-		//printf("%d\n", stat(file, &buf));
 	}
 	return (NULL);
 }

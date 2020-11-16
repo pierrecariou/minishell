@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/13 17:13:26 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/16 10:04:26 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,5 +125,13 @@ int		no_fork(char **argv);
 void	fork_error(t_cmdv *cmdv);
 void	free_structs(t_cmdv *cmdv);
 void	free_paths(char **paths, char **envp, int loop);
+void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv, char **envp);
+void    cmds_loop1(t_cmdv *cmdv);
+void    init_loop(t_cmd *cmd, t_cmdv *cmdv, char **envp, int error_line);
+void    quithandler(int num);
+void    cmd_line(char *buf, t_cmd *cmd, t_cmdv *cmdv);
+void	init_inquotes(t_cmdv *cmdv);
+void    count_envv(char *buf, t_cmdv *cmdv);
+void    count_sep(char *buf, t_cmdv *cmdv);
 
 #endif

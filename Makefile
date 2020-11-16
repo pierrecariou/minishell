@@ -6,7 +6,7 @@
 #    By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/01 10:17:20 by pcariou           #+#    #+#              #
-#    Updated: 2020/11/06 16:57:19 by pcariou          ###   ########.fr        #
+#    Updated: 2020/11/16 10:07:58 by pcariou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,11 @@ SRCS		=	srcs/main.c \
 				srcs/envv.c \
 				srcs/error.c \
 				srcs/error1.c \
+				srcs/fork_ps.c \
+				srcs/loop1.c \
+				srcs/cmd_line.c \
+				srcs/argv.c \
+				srcs/count.c \
 				utils/gnl/get_next_line.c \
 				utils/gnl/get_next_line_utils.c \
 				srcs/built_in/ft_cd.c \

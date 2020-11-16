@@ -6,13 +6,13 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 13:55:56 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/09 10:57:11 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/16 10:19:02 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-void    pipe_fd_fill(t_cmd *cmd)
+void	pipe_fd_fill(t_cmd *cmd)
 {
 	int fd[2];
 
@@ -25,7 +25,7 @@ void    pipe_fd_fill(t_cmd *cmd)
 	}
 }
 
-void    pipe_fd_reset(t_cmd *cmd)
+void	pipe_fd_reset(t_cmd *cmd)
 {
 	while (cmd)
 	{
@@ -35,8 +35,7 @@ void    pipe_fd_reset(t_cmd *cmd)
 	}
 }
 
-
-void            store_pid(t_cmd *cmd, int pid)
+void	store_pid(t_cmd *cmd, int pid)
 {
 	int i;
 
@@ -52,7 +51,7 @@ void            store_pid(t_cmd *cmd, int pid)
 	cmd->next->pid[i] = pid;
 }
 
-void            close_fd(t_cmdv *cmdv)
+void	close_fd(t_cmdv *cmdv)
 {
 	t_cmd *cp;
 
@@ -67,7 +66,7 @@ void            close_fd(t_cmdv *cmdv)
 	}
 }
 
-void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
+void	pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 {
 	int pid;
 	int i;
@@ -84,9 +83,7 @@ void    pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 			dup2(cmd->fdout, 1);
 		close_fd(cmdv);
 		exec_built(file, cmd->argv, cmd, cmdv);
-		//if (is_built_in(cmd->argv))
 		exit(0);
-		//if (ft_strcmp(cmd->argv[0], "cd") && ft_strcmp(cmd->argv[0], "export") && ft_strcmp(cmd->argv[0], "unset"))
 	}
 	if (cmd->sep == '|')
 		store_pid(cmd, pid);

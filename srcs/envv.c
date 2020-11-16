@@ -6,13 +6,13 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:28:23 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/09 08:42:16 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/16 10:15:05 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-char    *real_env(char *envv, t_cmdv *cmdv)
+char	*real_env(char *envv, t_cmdv *cmdv)
 {
 	int i;
 	int m;
@@ -42,7 +42,7 @@ char    *real_env(char *envv, t_cmdv *cmdv)
 	return (space);
 }
 
-char    *buf_with_envv(char *buf, char *renvv, char *end, int length, int l)
+char	*buf_with_envv(char *buf, char *renvv, char *end, int length, int l)
 {
 	int i;
 	int m;
@@ -66,7 +66,7 @@ char    *buf_with_envv(char *buf, char *renvv, char *end, int length, int l)
 	return (ret);
 }
 
-char    *get_envv(char *buf, t_cmdv *cmdv, int i)
+char	*get_envv(char *buf, t_cmdv *cmdv, int i)
 {
 	char *envv;
 	char *end;
@@ -74,50 +74,40 @@ char    *get_envv(char *buf, t_cmdv *cmdv, int i)
 	int cp;
 	int m;
 	int length;
-	//int r;
 	int l;
 
-	//printf("SLUT ::: %d\n", cmdv->envreplace[cmdv->cenvv]);
-		//printf("%c\n", buf[i]);
-		//if (buf[i] == '$')
-		//	printf("%d\n", i);
-		if (buf[i] == '$' && buf[i + 1] && cmdv->envreplace[cmdv->cenvv])
+	if (buf[i] == '$' && buf[i + 1] && cmdv->envreplace[cmdv->cenvv])
+	{
+		cmdv->cenvv++;
+		m = 0;
+		l = i;
+		cp = ++i;
+		while (buf[i] && buf[i] != '/' && buf[i] != '$')
 		{
-			cmdv->cenvv++;
-			m = 0;
-			l = i;
-			cp = ++i;
-			while (buf[i] && buf[i] != '/' && buf[i] != '$')
-			{
-				m++;
-				i++;
-			}
-			if (!(envv = malloc(sizeof(char) * m + 1)))
-				return (0);
-			i = cp;
-			m = 0;
-			while (buf[i] && buf[i] != '/' && buf[i] != '$')
-				envv[m++] = buf[i++];
-			envv[m] = 0;
-			//              r = i;
-			end = &buf[i];
-			length = ft_strlen(envv);
-			renvv = real_env(envv, cmdv);
-			//printf("%s\n", renvv);
-			buf = buf_with_envv(buf, renvv, end, length, l);
-			//printf("%s\n", buf);
-			//free(renvv);
-			if (!cmdv->renv)
-				free(renvv);
-			free(envv);
-		//	printf("salut\n");
+			m++;
+			i++;
 		}
-		else if (buf[i] && buf[i] == '$')
-				cmdv->cenvv++;
+		if (!(envv = malloc(sizeof(char) * m + 1)))
+			return (0);
+		i = cp;
+		m = 0;
+		while (buf[i] && buf[i] != '/' && buf[i] != '$')
+			envv[m++] = buf[i++];
+		envv[m] = 0;
+		end = &buf[i];
+		length = ft_strlen(envv);
+		renvv = real_env(envv, cmdv);
+		buf = buf_with_envv(buf, renvv, end, length, l);
+		if (!cmdv->renv)
+			free(renvv);
+		free(envv);
+	}
+	else if (buf[i] && buf[i] == '$')
+		cmdv->cenvv++;
 	return (buf);
 }
 
-void    replace_envv(t_cmd *cmd, t_cmdv *cmdv)
+void	replace_envv(t_cmd *cmd, t_cmdv *cmdv)
 {
 	int i;
 	int k;

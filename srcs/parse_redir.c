@@ -6,13 +6,13 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/15 11:34:16 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/13 11:38:17 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/16 10:13:15 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-int             get_redirfb(t_cmd *cmd, t_cmdv *cmdv, int i, int c)
+int		get_redirfb(t_cmd *cmd, t_cmdv *cmdv, int i, int c)
 {
 	int cp;
 	int l;
@@ -43,7 +43,7 @@ int             get_redirfb(t_cmd *cmd, t_cmdv *cmdv, int i, int c)
 	return (cp);
 }
 
-void    get_redirb(t_cmd *cmd, t_cmdv *cmdv)
+void	get_redirb(t_cmd *cmd, t_cmdv *cmdv)
 {
 	int i;
 	int c;
@@ -81,7 +81,7 @@ void    get_redirb(t_cmd *cmd, t_cmdv *cmdv)
 	}
 }
 
-void    count_redir(t_cmd *cmd, t_cmdv *cmdv)
+void	count_redir(t_cmd *cmd, t_cmdv *cmdv)
 {
 	int i;
 	int inquotes;
@@ -108,7 +108,7 @@ void    count_redir(t_cmd *cmd, t_cmdv *cmdv)
 	}
 }
 
-void    get_redirfl(t_cmd *cmd, int i)
+void	get_redirfl(t_cmd *cmd, int i)
 {
 	int cp;
 	int l;
@@ -136,7 +136,7 @@ void    get_redirfl(t_cmd *cmd, int i)
 }
 
 
-void    get_redirf(t_cmd *cmd, int i)
+void	get_redirf(t_cmd *cmd, int i)
 {
 	int cp;
 	int l;
@@ -163,7 +163,7 @@ void    get_redirf(t_cmd *cmd, int i)
 	cmd->redirf[l] = 0;
 }
 
-void    get_redir(t_cmd *cmd, t_cmdv *cmdv)
+void	get_redir(t_cmd *cmd, t_cmdv *cmdv)
 {
 	int i;
 	int inquotes;
