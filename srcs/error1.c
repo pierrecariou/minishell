@@ -6,13 +6,13 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/23 19:11:58 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/04 22:07:41 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/16 11:37:17 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-int	quotes_not_closed(char *buf)
+int		quotes_not_closed(char *buf)
 {
 	int i;
 	int inquotes_d;
@@ -37,10 +37,22 @@ int	quotes_not_closed(char *buf)
 	return (0);
 }
 
-void		fork_error(t_cmdv *cmdv)
+int		fork_error1(t_cmd *cp, int i)
 {
-	t_cmd *cp;
-	t_cmd *cp1;
+	cp->active = 0;
+	cp = cp->prev;
+	while (--i > 0 && cp->sep && cp->sep == '|')
+	{
+		cp->active = 0;
+		cp = cp->prev;
+	}
+	return (i);
+}
+
+void	fork_error(t_cmdv *cmdv)
+{
+	t_cmd	*cp;
+	t_cmd	*cp1;
 	int		n;
 	int		i;
 
@@ -53,15 +65,9 @@ void		fork_error(t_cmdv *cmdv)
 		if (cp->argv[0] && no_fork(cp->argv) && cp->sepl && cp->sepl == '|')
 		{
 			i = n;
-			cp->active = 0;
-			cp = cp->prev;
-			while (--i > 0 && cp->sep && cp->sep == '|')
-			{
-				cp->active = 0;
-				cp = cp->prev;
-			}
+			i = fork_error1(cp, i);
 			cp = cp1;
-		}	
+		}
 		if (cp->argv[0] && no_fork(cp->argv) && cp->sep && cp->sep == '|')
 		{
 			cp->sep = ';';

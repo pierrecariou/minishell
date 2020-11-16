@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/16 10:04:26 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/16 11:20:59 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,10 @@ typedef struct		s_cmdv
 	char			*buf;
 	int				inquotes;
 	int				l;
+	int				length;
+	char			*envv;
+	char			*renvv;
+	char			*end;
 }					t_cmdv;
 
 void	ft_putstr_fd(char *s, int fd);
@@ -113,7 +117,7 @@ void	ft_exit(char **envp, t_cmdv *cmdv, char *file, char **paths);
 char	**ft_square_strjoin(char **tab, char *str);
 char	**ft_square_free(char **tab);
 char	*ft_strdup(char *s1);
-char	*get_envv(char *buf, t_cmdv *cmdv, int i);
+void	get_envv(t_cmd *cmd, t_cmdv *cmdv, int i, int k);
 void	replace_envv(t_cmd *cmd, t_cmdv *cmdv);
 int		is_in_quotes(char *buf, int b, int e);
 void	ft_unset(t_cmd cmd, t_cmdv *cmdv);

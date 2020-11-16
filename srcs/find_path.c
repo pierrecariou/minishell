@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:02:27 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/16 10:26:39 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/16 11:42:13 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ char	*file_stat(char *file)
 
 char	*concat_path_exec(char *path, char *exec)
 {
-	char *ret;
-	int i;
-	int k;
+	char	*ret;
+	int		i;
+	int		k;
 
 	i = -1;
 	k = 0;
-	if (!(ret = malloc(sizeof(char) *( ft_strlen(path) + ft_strlen(exec) + 2))))
+	if (!(ret = malloc(sizeof(char) * (ft_strlen(path) + ft_strlen(exec) + 2))))
 		return (0);
 	while (path[++i])
 		ret[k++] = path[i];
@@ -54,15 +54,13 @@ char	*concat_path_exec(char *path, char *exec)
 	return (ret);
 }
 
-char	*exec_path(char **paths,  char *exec)
+char	*exec_path(char **paths, char *exec)
 {
-	int i;
-	struct stat buf;
-	char *file;
+	int				i;
+	struct stat		buf;
+	char			*file;
 
 	i = -1;
-	(void)buf;
-	(void)file;
 	if (!paths)
 		return (NULL);
 	while (paths[++i])

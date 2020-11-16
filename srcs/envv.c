@@ -6,17 +6,28 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:28:23 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/16 10:15:05 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/16 11:26:43 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
+char	*create_space(void)
+{
+	char *space;
+
+	if (!(space = malloc(2)))
+		return (NULL);
+	space[0] = ' ';
+	space[1] = 0;
+	return (space);
+}
+
 char	*real_env(char *envv, t_cmdv *cmdv)
 {
-	int i;
-	int m;
-	char *space;
+	int		i;
+	int		m;
+	char	*space;
 
 	i = -1;
 	cmdv->renv = 0;
@@ -30,81 +41,84 @@ char	*real_env(char *envv, t_cmdv *cmdv)
 		m = 0;
 		while (envv[m] && cmdv->envp[i][m] && envv[m] == cmdv->envp[i][m])
 			m++;
-		if (!envv[m] && cmdv->envp[i][m] && cmdv->envp[i][m] == '=' && cmdv->envp[i][m + 1])
+		if (!envv[m] && cmdv->envp[i][m] && cmdv->envp[i][m] == '='
+				&& cmdv->envp[i][m + 1])
 		{
 			cmdv->renv = 1;
 			return (&cmdv->envp[i][m + 1]);
 		}
 	}
-	space = malloc(2);
-	space[0] = ' ';
-	space[1] = 0;
+	space = create_space();
 	return (space);
 }
 
-char	*buf_with_envv(char *buf, char *renvv, char *end, int length, int l)
+char	*buf_with_envv(int r, t_cmd *cmd, t_cmdv *cmdv)
 {
-	int i;
-	int m;
-	int k;
-	char *ret;
+	int		i;
+	int		m;
+	int		k;
+	char	*ret;
 
 	i = -1;
 	m = 0;
 	k = 0;
-	if (!(ret = malloc(sizeof(char) * (ft_strlen(buf) + (ft_strlen(renvv) - (length - 1)) + 1))))
+	if (!(ret = malloc(sizeof(char) * (ft_strlen(cmd->argv[r]) +
+						(ft_strlen(cmdv->renvv) - (cmdv->length - 1)) + 1))))
 		return (0);
-	while (++i < l)
-		ret[m++] = buf[i];
-	while (renvv[k])
-		ret[m++] = renvv[k++];
+	while (++i < cmdv->l)
+		ret[m++] = cmd->argv[r][i];
+	while (cmdv->renvv[k])
+		ret[m++] = cmdv->renvv[k++];
 	k = -1;
-	while (end[++k])
-		ret[m++] = end[k];
+	while (cmdv->end[++k])
+		ret[m++] = cmdv->end[k];
 	ret[m] = 0;
-	free(buf);
+	free(cmd->argv[r]);
 	return (ret);
 }
 
-char	*get_envv(char *buf, t_cmdv *cmdv, int i)
+int		get_envv1(t_cmd *cmd, t_cmdv *cmdv, int i, int k)
 {
-	char *envv;
-	char *end;
-	char *renvv;
-	int cp;
 	int m;
-	int length;
-	int l;
 
-	if (buf[i] == '$' && buf[i + 1] && cmdv->envreplace[cmdv->cenvv])
+	m = 0;
+	while (cmd->argv[k][i] && cmd->argv[k][i] != '/' && cmd->argv[k][i] != '$')
+		cmdv->envv[m++] = cmd->argv[k][i++];
+	cmdv->envv[m] = 0;
+	cmdv->end = &cmd->argv[k][i];
+	cmdv->length = ft_strlen(cmdv->envv);
+	cmdv->renvv = real_env(cmdv->envv, cmdv);
+	cmd->argv[k] = buf_with_envv(k, cmd, cmdv);
+	if (!cmdv->renv)
+		free(cmdv->renvv);
+	free(cmdv->envv);
+	return (i);
+}
+
+void	get_envv(t_cmd *cmd, t_cmdv *cmdv, int i, int k)
+{
+	int		cp;
+	int		m;
+
+	if (cmd->argv[k][i] == '$' && cmd->argv[k][i + 1]
+		&& cmdv->envreplace[cmdv->cenvv])
 	{
 		cmdv->cenvv++;
 		m = 0;
-		l = i;
+		cmdv->l = i;
 		cp = ++i;
-		while (buf[i] && buf[i] != '/' && buf[i] != '$')
+		while (cmd->argv[k][i] && cmd->argv[k][i] != '/'
+			&& cmd->argv[k][i] != '$')
 		{
 			m++;
 			i++;
 		}
-		if (!(envv = malloc(sizeof(char) * m + 1)))
-			return (0);
-		i = cp;
-		m = 0;
-		while (buf[i] && buf[i] != '/' && buf[i] != '$')
-			envv[m++] = buf[i++];
-		envv[m] = 0;
-		end = &buf[i];
-		length = ft_strlen(envv);
-		renvv = real_env(envv, cmdv);
-		buf = buf_with_envv(buf, renvv, end, length, l);
-		if (!cmdv->renv)
-			free(renvv);
-		free(envv);
+		if (!(cmdv->envv = malloc(sizeof(char) * m + 1)))
+			return ;
+		i = get_envv1(cmd, cmdv, cp, k);
 	}
-	else if (buf[i] && buf[i] == '$')
+	else if (cmd->argv[k][i] && cmd->argv[k][i] == '$')
 		cmdv->cenvv++;
-	return (buf);
 }
 
 void	replace_envv(t_cmd *cmd, t_cmdv *cmdv)
@@ -117,6 +131,6 @@ void	replace_envv(t_cmd *cmd, t_cmdv *cmdv)
 	{
 		k = -1;
 		while (cmd->argv[i][++k])
-			cmd->argv[i] = get_envv(cmd->argv[i], cmdv, k);
+			get_envv(cmd, cmdv, k, i);
 	}
 }
