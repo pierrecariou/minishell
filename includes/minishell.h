@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/17 10:18:14 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/17 14:54:05 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <unistd.h>
-# include <errno.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <signal.h>
 # include <sys/wait.h>
