@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/17 09:33:06 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/17 09:45:45 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/17 16:37:48 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,22 @@ char	*create_space(void)
 	space[0] = ' ';
 	space[1] = 0;
 	return (space);
+}
+
+char	*return_code(char *envv, t_cmdv *cmdv)
+{
+	char *space;
+
+	if (envv[0] && envv[0] == '?' && !envv[1])
+	{
+		if (cmdv->code)
+		{
+			space = ft_itoa(130);
+			cmdv->code = 0;
+		}
+		else
+			space = ft_itoa(cmdv->error_line);
+		return (space);
+	}
+	return (NULL);
 }
