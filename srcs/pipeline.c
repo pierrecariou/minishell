@@ -6,24 +6,11 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 13:55:56 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/16 10:19:02 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/17 09:34:11 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
-
-void	pipe_fd_fill(t_cmd *cmd)
-{
-	int fd[2];
-
-	while (cmd->sep == '|' && cmd->next)
-	{
-		pipe(fd);
-		cmd->fdout = fd[1];
-		cmd->next->fdin = fd[0];
-		cmd = cmd->next;
-	}
-}
 
 void	pipe_fd_reset(t_cmd *cmd)
 {
@@ -66,15 +53,8 @@ void	close_fd(t_cmdv *cmdv)
 	}
 }
 
-void	pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
+void	pipeline1(t_cmd *cmd, char *file, t_cmdv *cmdv, int pid)
 {
-	int pid;
-	int i;
-	int status;
-
-	i = -1;
-	status = 0;
-	pid = fork();
 	if (pid == 0)
 	{
 		if (cmd->sepl == '|')
@@ -85,6 +65,18 @@ void	pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
 		exec_built(file, cmd->argv, cmd, cmdv);
 		exit(0);
 	}
+}
+
+void	pipeline(t_cmd *cmd, char *file, t_cmdv *cmdv)
+{
+	int pid;
+	int i;
+	int status;
+
+	i = -1;
+	status = 0;
+	pid = fork();
+	pipeline1(cmd, file, cmdv, pid);
 	if (cmd->sep == '|')
 		store_pid(cmd, pid);
 	else

@@ -1,27 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   pipeline1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/01 11:23:24 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/17 10:21:26 by pcariou          ###   ########.fr       */
+/*   Created: 2020/11/17 09:33:06 by pcariou           #+#    #+#             */
+/*   Updated: 2020/11/17 09:45:45 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int		ft_strcmp(char *s1, char *s2)
-{
-	int i;
+#include "includes/minishell.h"
 
-	i = 0;
-	if (!s1 || !s2)
-		return (-1);
-	while (s1[i] && s2[i])
+void	pipe_fd_fill(t_cmd *cmd)
+{
+	int fd[2];
+
+	while (cmd->sep == '|' && cmd->next)
 	{
-		if (s1[i] != s2[i])
-			return (s1[i] - s2[i]);
-		i++;
+		pipe(fd);
+		cmd->fdout = fd[1];
+		cmd->next->fdin = fd[0];
+		cmd = cmd->next;
 	}
-	return (s1[i] - s2[i]);
+}
+
+char	*create_space(void)
+{
+	char *space;
+
+	if (!(space = malloc(2)))
+		return (NULL);
+	space[0] = ' ';
+	space[1] = 0;
+	return (space);
 }

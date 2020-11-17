@@ -6,22 +6,11 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:28:23 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/16 11:26:43 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/17 09:45:52 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
-
-char	*create_space(void)
-{
-	char *space;
-
-	if (!(space = malloc(2)))
-		return (NULL);
-	space[0] = ' ';
-	space[1] = 0;
-	return (space);
-}
 
 char	*real_env(char *envv, t_cmdv *cmdv)
 {

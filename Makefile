@@ -6,7 +6,7 @@
 #    By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/01 10:17:20 by pcariou           #+#    #+#              #
-#    Updated: 2020/11/16 10:07:58 by pcariou          ###   ########.fr        #
+#    Updated: 2020/11/17 10:07:02 by pcariou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,8 +18,10 @@ SRCS		=	srcs/main.c \
 				srcs/init_path.c \
 				srcs/get_commands.c \
 				srcs/parse_redir.c \
+				srcs/parse_redir1.c \
 				srcs/find_path.c \
 				srcs/pipeline.c \
+				srcs/pipeline1.c \
 				srcs/redirect.c \
 				srcs/envv.c \
 				srcs/error.c \
@@ -48,7 +50,7 @@ RM			= rm -f
 
 AR			=  ar rcs
 
-CFLAGS		= -g -Wall -Wextra -Werror
+CFLAGS		= -Wall -Wextra -Werror
 
 CC			= gcc
 
