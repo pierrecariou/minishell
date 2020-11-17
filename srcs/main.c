@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/16 10:25:58 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/17 11:31:05 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int		g_handler;
 void	inthandler(int num)
 {
 	(void)num;
-	ft_putstr_fd("\n", 0);
+	ft_putstr_fd("\n", 1);
 	ft_putstr_fd("\033[1;31m", 0);
 	ft_putstr_fd("The-Minishell-Project", 0);
 	ft_putstr_fd("\033[0m", 0);
