@@ -54,13 +54,44 @@ static int		ft_set_one_var(char *arg, t_cmdv *cmdv)
 	return (0);
 }
 
+static int	ft_only_export(char **envp)
+{
+	char	**ret;
+	char	*tmp;
+	int		i;
+	int		j;
+
+	i = -1;
+	if (!(ret = ft_square_strjoin(envp, NULL)))
+		return (-1);
+	while (ret[++i] && (j = -1))
+		while (ret[++j + 1])
+			if (ft_strcmp(ret[j], ret[j + 1]) > 0)
+			{
+				tmp = ret[j];
+				ret[j] = ret[j + 1];
+				ret[j + 1] = tmp;
+			}
+	i = -1;
+	while (ret[++i])
+	{
+		write(1, "declare -x ", 11);
+		write(1, ret[i], ft_strlen(ret[i]));
+		write(1, "\n", 1);
+	}
+	ft_square_free(ret);
+	return (0);
+}
+
 int		ft_export(t_cmd cmd, t_cmdv *cmdv)
 {
 	int i;
 
 	i = 0;
-	while (cmd.argv[++i])
-		if (ft_set_one_var(cmd.argv[i], cmdv))
-			return (-1);
+	if (!cmd.argv[1])
+		return (ft_only_export(cmdv->envp));
+			while (cmd.argv[++i])
+				if (ft_set_one_var(cmd.argv[i], cmdv))
+					return (-1);
 	return (0);
 }
