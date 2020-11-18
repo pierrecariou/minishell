@@ -15,13 +15,21 @@
 int		ft_env(t_cmd cmd, char **envp)
 {
 	int i;
+	int j;
 
-	(void)cmd;
+	if (cmd.argv[1])
+		return (-1);
 	i = 0;
 	while (envp[i])
 	{
-		ft_putstr_fd(envp[i], 1);
-		write(1, "\n", 1);
+		j = 0;
+		while (envp[i][j] && envp[i][j] != '=')
+			j++;
+		if (j != ft_strlen(envp[i]))
+		{
+			ft_putstr_fd(envp[i], 1);
+			write(1, "\n", 1);
+		}
 		i++;
 	}
 	return (0);

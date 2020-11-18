@@ -12,11 +12,14 @@ static int	ft_strncmp(char *s1, char *s2, size_t n)
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
-static void	ft_unset_one_var(char *arg, t_cmdv *cmdv)
+static int	ft_unset_one_var(char *arg, t_cmdv *cmdv)
 {
 	int i;
 
 	i = -1;
+	while (arg[++i])
+		if (arg[i] == '=')
+			return (-1);
 	while (cmdv->envp[++i])
 	{
 		if (!ft_strncmp(arg, cmdv->envp[i], ft_strlen(arg)) &&
@@ -29,6 +32,7 @@ static void	ft_unset_one_var(char *arg, t_cmdv *cmdv)
 			break;
 		}
 	}
+	return (0);
 }
 
 void		ft_unset(t_cmd cmd, t_cmdv *cmdv)
@@ -37,5 +41,10 @@ void		ft_unset(t_cmd cmd, t_cmdv *cmdv)
 
 	i = 0;
 	while (cmd.argv[++i])
-		ft_unset_one_var(cmd.argv[i], cmdv);
+		if (ft_unset_one_var(cmd.argv[i], cmdv))
+		{
+			write(2, "minishell: unset: `", 19);
+			write(2, cmd.argv[i], ft_strlen(cmd.argv[i]));
+			write(2, "': not a valid identifier\n", 27);
+		}
 }
