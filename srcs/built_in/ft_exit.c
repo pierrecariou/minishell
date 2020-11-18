@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/30 12:33:58 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/11 13:15:23 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/17 15:04:24 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	ft_exit(t_cmd cmd, t_cmdv *cmdv, char *file, char **paths)
 {
 	int	i;
 
-	ft_putstr_fd("exit\n", 1);
+	ft_putstr_fd("exit\n", 0);
 	i = ft_grezette_exit(cmd ,cmdv);
 	if (i == 257)
 		return (1);

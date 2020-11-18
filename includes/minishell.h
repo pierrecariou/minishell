@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/17 10:18:14 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/17 16:36:53 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <unistd.h>
-# include <errno.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <signal.h>
 # include <sys/wait.h>
@@ -71,6 +69,7 @@ typedef struct		s_cmdv
 	char			*envv;
 	char			*renvv;
 	char			*end;
+	int				code;
 }					t_cmdv;
 
 void				ft_putstr_fd(char *s, int fd);
@@ -144,5 +143,6 @@ void				init_inquotes(t_cmdv *cmdv);
 void				count_envv(char *buf, t_cmdv *cmdv);
 void				count_sep(char *buf, t_cmdv *cmdv);
 char				*create_space(void);
+char				*return_code(char *envv, t_cmdv *cmdv);
 
 #endif
