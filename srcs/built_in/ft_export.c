@@ -32,26 +32,43 @@ static int		ft_set_one_var(char *arg, t_cmdv *cmdv)
 
 	i = 0;
 	j = 0;
+	while (arg[i] && arg[i] == ' ')
+		i++;
+	if (arg[i] == '=')
+		return (-1);
 	while (arg[i] && arg[i] != '=')
 		i++;
-	if (i == ft_strlen(arg))
-		return (0);
 	while (cmdv->envp[j] && ft_strncmp(arg, cmdv->envp[j], i))
 		j++;
 	if (j != (int)ft_square_strlen(cmdv->envp))
 	{
 		free(cmdv->envp[j]);
-		if (!(cmdv->envp[j] = ft_strdup(arg)))
-			return (-1);
+		cmdv->envp[j] = ft_strdup(arg);
 	}
 	else
 	{
 		tmp = cmdv->envp;
-		if (!(cmdv->envp = ft_square_strjoin(tmp, arg)))
-			return (-1);
+		cmdv->envp = ft_square_strjoin(tmp, arg);
 		ft_square_free(tmp);
 	}
+	if (!cmdv->envp || !cmdv->envp[j])
+		return (-1);
 	return (0);
+}
+
+static void ft_write_only_export(char **ret, int i, int j)
+{
+	write(1, "declare -x ", 11);
+	while (ret[i][j] && ret[i][j] != '=')
+		j++;
+	write(1, ret[i], j + 1);
+	if (j != ft_strlen(ret[i]))
+	{
+		write(1, "\"", 1);
+		write(1, &ret[i][j + 1], ft_strlen(ret[i]) - j - 1);
+		write(1, "\"", 1);
+	}
+	write(1, "\n", 1);
 }
 
 static int	ft_only_export(char **envp)
@@ -74,11 +91,7 @@ static int	ft_only_export(char **envp)
 			}
 	i = -1;
 	while (ret[++i])
-	{
-		write(1, "declare -x ", 11);
-		write(1, ret[i], ft_strlen(ret[i]));
-		write(1, "\n", 1);
-	}
+		ft_write_only_export(ret, i, 0);
 	ft_square_free(ret);
 	return (0);
 }
@@ -90,8 +103,13 @@ int		ft_export(t_cmd cmd, t_cmdv *cmdv)
 	i = 0;
 	if (!cmd.argv[1])
 		return (ft_only_export(cmdv->envp));
-			while (cmd.argv[++i])
-				if (ft_set_one_var(cmd.argv[i], cmdv))
-					return (-1);
+	while (cmd.argv[++i])
+		if (ft_set_one_var(cmd.argv[i], cmdv))
+		{
+			write(2, "bash: export: `", 15);
+			write(2, cmd.argv[i], ft_strlen(cmd.argv[i]));
+			write(2, "': not a valid identifier\n", 26);
+			return (-1);
+		}
 	return (0);
 }
