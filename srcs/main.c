@@ -6,14 +6,13 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/17 16:07:47 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/17 11:31:05 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
 int		g_handler;
-int		g_code;
 
 void	inthandler(int num)
 {
@@ -24,7 +23,6 @@ void	inthandler(int num)
 	ft_putstr_fd("\033[0m", 0);
 	ft_putstr_fd("$ ", 0);
 	g_handler++;
-	g_code = 1;
 	return ;
 }
 
@@ -43,8 +41,6 @@ void	cmds_loop(t_cmd *cmd, t_cmdv *cmdv, char **envp)
 {
 	while (cmd)
 	{
-		cmdv->code = g_code;
-		g_code = 0;
 		cmds_loop1(cmdv);
 		if (cmdv->error_line && cmdv->error_line != 127)
 			cmdv->error_line = 2;
@@ -100,7 +96,6 @@ int		main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	g_handler = 0;
-	g_code = 0;
 	signal(SIGINT, inthandler);
 	signal(SIGQUIT, quithandler);
 	tmp_env = ft_square_strjoin(envp, NULL);

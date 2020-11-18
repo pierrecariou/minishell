@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:28:23 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/17 16:36:02 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/17 09:45:52 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,11 @@ char	*real_env(char *envv, t_cmdv *cmdv)
 
 	i = -1;
 	cmdv->renv = 0;
-	if ((space = return_code(envv, cmdv)) != NULL)
+	if (envv[0] && envv[0] == '?' && !envv[1])
+	{
+		space = ft_itoa(cmdv->error_line);
 		return (space);
+	}
 	while (cmdv->envp[++i])
 	{
 		m = 0;

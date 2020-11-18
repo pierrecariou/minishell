@@ -30,7 +30,7 @@ int		cmp_built_in(char **argv, t_cmd *cmd, t_cmdv *cmdv)
 	else if (!ft_strcmp(argv[0], "export"))
 		ft_export(*cmd, cmdv);
 	else if (!ft_strcmp(argv[0], "exit"))
-		exe = exe;
+		exe = ft_exit(*cmd, cmdv,);
 	else
 		exe = 0;
 	return (exe);

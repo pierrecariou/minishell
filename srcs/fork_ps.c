@@ -114,6 +114,7 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv, char **envp)
 {
 	char *file;
 
+	(void)envp;
 	if (not_a_path(cmd->argv[0]))
 		file = exec_path(paths, cmd->argv[0]);
 	else
@@ -122,7 +123,7 @@ void	fork_ps(t_cmd *cmd, char **paths, t_cmdv *cmdv, char **envp)
 			(ft_strcmp(cmd->argv[0], "exit") || cmd->sepl != '|'))
 	{
 		if (!ft_strcmp(cmd->argv[0], "exit"))
-			ft_exit(envp, cmdv, file, paths);
+			ft_exit(*cmd, cmdv, file, paths);
 		fork_ps1(cmd, cmdv, file);
 	}
 	else
