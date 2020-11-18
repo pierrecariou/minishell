@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/30 12:33:58 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/17 15:04:24 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/18 15:02:10 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static int	ft_alpha_error(char *argv)
 {
-	write(1, "minishell: exit: ", 17);
-	write(1, cmd.argv[1], ft_strlen(cmd.argv[1]));
-	write(1, ": numeric argument required\n", 28);
+	write(2, "minishell: exit: ", 17);
+	write(2, argv, ft_strlen(argv));
+	write(2, ": numeric argument required\n", 28);
 	return (255);
 }
 
@@ -45,16 +45,16 @@ static int	ft_grezette_exit(t_cmd cmd, t_cmdv *cmdv)
 {
 	int i;
 
-	else if (!cmd.argv[1])
+	if (!cmd.argv[1])
 		return (cmdv->error_line);
-	i = cmd.argv[0] == '-' || cmd.argv[0] == '+' ? 1 : 0;
+	i = cmd.argv[1][0] == '-' || cmd.argv[1][0] == '+' ? 1 : 0;
 	while (cmd.argv[1][i] && ft_isdigit(cmd.argv[1][i]))
 		i++;
 	if (i != ft_strlen(cmd.argv[1]))
 		return (ft_alpha_error(cmd.argv[1]));
 	else if (ft_square_strlen(cmd.argv) > 2)
 	{
-		write(1, "minishell: exit: too many arguments\n", 37);
+		write(2, "minishell: exit: too many arguments\n", 37);
 		return (257);
 	}
 	else

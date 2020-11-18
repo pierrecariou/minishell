@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/17 16:36:53 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/18 15:04:01 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,5 +144,6 @@ void				count_envv(char *buf, t_cmdv *cmdv);
 void				count_sep(char *buf, t_cmdv *cmdv);
 char				*create_space(void);
 char				*return_code(char *envv, t_cmdv *cmdv);
+int					ft_isdigit(char c);
 
 #endif
