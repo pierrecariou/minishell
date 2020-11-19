@@ -31,6 +31,8 @@ static int	ft_set_one_var(char *arg, t_cmdv *cmdv)
 	char	**tmp;
 
 	i = 0;
+	while (arg[i] && arg[i] == '=');
+		i++;
 	if (!(j = 0) && arg[i] == '=')
 		return (-1);
 	while (arg[i] && arg[i] != '=')
