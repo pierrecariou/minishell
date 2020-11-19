@@ -12,8 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-//Attention, ca leaks si ft_cd est appelé une seconde fois ou plus.
-
 static int	ft_strncmp(char *s1, char *s2, size_t n)
 {
 	size_t i;
@@ -25,29 +23,10 @@ static int	ft_strncmp(char *s1, char *s2, size_t n)
 		i++;
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
-
-static int		ft_half_pwd(t_cmdv *cmdv, char *str)
+static int	ft_quarter_pwd(t_cmdv *cmdv, char *src, int fctr)
 {
-	char	*src;
-	char	**tmp_envp;
-	int		fctr;
+	char **tmp_envp;
 
-	fctr = 4096 - ft_strlen(str);
-	if (!(src = (char *)malloc(sizeof(char *) * (fctr + ft_strlen(str)))))
-		return (-1);
-	while (!(getcwd(src + 4, fctr)))
-	{
-		free(src);
-		fctr *= 2;
-		if (!(src = (char *)malloc(sizeof(char *) * (fctr + ft_strlen(str)))))
-			return (-1);
-	}
-	fctr = -1;
-	while (str[++fctr])
-		src[fctr] = str[fctr];
-	fctr = 0;
-	while (cmdv->envp[fctr] && ft_strncmp(cmdv->envp[fctr], str, ft_strlen(str) - 1))
-		fctr++;
 	if (fctr == (int)ft_square_strlen(cmdv->envp))
 	{
 		tmp_envp = cmdv->envp;
@@ -67,16 +46,43 @@ static int		ft_half_pwd(t_cmdv *cmdv, char *str)
 	return (0);
 }
 
-int		ft_cd(t_cmd cmd, t_cmdv *cmdv)
+static int	ft_half_pwd(t_cmdv *cmdv, char *str)
 {
-	//	if (ft_half_pwd(cmdv->envp, "OLDPWD="))
-	//		return (-1);
+	char	*src;
+	int		fctr;
+
+	fctr = 4096 - ft_strlen(str);
+	if (!(src = (char *)malloc(sizeof(char *) * (fctr + ft_strlen(str)))))
+		return (-1);
+	while (!(getcwd(src + 4, fctr)))
+	{
+		free(src);
+		fctr *= 2;
+		if (!(src = (char *)malloc(sizeof(char *) * (fctr + ft_strlen(str)))))
+			return (-1);
+	}
+	fctr = -1;
+	while (str[++fctr])
+		src[fctr] = str[fctr];
+	fctr = 0;
+	while (cmdv->envp[fctr] &&
+			ft_strncmp(cmdv->envp[fctr], str, ft_strlen(str) - 1))
+		fctr++;
+	if (ft_quarter_pwd(cmdv, src, fctr))
+		return (-1);
+	return (0);
+}
+
+int			ft_cd(t_cmd cmd, t_cmdv *cmdv)
+{
 	int i;
 
 	i = 0;
-	while (ft_strncmp(cmdv->envp[i], "HOME=", 4))
+	while (cmdv->envp[i] && ft_strncmp(cmdv->envp[i], "HOME=", 4))
 		i++;
-	if (!cmd.argv[1])
+	if (i == (int)ft_square_strlen(cmdv->envp) && !cmd.argv[1])
+		return (0);
+	else if (!cmd.argv[1])
 		chdir(cmdv->envp[i] + 5);
 	else if (chdir(cmd.argv[1]))
 	{

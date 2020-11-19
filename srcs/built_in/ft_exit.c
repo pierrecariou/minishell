@@ -61,12 +61,12 @@ static int	ft_grezette_exit(t_cmd cmd, t_cmdv *cmdv)
 		return (ft_cal_output(cmd.argv[1]));
 }
 
-int	ft_exit(t_cmd cmd, t_cmdv *cmdv, char *file, char **paths)
+int			ft_exit(t_cmd cmd, t_cmdv *cmdv, char *file, char **paths)
 {
 	int	i;
 
 	ft_putstr_fd("exit\n", 0);
-	i = ft_grezette_exit(cmd ,cmdv);
+	i = ft_grezette_exit(cmd, cmdv);
 	if (i == 257)
 		return (1);
 	free_paths(paths, cmdv->envp, 0);
