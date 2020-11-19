@@ -24,30 +24,27 @@ static int	ft_strncmp(char *s1, char *s2, size_t n)
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
-static int	ft_set_one_var(char *arg, t_cmdv *cmdv)
+static int	ft_set_one_var(char *a, t_cmdv *cmdv)
 {
 	int		i;
 	int		j;
 	char	**tmp;
 
-	i = 0;
-	while (arg[i] && arg[i] == '=');
-		i++;
-	if (!(j = 0) && arg[i] == '=')
-		return (-1);
-	while (arg[i] && arg[i] != '=')
-		i++;
-	while (cmdv->envp[j] && ft_strncmp(arg, cmdv->envp[j], i))
+	i = -1;
+	while (!(j = 0) && a[++i] && (a[i] != '=' || a[0] == '='))
+		if (a[i] == ' ' || a[0] == '=' || (!ft_isalnum(a[i]) && a[i] != '_'))
+			return (-1);
+	while (cmdv->envp[j] && ft_strncmp(a, cmdv->envp[j], i))
 		j++;
 	if (j != (int)ft_square_strlen(cmdv->envp))
 	{
 		free(cmdv->envp[j]);
-		cmdv->envp[j] = ft_strdup(arg);
+		cmdv->envp[j] = ft_strdup(a);
 	}
 	else
 	{
 		tmp = cmdv->envp;
-		cmdv->envp = ft_square_strjoin(tmp, arg);
+		cmdv->envp = ft_square_strjoin(tmp, a);
 		ft_square_free(tmp);
 	}
 	if (!cmdv->envp || !cmdv->envp[j])

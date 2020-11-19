@@ -145,5 +145,6 @@ void				count_sep(char *buf, t_cmdv *cmdv);
 char				*create_space(void);
 char				*return_code(char *envv, t_cmdv *cmdv);
 int					ft_isdigit(char c);
+int					ft_isalnum(int c);
 
 #endif
