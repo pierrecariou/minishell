@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 18:19:20 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/21 11:20:18 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/19 11:58:09 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static int	ft_set_one_var(char *a, t_cmdv *cmdv)
 	return (0);
 }
 
-static void ft_write_only_export(char **ret, int i, int j)
+static void	ft_write_only_export(char **ret, int i, int j)
 {
 	write(1, "declare -x ", 11);
 	while (ret[i][j] && ret[i][j] != '=')
@@ -92,7 +92,7 @@ static int	ft_only_export(char **envp)
 	return (0);
 }
 
-int		ft_export(t_cmd cmd, t_cmdv *cmdv)
+int			ft_export(t_cmd cmd, t_cmdv *cmdv)
 {
 	int i;
 

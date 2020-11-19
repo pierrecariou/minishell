@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 10:07:31 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/16 10:09:28 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/19 11:50:41 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 int		split_input1(t_cmd *cmd, t_cmdv *cmdv, int i, int c)
 {
-	if (cmd->line[i] && !ft_isspace(cmd->line[i]) && !cmdv->isaquote)
+	if (cmd->line[i] && (!ft_isspace(cmd->line[i]) || cmdv->inquotes)
+		&& !cmdv->isaquote)
 	{
 		while ((cmd->line[i] && !ft_isspace(cmd->line[i]) &&
 					cmdv->inquotes == 0) || (cmdv->inquotes == 1
@@ -42,10 +43,11 @@ int		split_input(t_cmd *cmd, t_cmdv *cmdv)
 	while (cmd->line[i] && c < cmd->n)
 	{
 		cmdv->l = 0;
-		cmdv->inquotes = is_inquotes(cmd->line[i], cmdv);
-		while (cmd->line[i] && ft_isspace(cmd->line[i]))
+		while (cmd->line[i] && ft_isspace(cmd->line[i]) && !cmdv->inquotes)
 			i++;
-		if (cmd->line[i] && !ft_isspace(cmd->line[i]) && !cmdv->isaquote)
+		cmdv->inquotes = is_inquotes(cmd->line[i], cmdv);
+		if (cmd->line[i] && (!ft_isspace(cmd->line[i]) ||
+			cmdv->inquotes) && !cmdv->isaquote)
 			c++;
 		i = split_input1(cmd, cmdv, i, c);
 		if (cmd->line[i])
@@ -58,7 +60,8 @@ int		split_input(t_cmd *cmd, t_cmdv *cmdv)
 
 int		malloc_words1(t_cmd *cmd, t_cmdv *cmdv, int i, int k)
 {
-	if (cmd->line[i] && !ft_isspace(cmd->line[i]) && !cmdv->isaquote)
+	if (cmd->line[i] && (!ft_isspace(cmd->line[i]) ||
+		cmdv->inquotes) && !cmdv->isaquote)
 	{
 		while ((cmd->line[i] && !ft_isspace(cmd->line[i]) &&
 					cmdv->inquotes == 0) || (cmdv->inquotes == 1 &&
@@ -87,9 +90,9 @@ void	malloc_words(t_cmd *cmd, t_cmdv *cmdv)
 	while (cmd->line[i] && k < cmd->n)
 	{
 		cmdv->l = 0;
-		cmdv->inquotes = is_inquotes(cmd->line[i], cmdv);
-		while (cmd->line[i] && ft_isspace(cmd->line[i]))
+		while (cmd->line[i] && ft_isspace(cmd->line[i]) && !cmdv->inquotes)
 			i++;
+		cmdv->inquotes = is_inquotes(cmd->line[i], cmdv);
 		i = malloc_words1(cmd, cmdv, i, k);
 		k = (cmdv->l > 0) ? k + 1 : k;
 		if (cmd->line[i])

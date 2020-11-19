@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/30 12:33:58 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/18 15:02:10 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/19 11:59:14 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	ft_cal_output(char *argv)
 {
 	unsigned long long	ret;
 	int					i;
-	int 				minus;
+	int					minus;
 
 	ret = 0;
 	i = argv[0] == '-' || argv[0] == '+' ? 0 : -1;
