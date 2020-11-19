@@ -12,12 +12,16 @@
 
 #include "../../includes/minishell.h"
 
-int		ft_pwd(t_cmd cmd)
+int		ft_pwd(t_cmd cmd, t_cmdv *cmdv)
 {
 	char	*src;
 	int		fctr;
 
-	(void)cmd;
+	if (cmd.argv[1])
+	{
+		ft_putstr_fd("minishell: pwd: too many arguments", 2);
+		return (-1);
+	}
 	fctr = 4096;
 	if (!(src = (char *)malloc(sizeof(char *) * (fctr))))
 		return (-1);
