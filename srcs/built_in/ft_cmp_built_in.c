@@ -55,7 +55,8 @@ int		no_fork(char **argv)
 	if (!argv[0])
 		return (0);
 	if (!ft_strcmp(argv[0], "cd") || !ft_strcmp(argv[0], "unset") ||
-		(!ft_strcmp(argv[0], "export") && argv[1]) || !ft_strcmp(argv[0], "exit"))
+		(!ft_strcmp(argv[0], "export") && argv[1]) ||
+		!ft_strcmp(argv[0], "exit"))
 		return (1);
 	else
 		return (0);

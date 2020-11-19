@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_unset.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/10/12 18:19:20 by grezette          #+#    #+#             */
+/*   Updated: 2020/11/04 22:40:47 by pcariou          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static int	ft_strncmp(char *s1, char *s2, size_t n)
@@ -29,7 +41,7 @@ static int	ft_unset_one_var(char *arg, t_cmdv *cmdv)
 			cmdv->envp[i] = cmdv->envp[i + 1];
 			while (cmdv->envp[++i])
 				cmdv->envp[i] = cmdv->envp[i + 1];
-			break;
+			break ;
 		}
 	}
 	return (0);

@@ -24,17 +24,14 @@ static int	ft_strncmp(char *s1, char *s2, size_t n)
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
-static int		ft_set_one_var(char *arg, t_cmdv *cmdv)
+static int	ft_set_one_var(char *arg, t_cmdv *cmdv)
 {
-	int i;
-	int j;
-	char **tmp;
+	int		i;
+	int		j;
+	char	**tmp;
 
 	i = 0;
-	j = 0;
-	while (arg[i] && arg[i] == ' ')
-		i++;
-	if (arg[i] == '=')
+	if (!(j = 0) && arg[i] == '=')
 		return (-1);
 	while (arg[i] && arg[i] != '=')
 		i++;
