@@ -1,25 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_isenvv.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pcariou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/11 16:36:33 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/19 15:49:06 by pcariou          ###   ########.fr       */
+/*   Created: 2020/11/19 13:58:21 by pcariou           #+#    #+#             */
+/*   Updated: 2020/11/19 15:13:59 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "libft.h"
 
-size_t	ft_strlen(const char *s)
+int		ft_isenvv(int c)
 {
-	size_t len;
-
-	len = 0;
-	if (s == NULL)
-		return (len);
-	while (s[len])
-		len++;
-	return (len);
+	if (ft_isalnum(c) || c == '_')
+		return (1);
+	return (0);
 }

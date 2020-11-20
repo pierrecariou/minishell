@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/18 15:04:01 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/20 11:54:08 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ typedef struct		s_cmdv
 	char			*renvv;
 	char			*end;
 	int				code;
+	int				noenvv;
 }					t_cmdv;
 
 void				ft_putstr_fd(char *s, int fd);
@@ -143,8 +144,12 @@ void				init_inquotes(t_cmdv *cmdv);
 void				count_envv(char *buf, t_cmdv *cmdv);
 void				count_sep(char *buf, t_cmdv *cmdv);
 char				*create_space(void);
-char				*return_code(char *envv, t_cmdv *cmdv);
+char				*return_code(t_cmd *cmd, t_cmdv *cmdv, int k, int i);
 int					ft_isdigit(char c);
 int					ft_isalnum(int c);
+int					ft_isenvv(int c);
+void				argv_reborn(t_cmd *cmd, int i);
+void				code(t_cmd *cmd, t_cmdv *cmdv, int i, int k);
+char				*buf_with_envv(int k, t_cmd *cmd, t_cmdv *cmdv);
 
 #endif

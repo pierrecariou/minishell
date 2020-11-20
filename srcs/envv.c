@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 12:28:23 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/17 16:36:02 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/20 11:50:16 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,9 @@ char	*real_env(char *envv, t_cmdv *cmdv)
 {
 	int		i;
 	int		m;
-	char	*space;
 
 	i = -1;
 	cmdv->renv = 0;
-	if ((space = return_code(envv, cmdv)) != NULL)
-		return (space);
 	while (cmdv->envp[++i])
 	{
 		m = 0;
@@ -34,31 +31,35 @@ char	*real_env(char *envv, t_cmdv *cmdv)
 			return (&cmdv->envp[i][m + 1]);
 		}
 	}
-	space = create_space();
-	return (space);
+	cmdv->noenvv = 1;
+	return (NULL);
 }
 
 char	*buf_with_envv(int r, t_cmd *cmd, t_cmdv *cmdv)
 {
 	int		i;
 	int		m;
-	int		k;
 	char	*ret;
 
 	i = -1;
 	m = 0;
-	k = 0;
 	if (!(ret = malloc(sizeof(char) * (ft_strlen(cmd->argv[r]) +
 						(ft_strlen(cmdv->renvv) - (cmdv->length - 1)) + 1))))
 		return (0);
 	while (++i < cmdv->l)
 		ret[m++] = cmd->argv[r][i];
-	while (cmdv->renvv[k])
-		ret[m++] = cmdv->renvv[k++];
-	k = -1;
-	while (cmdv->end[++k])
-		ret[m++] = cmdv->end[k];
+	i = 0;
+	while (cmdv->renvv != NULL && cmdv->renvv[i])
+		ret[m++] = cmdv->renvv[i++];
+	i = -1;
+	while (cmdv->end[++i])
+		ret[m++] = cmdv->end[i];
 	ret[m] = 0;
+	if (m == 0)
+	{
+		free(ret);
+		ret = NULL;
+	}
 	free(cmd->argv[r]);
 	return (ret);
 }
@@ -68,7 +69,8 @@ int		get_envv1(t_cmd *cmd, t_cmdv *cmdv, int i, int k)
 	int m;
 
 	m = 0;
-	while (cmd->argv[k][i] && cmd->argv[k][i] != '/' && cmd->argv[k][i] != '$')
+	while (cmd->argv[k][i] && ft_isenvv(cmd->argv[k][i]) &&
+			cmd->argv[k][i] != '$')
 		cmdv->envv[m++] = cmd->argv[k][i++];
 	cmdv->envv[m] = 0;
 	cmdv->end = &cmd->argv[k][i];
@@ -86,15 +88,15 @@ void	get_envv(t_cmd *cmd, t_cmdv *cmdv, int i, int k)
 	int		cp;
 	int		m;
 
-	if (cmd->argv[k][i] == '$' && cmd->argv[k][i + 1]
-		&& cmdv->envreplace[cmdv->cenvv])
+	if (cmd->argv[k][i] == '$' && cmd->argv[k][i + 1] &&
+			ft_isenvv(cmd->argv[k][i + 1]) && cmdv->envreplace[cmdv->cenvv])
 	{
 		cmdv->cenvv++;
 		m = 0;
 		cmdv->l = i;
 		cp = ++i;
-		while (cmd->argv[k][i] && cmd->argv[k][i] != '/'
-			&& cmd->argv[k][i] != '$')
+		while (cmd->argv[k][i] && ft_isenvv(cmd->argv[k][i])
+				&& cmd->argv[k][i] != '$')
 		{
 			m++;
 			i++;
@@ -104,7 +106,7 @@ void	get_envv(t_cmd *cmd, t_cmdv *cmdv, int i, int k)
 		i = get_envv1(cmd, cmdv, cp, k);
 	}
 	else if (cmd->argv[k][i] && cmd->argv[k][i] == '$')
-		cmdv->cenvv++;
+		code(cmd, cmdv, i, k);
 }
 
 void	replace_envv(t_cmd *cmd, t_cmdv *cmdv)
@@ -116,7 +118,14 @@ void	replace_envv(t_cmd *cmd, t_cmdv *cmdv)
 	while (cmd->argv[++i])
 	{
 		k = -1;
-		while (cmd->argv[i][++k])
+		while (cmd->argv[i] != NULL && cmd->argv[i][++k])
+		{
+			cmdv->noenvv = 0;
 			get_envv(cmd, cmdv, k, i);
+			if (cmdv->noenvv)
+				k--;
+		}
+		if (cmd->argv[i] == NULL)
+			argv_reborn(cmd, i--);
 	}
 }
