@@ -6,7 +6,7 @@
 #    By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/10/01 10:17:20 by pcariou           #+#    #+#              #
-#    Updated: 2020/11/19 15:55:07 by pcariou          ###   ########.fr        #
+#    Updated: 2020/11/20 16:56:51 by pcariou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,7 +50,7 @@ RM			= rm -f
 
 AR			=  ar rcs
 
-CFLAGS		= -g -Wall -Wextra -Werror
+CFLAGS		= -Wall -Wextra -Werror
 
 CC			= gcc
 

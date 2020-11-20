@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 16:32:57 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/16 11:43:02 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/20 16:35:55 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,10 @@ int		empty_redir(t_cmd *cmd)
 {
 	while (cmd)
 	{
-		if ((cmd->redir == '>' || cmd->redir == '}' || cmd->redir == '<')
+		if ((cmd->redir == '>' || cmd->redir == '}')
 			&& !cmd->redirf[0])
+			return (1);
+		if (cmd->redirl == '<' && !cmd->redirfl[0])
 			return (1);
 		cmd = cmd->next;
 	}

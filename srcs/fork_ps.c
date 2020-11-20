@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 09:15:02 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/16 10:11:13 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/20 16:38:42 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	error(t_cmd *cmd, t_cmdv *cmdv)
 {
 	cmdv->error = 1;
 	cmdv->error_line = 127;
-	if (cmd->redir == '<')
+	if (cmd->redirl == '<')
 	{
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(cmd->redirf, 2);
@@ -32,7 +32,7 @@ void	error(t_cmd *cmd, t_cmdv *cmdv)
 		ft_putstr_fd("minishell: error\n", 2);
 	if (cmd->nredir > 1)
 		open_files(cmd, cmdv);
-	if (cmd->redir && cmd->redir != '<' && cmd->redirf[0])
+	if (cmd->redir && cmd->redirf[0])
 		create_file(cmd, cmdv);
 	if (cmd->redir && cmd->fdredir != -1)
 		close(cmd->fdredir);
