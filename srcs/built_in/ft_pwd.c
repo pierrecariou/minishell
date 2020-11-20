@@ -6,13 +6,13 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 16:18:47 by grezette          #+#    #+#             */
-/*   Updated: 2020/10/19 11:11:17 by grezette         ###   ########.fr       */
+/*   Updated: 2020/11/20 12:02:44 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int		ft_pwd(t_cmd cmd, t_cmdv *cmdv)
+int		ft_pwd(t_cmd cmd)
 {
 	char	*src;
 	int		fctr;
