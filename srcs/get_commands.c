@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/17 11:32:13 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/23 11:28:10 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void	fill_argv(t_cmd *cmd, t_cmdv *cmdv)
 int		read_input(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
 {
 	call_gnl(cmd, cmdv, paths, envp);
+	cmdv->no_line = (!cmdv->buf[0]) ? 1 : 0;
 	if (!cmdv->buf[0] || bad_beginning(cmdv->buf) || bad_ending(cmdv->buf) ||
 			double_sep(cmdv->buf) || tripledouble_redir(cmdv->buf) ||
 			quotes_not_closed(cmdv->buf))

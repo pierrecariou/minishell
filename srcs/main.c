@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/19 11:49:47 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/23 11:41:31 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,10 @@ void	cmds_loop(t_cmd *cmd, t_cmdv *cmdv, char **envp)
 	{
 		cmdv->code = g_code;
 		g_code = 0;
+		cmdv->err_built = 0;
 		cmds_loop1(cmdv);
-		if (cmdv->error_line && cmdv->error_line != 127)
+		if (cmdv->error_line && cmdv->error_line != 127 &&
+			cmdv->error_line != 1 && !cmdv->err_built)
 			cmdv->error_line = 2;
 		if (cmd->active)
 		{
@@ -58,6 +60,8 @@ void	cmds_loop(t_cmd *cmd, t_cmdv *cmdv, char **envp)
 			else
 				fork_ps(cmd, cmdv->paths, cmdv, envp);
 		}
+		if (cmdv->err_built)
+			cmdv->error_line = cmdv->err_built;
 		cmd = cmd->next;
 		free_paths(cmdv->paths, envp, 1);
 	}
@@ -84,10 +88,10 @@ void	loop(char **envp)
 			cmds_loop(cmd, cmdv, envp);
 		else if (!cmdv->empty)
 			ft_putstr_fd("minishell: syntax error\n", 2);
-		if (!parse || (cmdv->error_line != 0 && cmdv->error_line != 127))
+		if ((!parse && !cmdv->no_line) || (cmdv->error_line != 0 &&
+			cmdv->error_line != 127 && !cmdv->err_built))
 			error_line = 2;
-		else if (parse)
-			error_line = cmdv->error_line;
+		error_line = (parse) ? cmdv->error_line : error_line;
 		envp = cmdv->envp;
 		free_structs(cmdv);
 	}

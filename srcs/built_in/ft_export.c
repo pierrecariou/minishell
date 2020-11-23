@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 18:19:20 by grezette          #+#    #+#             */
-/*   Updated: 2020/11/19 12:48:20 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/23 10:45:00 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ int			ft_export(t_cmd cmd, t_cmdv *cmdv)
 	while (cmd.argv[++i])
 		if (ft_set_one_var(cmd.argv[i], cmdv))
 		{
+			cmdv->err_built = 1;
 			ft_putstr_fd("minishell: export: `", 2);
 			write(2, cmd.argv[i], ft_strlen(cmd.argv[i]));
 			write(2, "': not a valid identifier\n", 26);

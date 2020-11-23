@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 09:26:49 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/18 21:27:41 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/23 11:27:01 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ void	init_loop(t_cmd *cmd, t_cmdv *cmdv, char **envp, int error_line)
 	cmdv->envp = envp;
 	cmdv->cp = cmd;
 	cmdv->error = 0;
+	cmdv->err_built = 0;
+	cmdv->no_line = 0;
 	cmdv->cenvv = 0;
 	cmdv->error_line = error_line;
 	cmdv->path = NULL;
