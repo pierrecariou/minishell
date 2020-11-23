@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/23 11:28:10 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/23 16:20:47 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	call_gnl(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
 		free(cmdv);
 		free_paths(paths, envp, 2);
 		ft_putstr_fd("exit\n", 0);
-		exit(0);
+		exit(cmdv->error_line);
 	}
 	cmdv->empty = (cmdv->buf[0]) ? 0 : 1;
 }
