@@ -33,6 +33,7 @@ static char	*ft_my_strjoin(char const *str1, char const *str2)
 	if (s2)
 		ft_memcpy(&join[size - ft_strlen(s2) - 1], s2, ft_strlen(s2));
 	join[size - 1] = 0;
+	ft_putstr_fd(join, 1);
 	return (join);
 }
 
@@ -43,9 +44,11 @@ int			ft_modif_var(char *a, t_cmdv *cmdv, int i, int j)
 	tmp = cmdv->envp[j];
 	if (a[i] == '+')
 	{
-		if (!cmdv->envp[j][i] &&
-				!(cmdv->envp[j] = ft_my_strjoin(cmdv->envp[j], &a[i + 1])))
-			return (-1);
+		if (!cmdv->envp[j][i])
+		{
+			if (!(cmdv->envp[j] = ft_my_strjoin(cmdv->envp[j], &a[i + 1])))
+				return (-1);
+		}
 		else
 			if (!(cmdv->envp[j] = ft_my_strjoin(cmdv->envp[j], &a[i + 2])))
 				return (-1);
