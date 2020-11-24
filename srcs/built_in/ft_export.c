@@ -11,6 +11,31 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <stdio.h>
+
+static char	*ft_my_strjoin(char const *str1, char const *str2)
+{
+	char	*join;
+	char	*s1;
+	char	*s2;
+	size_t	size;
+
+	size = 1;
+	s1 = (char *)str1;
+	s2 = (char *)str2;
+	if (s1)
+		size = ft_strlen(s1) + 1;
+	if (s2)
+		size += ft_strlen(s2);
+	if (!(join = (char *)malloc(sizeof(*join) * size)))
+		return (NULL);
+	if (s1)
+		ft_memcpy(join, s1, ft_strlen(s1));
+	if (s2)
+		ft_memcpy(&join[size - ft_strlen(s2) - 1], s2, ft_strlen(s2));
+	join[size - 1] = 0;
+	return (join);
+}
 
 static int	ft_strncmp(char *s1, char *s2, size_t n)
 {
@@ -24,31 +49,63 @@ static int	ft_strncmp(char *s1, char *s2, size_t n)
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
+static int	ft_modif_var(char *a, t_cmdv *cmdv, int i, int j)
+{
+	char *tmp;
+
+	tmp = cmdv->envp[j];
+	if (a[i] == '+')
+	{
+		if (!cmdv->envp[j][i] &&
+				!(cmdv->envp[j] = ft_my_strjoin(cmdv->envp[j], &a[i + 1])))
+			return (-1);
+		else 
+			if (!(cmdv->envp[j] = ft_my_strjoin(cmdv->envp[j], &a[i + 2])))
+				return (-1);
+	}
+	else if (!a[i] && cmdv->envp[j][i] == '=')
+		return (0);
+	else
+		if (!(cmdv->envp[j] = ft_strdup(a)))
+			return (-1);
+	free(tmp);
+	return (0);
+}
+
+static int	ft_create_new_var(char *a, t_cmdv *cmdv, int i)
+{
+	char **tmp;
+
+	tmp = cmdv->envp;
+	if (!(tmp = ft_square_strjoin(tmp, a)))
+		return (-1);
+	ft_square_free(cmdv->envp);
+	cmdv->envp = tmp;
+	if (a[i] == '+')
+		while (a[++i])
+			a[i] = a[i + 1];
+	return (-1);
+}
+
 static int	ft_set_one_var(char *a, t_cmdv *cmdv)
 {
 	int		i;
 	int		j;
-	char	**tmp;
 
 	i = -1;
-	while (!(j = 0) && a[++i] && (a[i] != '=' || a[0] == '='))
+	j = -1;
+	while (a[++i] && (a[i] != '=' || a[0] == '=') &&
+			(a[i] != '+' || a[i + 1] != '='))
 		if (a[i] == ' ' || a[0] == '=' || (!ft_isalnum(a[i]) && a[i] != '_'))
 			return (-1);
-	while (cmdv->envp[j] && ft_strncmp(a, cmdv->envp[j], i))
-		j++;
+	while (cmdv->envp[++j])
+		if (!ft_strncmp(a, cmdv->envp[j], i) &&
+				(cmdv->envp[j][i] == '=' || cmdv->envp[j][i] == 0))
+				break ;
 	if (j != (int)ft_square_strlen(cmdv->envp))
-	{
-		free(cmdv->envp[j]);
-		cmdv->envp[j] = ft_strdup(a);
-	}
+		ft_modif_var(a, cmdv, i, j);
 	else
-	{
-		tmp = cmdv->envp;
-		cmdv->envp = ft_square_strjoin(tmp, a);
-		ft_square_free(tmp);
-	}
-	if (!cmdv->envp || !cmdv->envp[j])
-		return (-1);
+		ft_create_new_var(a, cmdv, i);
 	return (0);
 }
 

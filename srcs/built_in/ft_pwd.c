@@ -12,27 +12,53 @@
 
 #include "../../includes/minishell.h"
 
-int		ft_pwd(t_cmd cmd)
+static int	ft_strncmp(char *s1, char *s2, size_t n)
+{
+	size_t i;
+
+	i = 0;
+	if (n == 0)
+		return (0);
+	while (i < n - 1 && s1[i] && s2[i] && s1[i] == s2[i])
+		i++;
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
+
+char	*ft_get_pwd(t_cmdv *cmdv)
+{
+	int		fctr;
+	char	*src;
+
+	fctr = 0;
+	while (cmdv->envp[fctr] &&
+		ft_strncmp(cmdv->envp[fctr], "PWD=", ft_strlen("PWD=") - 1))
+		fctr++;
+	if (fctr != (int)ft_square_strlen(cmdv->envp))
+	{
+		ft_putstr_fd(&cmdv->envp[fctr][4], 1);
+		return (NULL);
+	}
+	fctr = 4096;
+	if (!(src = (char *)malloc(sizeof(char *) * (fctr))))
+		return (NULL);
+	if (!(getcwd(src, fctr)))
+		return (NULL);
+	free(src);
+	return (src);
+}
+
+int		ft_pwd(t_cmd cmd, t_cmdv *cmdv)
 {
 	char	*src;
-	int		fctr;
 
 	if (cmd.argv[1])
 	{
 		ft_putstr_fd("minishell: pwd: too many arguments", 2);
 		return (-1);
 	}
-	fctr = 4096;
-	if (!(src = (char *)malloc(sizeof(char *) * (fctr))))
-		return (-1);
-	while (!(getcwd(src, fctr)))
-	{
-		free(src);
-		fctr *= 2;
-		if (!(src = (char *)malloc(sizeof(char *) * (fctr))))
-			return (-1);
-	}
-	ft_putstr_fd(src, 1);
+	src = ft_get_pwd(cmdv);
+	if (src)
+		ft_putstr_fd(src, 1);
 	free(src);
 	write(1, "\n", 1);
 	return (0);
