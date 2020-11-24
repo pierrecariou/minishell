@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 18:19:20 by grezette          #+#    #+#             */
-/*   Updated: 2020/11/04 22:40:47 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/24 15:53:23 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void		ft_unset(t_cmd cmd, t_cmdv *cmdv)
 	while (cmd.argv[++i])
 		if (ft_unset_one_var(cmd.argv[i], cmdv))
 		{
+			cmdv->err_built = 1;
 			write(2, "minishell: unset: `", 19);
 			write(2, cmd.argv[i], ft_strlen(cmd.argv[i]));
 			write(2, "': not a valid identifier\n", 27);

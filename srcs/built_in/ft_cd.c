@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 18:19:20 by grezette          #+#    #+#             */
-/*   Updated: 2020/11/20 12:10:04 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/24 14:52:54 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ int			ft_cd(t_cmd cmd, t_cmdv *cmdv)
 		chdir(cmdv->envp[i] + 5);
 	else if (chdir(cmd.argv[1]))
 	{
+		cmdv->err_built = 1;
 		ft_putstr_fd("cd: ", 2);
 		ft_putstr_fd(cmd.argv[1], 2);
 		ft_putstr_fd(": No such file or directory\n", 2);

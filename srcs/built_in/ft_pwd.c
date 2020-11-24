@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 16:18:47 by grezette          #+#    #+#             */
-/*   Updated: 2020/11/20 12:02:44 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/24 15:51:23 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,7 @@ int		ft_pwd(t_cmd cmd, t_cmdv *cmdv)
 {
 	char	*src;
 
-	if (cmd.argv[1])
-	{
-		ft_putstr_fd("minishell: pwd: too many arguments", 2);
-		return (-1);
-	}
+	(void)cmd;
 	src = ft_get_pwd(cmdv);
 	if (src)
 		ft_putstr_fd(src, 1);
