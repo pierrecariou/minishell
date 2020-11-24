@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_export.c                                        :+:      :+:    :+:   */
+/*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/12 18:19:20 by grezette          #+#    #+#             */
-/*   Updated: 2020/11/23 10:45:00 by pcariou          ###   ########.fr       */
+/*   Created: 2020/11/24 13:45:38 by pcariou           #+#    #+#             */
+/*   Updated: 2020/11/24 13:45:48 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static char	*ft_my_strjoin(char const *str1, char const *str2)
 	if (s2)
 		ft_memcpy(&join[size - ft_strlen(s2) - 1], s2, ft_strlen(s2));
 	join[size - 1] = 0;
-	ft_putstr_fd(join, 1);
 	return (join);
 }
 

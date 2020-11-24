@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 09:40:21 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/23 16:20:47 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/24 14:14:25 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	call_gnl(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
 {
 	int		ret;
 	char	*buf_cp;
+	int		ret_exit;
 
 	cmdv->buf = NULL;
 	buf_cp = NULL;
@@ -65,11 +66,12 @@ void	call_gnl(t_cmd *cmd, t_cmdv *cmdv, char **paths, char **envp)
 		cmdv->buf = buf_cp;
 	if (!ret && !cmdv->buf)
 	{
+		ret_exit = cmdv->error_line;
 		free(cmd);
 		free(cmdv);
 		free_paths(paths, envp, 2);
 		ft_putstr_fd("exit\n", 0);
-		exit(cmdv->error_line);
+		exit(ret_exit);
 	}
 	cmdv->empty = (cmdv->buf[0]) ? 0 : 1;
 }
