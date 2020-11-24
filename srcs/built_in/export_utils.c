@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/24 13:45:38 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/24 13:45:48 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/24 16:05:40 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,13 @@ int			ft_modif_var(char *a, t_cmdv *cmdv, int i, int j)
 			if (!(cmdv->envp[j] = ft_my_strjoin(cmdv->envp[j], &a[i + 1])))
 				return (-1);
 		}
-		else
-			if (!(cmdv->envp[j] = ft_my_strjoin(cmdv->envp[j], &a[i + 2])))
-				return (-1);
+		else if (!(cmdv->envp[j] = ft_my_strjoin(cmdv->envp[j], &a[i + 2])))
+			return (-1);
 	}
 	else if (!a[i] && cmdv->envp[j][i] == '=')
 		return (0);
-	else
-		if (!(cmdv->envp[j] = ft_strdup(a)))
-			return (-1);
+	else if (!(cmdv->envp[j] = ft_strdup(a)))
+		return (-1);
 	free(tmp);
 	return (0);
 }

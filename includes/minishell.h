@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/24 15:36:41 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/24 16:19:04 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,7 @@ void				count_envv(char *buf, t_cmdv *cmdv);
 void				count_sep(char *buf, t_cmdv *cmdv);
 char				*create_space(void);
 char				*return_code(t_cmd *cmd, t_cmdv *cmdv, int k, int i);
+void				return_code1(t_cmd *cmd, t_cmdv *cmdv);
 int					ft_isdigit(char c);
 int					ft_isalnum(int c);
 int					ft_isenvv(int c);
@@ -156,5 +157,6 @@ char				*buf_with_envv(int k, t_cmd *cmd, t_cmdv *cmdv);
 void				*ft_memcpy(void *dst, const void *src, size_t n);
 int					ft_modif_var(char *a, t_cmdv *cmdv, int i, int j);
 int					ft_create_new_var(char *a, t_cmdv *cmdv, int i);
+int					ft_isalpha(int c);
 
 #endif

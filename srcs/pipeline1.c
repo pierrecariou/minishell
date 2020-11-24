@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/17 09:33:06 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/20 11:51:35 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/24 16:10:00 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,4 +76,12 @@ void	argv_reborn(t_cmd *cmd, int i)
 		i++;
 	}
 	cmd->argv[i] = 0;
+}
+
+void	return_code1(t_cmd *cmd, t_cmdv *cmdv)
+{
+	if (cmdv->err_built)
+		cmdv->error_line = cmdv->err_built;
+	if (!ft_strcmp(cmd->argv[0], "env") && cmd->argv[1])
+		cmdv->error_line = 127;
 }
