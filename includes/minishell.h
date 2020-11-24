@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:54:45 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/24 16:11:15 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/24 16:19:04 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,5 +157,6 @@ char				*buf_with_envv(int k, t_cmd *cmd, t_cmdv *cmdv);
 void				*ft_memcpy(void *dst, const void *src, size_t n);
 int					ft_modif_var(char *a, t_cmdv *cmdv, int i, int j);
 int					ft_create_new_var(char *a, t_cmdv *cmdv, int i);
+int					ft_isalpha(int c);
 
 #endif
