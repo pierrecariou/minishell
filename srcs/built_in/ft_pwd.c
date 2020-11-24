@@ -43,7 +43,6 @@ char	*ft_get_pwd(t_cmdv *cmdv)
 		return (NULL);
 	if (!(getcwd(src, fctr)))
 		return (NULL);
-	free(src);
 	return (src);
 }
 
