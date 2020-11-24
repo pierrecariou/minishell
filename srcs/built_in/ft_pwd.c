@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 16:18:47 by grezette          #+#    #+#             */
-/*   Updated: 2020/11/24 15:51:23 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/24 16:06:57 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	ft_strncmp(char *s1, char *s2, size_t n)
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
-char	*ft_get_pwd(t_cmdv *cmdv)
+char		*ft_get_pwd(t_cmdv *cmdv)
 {
 	int		fctr;
 	char	*src;
@@ -47,7 +47,7 @@ char	*ft_get_pwd(t_cmdv *cmdv)
 	return (src);
 }
 
-int		ft_pwd(t_cmd cmd, t_cmdv *cmdv)
+int			ft_pwd(t_cmd cmd, t_cmdv *cmdv)
 {
 	char	*src;
 

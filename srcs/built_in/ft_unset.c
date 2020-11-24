@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/12 18:19:20 by grezette          #+#    #+#             */
-/*   Updated: 2020/11/24 15:53:23 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/24 16:04:15 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ static int	ft_unset_one_var(char *arg, t_cmdv *cmdv)
 	while (cmdv->envp[++i])
 	{
 		if (!ft_strncmp(arg, cmdv->envp[i], ft_strlen(arg)) &&
-				(cmdv->envp[i][ft_strlen(arg)] == '=' || !cmdv->envp[i][ft_strlen(arg)]))
+				(cmdv->envp[i][ft_strlen(arg)] == '=' ||
+				!cmdv->envp[i][ft_strlen(arg)]))
 		{
 			free(cmdv->envp[i]);
 			cmdv->envp[i] = cmdv->envp[i + 1];

@@ -6,7 +6,7 @@
 /*   By: pcariou <pcariou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/01 10:53:46 by pcariou           #+#    #+#             */
-/*   Updated: 2020/11/24 15:37:27 by pcariou          ###   ########.fr       */
+/*   Updated: 2020/11/24 16:10:28 by pcariou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,7 @@ void	cmds_loop(t_cmd *cmd, t_cmdv *cmdv, char **envp)
 			else
 				fork_ps(cmd, cmdv->paths, cmdv, envp);
 		}
-		if (cmdv->err_built)
-			cmdv->error_line = cmdv->err_built;
-		if (!ft_strcmp(cmd->argv[0], "env") && cmd->argv[1])
-			cmdv->error_line = 127;
+		return_code1(cmd, cmdv);
 		cmd = cmd->next;
 		free_paths(cmdv->paths, envp, 1);
 	}
