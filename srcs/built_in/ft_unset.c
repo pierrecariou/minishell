@@ -30,7 +30,7 @@ static int	ft_unset_one_var(char *arg, t_cmdv *cmdv)
 
 	i = -1;
 	while (arg[++i])
-		if (arg[i] == '=')
+		if ((!ft_isalpha(arg[i]) && arg[i] != '_') || ft_isdigit(arg[0]))
 			return (-1);
 	while (cmdv->envp[++i])
 	{
