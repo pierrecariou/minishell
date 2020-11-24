@@ -154,5 +154,7 @@ void				argv_reborn(t_cmd *cmd, int i);
 void				code(t_cmd *cmd, t_cmdv *cmdv, int i, int k);
 char				*buf_with_envv(int k, t_cmd *cmd, t_cmdv *cmdv);
 void				*ft_memcpy(void *dst, const void *src, size_t n);
+int					ft_modif_var(char *a, t_cmdv *cmdv, int i, int j);
+int					ft_create_new_var(char *a, t_cmdv *cmdv, int i);
 
 #endif

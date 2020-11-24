@@ -39,6 +39,7 @@ SRCS		=	srcs/main.c \
 				srcs/built_in/ft_env.c \
 				srcs/built_in/ft_pwd.c \
 				srcs/built_in/ft_export.c \
+				srcs/built_in/export_utils.c \
 				srcs/built_in/gab_le_bg.c \
 				srcs/built_in/ft_unset.c \
 				srcs/built_in/ft_exit.c
