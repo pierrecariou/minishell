@@ -35,7 +35,7 @@ static int	ft_unset_one_var(char *arg, t_cmdv *cmdv)
 	while (cmdv->envp[++i])
 	{
 		if (!ft_strncmp(arg, cmdv->envp[i], ft_strlen(arg)) &&
-				cmdv->envp[i][ft_strlen(arg)] == '=')
+				(cmdv->envp[i][ft_strlen(arg)] == '=' || !cmdv->envp[i][ft_strlen(arg)]))
 		{
 			free(cmdv->envp[i]);
 			cmdv->envp[i] = cmdv->envp[i + 1];

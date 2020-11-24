@@ -28,27 +28,21 @@ static int	ft_set_one_var(char *a, t_cmdv *cmdv)
 {
 	int		i;
 	int		j;
-	char	**tmp;
 
 	i = -1;
-	while (!(j = 0) && a[++i] && (a[i] != '=' || a[0] == '='))
+	j = -1;
+	while (a[++i] && (a[i] != '=' || a[0] == '=') &&
+			(a[i] != '+' || a[i + 1] != '='))
 		if (a[i] == ' ' || a[0] == '=' || (!ft_isalnum(a[i]) && a[i] != '_'))
 			return (-1);
-	while (cmdv->envp[j] && ft_strncmp(a, cmdv->envp[j], i))
-		j++;
+	while (cmdv->envp[++j])
+		if (!ft_strncmp(a, cmdv->envp[j], i) &&
+				(cmdv->envp[j][i] == '=' || cmdv->envp[j][i] == 0))
+				break ;
 	if (j != (int)ft_square_strlen(cmdv->envp))
-	{
-		free(cmdv->envp[j]);
-		cmdv->envp[j] = ft_strdup(a);
-	}
+		ft_modif_var(a, cmdv, i, j);
 	else
-	{
-		tmp = cmdv->envp;
-		cmdv->envp = ft_square_strjoin(tmp, a);
-		ft_square_free(tmp);
-	}
-	if (!cmdv->envp || !cmdv->envp[j])
-		return (-1);
+		ft_create_new_var(a, cmdv, i);
 	return (0);
 }
 
