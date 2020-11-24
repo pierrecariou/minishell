@@ -31,6 +31,8 @@ static int	ft_set_one_var(char *a, t_cmdv *cmdv)
 
 	i = -1;
 	j = -1;
+	if (ft_isdigit(a[0]))
+		return (-1);
 	while (a[++i] && (a[i] != '=' || a[0] == '=') &&
 			(a[i] != '+' || a[i + 1] != '='))
 		if (a[i] == ' ' || a[0] == '=' || (!ft_isalnum(a[i]) && a[i] != '_'))
